@@ -37,16 +37,7 @@ export default defineConfig({
         target: 'https://spark-api-open.xf-yun.com/',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/ai/, ''),
-      },
-      // 获取路径中包含/api的请求
-      '/api': {
-        // 后台服务器所在源
-        target: 'https://api.starlightpathserver.fun/api',
-        // 允许修改源
-        changeOrigin: true,
-        // api替换为''
-        rewrite: (path) => path.replace(/^\/api/, ''),
-      },
+      }
     },
   },
 });
