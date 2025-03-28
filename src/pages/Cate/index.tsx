@@ -198,7 +198,7 @@ const CatePage = () => {
                         </Form.Item>
 
                         <Form.Item className='!mb-0 w-full'>
-                            <Button type="primary" onClick={submit} loading={btnLoading} className='w-full ml-2'>新增分类</Button>
+                            <Button type="primary" onClick={submit} loading={btnLoading} className='w-full ml-2'>{isMethod === "edit" ? "编辑分类" : "新增分类"}</Button>
                         </Form.Item>
                     </Form>
                 </Modal>

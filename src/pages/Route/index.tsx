@@ -67,7 +67,7 @@ export default () => {
             setLoading(true);
 
             await delRouteDataAPI(id);
-            await getRouteList();
+            getRouteList();
             message.success('🎉 删除路由成功');
 
             setLoading(false)
@@ -90,7 +90,7 @@ export default () => {
                     message.success('🎉 新增路由成功');
                 }
 
-                await getRouteList();
+                getRouteList();
                 form.resetFields();
                 form.setFieldsValue({ path: '', description: '' })
                 setRoute({} as Route);

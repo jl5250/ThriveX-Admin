@@ -78,7 +78,7 @@ export default () => {
             setBtnLoading(true);
 
             await delSwiperDataAPI(id);
-            await getSwiperList();
+            getSwiperList();
             message.success('🎉 删除轮播图成功');
 
             setBtnLoading(false);
@@ -100,7 +100,7 @@ export default () => {
                     message.success('🎉 新增轮播图成功');
                 }
 
-                await getSwiperList();
+                getSwiperList();
                 setTab('list');
                 form.resetFields();
                 setSwiper({} as Swiper);

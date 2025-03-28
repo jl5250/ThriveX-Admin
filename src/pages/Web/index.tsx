@@ -86,7 +86,7 @@ export default () => {
             setLoading(true);
 
             await delLinkDataAPI(id);
-            await getLinkList();
+            getLinkList();
             message.success('🎉 删除网站成功');
         } catch (error) {
             setLoading(false)
@@ -134,7 +134,7 @@ export default () => {
                     message.success('🎉 新增网站成功');
                 }
 
-                await getLinkList();
+                getLinkList();
                 reset()
                 setTab('list');
             });

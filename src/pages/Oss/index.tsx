@@ -107,7 +107,7 @@ export default () => {
             setLoading(true)
 
             await enableOssDataAPI(id);
-            await getOssList();
+            getOssList();
             message.success('启用成功');
         } catch (error) {
             setLoading(false)
@@ -119,7 +119,7 @@ export default () => {
             setLoading(true)
 
             await disableOssDataAPI(id);
-            await getOssList();
+            getOssList();
             message.success('禁用成功');
         } catch (error) {
             setLoading(false)
@@ -147,7 +147,7 @@ export default () => {
             setLoading(true);
 
             await delOssDataAPI(id);
-            await getOssList();
+            getOssList();
             message.success('🎉 删除存储配置成功');
         } catch (error) {
             setLoading(false)
@@ -180,7 +180,7 @@ export default () => {
                 message.success('🎉 新增存储配置成功');
             }
 
-            await getOssList();
+            getOssList();
             setIsModalOpen(false);
             form.resetFields();
 
@@ -278,13 +278,17 @@ export default () => {
                         <Input placeholder="请输入域名" />
                     </Form.Item>
 
-                    <Form.Item
-                        label="文件目录"
-                        name="basePath"
-                        rules={[{ required: true, message: '文件目录不能为空' }]}
-                    >
-                        <Input placeholder="请输入文件目录" />
-                    </Form.Item>
+                    {
+                        oss.platform !== "local" && (
+                            <Form.Item
+                                label="文件目录"
+                                name="basePath"
+                                rules={[{ required: true, message: '文件目录不能为空' }]}
+                            >
+                                <Input placeholder="请输入文件目录" />
+                            </Form.Item>
+                        )
+                    }
 
                     <Form.Item className='mb-0'>
                         <Button type="primary" htmlType="submit" loading={btnLoading} className="w-full">

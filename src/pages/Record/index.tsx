@@ -43,7 +43,7 @@ export default () => {
       setLoading(true);
 
       await delRecordDataAPI(id);
-      await getRecordList();
+      getRecordList();
       form.resetFields()
       notification.success({ message: '🎉 删除说说成功' })
 

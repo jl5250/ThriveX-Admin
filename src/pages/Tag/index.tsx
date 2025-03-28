@@ -67,7 +67,7 @@ export default () => {
             setLoading(true);
 
             await delTagDataAPI(id);
-            await getTagList();
+            getTagList();
             message.success('🎉 删除标签成功');
         } catch (error) {
             setLoading(false);
@@ -88,7 +88,7 @@ export default () => {
                     message.success('🎉 新增标签成功');
                 }
 
-                await getTagList();
+                getTagList();
                 form.resetFields();
                 form.setFieldsValue({ name: '' })
                 setTag({} as Tag);

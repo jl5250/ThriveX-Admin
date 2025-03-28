@@ -137,7 +137,7 @@ export default () => {
             setLoading(true);
 
             await delUserDataAPI(id);
-            await getUserList();
+            getUserList();
             notification.success({ message: '🎉 删除用户成功' });
         } catch (error) {
             setLoading(false);
@@ -177,7 +177,7 @@ export default () => {
                     notification.success({ message: '🎉 创建用户成功' });
                 }
 
-                await getUserList();
+                getUserList();
                 setDrawerVisible(false);
                 reset()
             })

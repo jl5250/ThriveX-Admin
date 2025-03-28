@@ -40,7 +40,7 @@ export default () => {
 
         try {
             await delWallDataAPI(id);
-            await getWallList();
+            getWallList();
             message.success('🎉 删除留言成功');
         } catch (error) {
             setLoading(false)

@@ -44,7 +44,7 @@ export default () => {
                 role: undefined
             });
 
-            await getUserData();
+            getUserData();
             message.success("🎉 修改用户信息成功");
             store.setUser(values as User);
         } catch (error) {

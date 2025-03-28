@@ -165,8 +165,8 @@ export default () => {
           message.success('🎉 新增足迹成功');
         }
 
-        await getFootprintList();
         setBtnLoading(false)
+        getFootprintList();
         reset()
       });
     } catch (error) {

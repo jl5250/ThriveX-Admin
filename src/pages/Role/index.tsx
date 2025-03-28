@@ -153,7 +153,7 @@ export default () => {
             setLoading(true);
 
             await delRoleDataAPI(id);
-            await getRoleList();
+            getRoleList();
             message.success('🎉 删除角色成功');
         } catch (error) {
             setLoading(false);
@@ -173,7 +173,7 @@ export default () => {
                     message.success('🎉 新增角色成功');
                 }
 
-                await getRoleList();
+                getRoleList();
                 form.resetFields();
                 form.setFieldsValue({ name: '', description: '' })
                 setRole({} as Role);

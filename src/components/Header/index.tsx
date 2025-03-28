@@ -59,7 +59,7 @@ const Header = (props: {
         <div className="flex items-center gap-3 2xsm:gap-7">
           <ul className="flex items-center gap-2 2xsm:gap-4">
             <li className='hidden md:block'>
-              <a href="https://github.com/LiuYuYang01/ThriveX-Blog" target='_blank' className='hover:text-primary'>开源不易，赏个Star吧！！！</a>
+              <a href="https://github.com/LiuYuYang01/ThriveX-Admin" target='_blank' className='hover:text-primary'>开源不易，赏个Star吧！！！</a>
             </li>
 
             <DarkModeSwitcher />
