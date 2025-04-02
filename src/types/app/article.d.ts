@@ -18,7 +18,7 @@ export interface Article {
     cover: string,
     cateIds: number[],
     cateList?: Cate[]
-    tagIds: string,
+    tagIds: number[],
     tagList?: Tag[]
     view?: number
     comment?: number,
@@ -31,13 +31,13 @@ export interface Article {
 
 export interface FilterForm {
     title?: string,
-    cateIds?: number[],
+    cateId?: number,
     tagId?: number,
     createTime: Date[]
 }
 
 export interface FilterArticle extends FilterData {
-    cateIds?: number[],
+    cateId?: number,
     tagId?: number,
     isDraft?: number,
     isDel?: number

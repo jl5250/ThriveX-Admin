@@ -132,7 +132,7 @@ const PublishForm = ({ data, closeModel }: Props) => {
                     id,
                     ...values,
                     content: data.content,
-                    tagIds: tagIds.join(','),
+                    tagIds,
                     config: {
                         status: values.status,
                         password: values.password
@@ -145,7 +145,7 @@ const PublishForm = ({ data, closeModel }: Props) => {
                         id,
                         ...values,
                         content: data.content,
-                        tagIds: tagIds.join(','),
+                        tagIds,
                         isDraft: isDraft ? 1 : 0,
                         isDel: 0,
                         isEncrypt: 0,
@@ -163,7 +163,7 @@ const PublishForm = ({ data, closeModel }: Props) => {
                         id,
                         ...values,
                         content: data.content,
-                        tagIds: tagIds.join(','),
+                        tagIds,
                         isDraft: isDraft ? 1 : 0,
                         config: {
                             status: values.status,

@@ -176,8 +176,8 @@ export default () => {
                     <Spin spinning={loading}>
                         <div className='space-y-8'>
                             {
-                                Object.keys(list).map((key) => (
-                                    <div>
+                                Object.keys(list).map((key, index1) => (
+                                    <div key={index1}>
                                         <Card className="[&>.ant-card-body]:flex [&>.ant-card-body]:py-2 [&>.ant-card-body]:px-4 my-2 ml-1.5 text-base bg-[#f5f6ff] dark:bg-boxdark transition-colors">
                                             <img src={group} alt="分组图标" className='w-6 h-6 mr-2' />
                                             <span>{key}</span>
@@ -187,8 +187,8 @@ export default () => {
                                             Object.values(list[key]).length ? (
                                                 <div className="list">
                                                     {
-                                                        Object.values(list[key]).map(item => (
-                                                            <div key={item.id} className="item">
+                                                        Object.values(list[key]).map((item, index2) => (
+                                                            <div key={index2} className="item">
                                                                 <div className="avatar">
                                                                     <img src={item.image} alt="" className="avatar-img" />
                                                                 </div>

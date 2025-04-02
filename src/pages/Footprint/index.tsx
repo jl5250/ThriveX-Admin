@@ -11,6 +11,7 @@ import axios from 'axios';
 
 export default () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [searchLoading, setSearchLoading] = useState<boolean>(false);
   const [btnLoading, setBtnLoading] = useState(false)
   const [editLoading, setEditLoading] = useState(false)
 
@@ -148,7 +149,7 @@ export default () => {
       setEditLoading(false);
     }
   };
-  
+
   const onSubmit = async () => {
     try {
       setBtnLoading(true)
@@ -188,7 +189,7 @@ export default () => {
 
       const { data } = await getFootprintListAPI({ query });
       setFootprintList(data);
-      
+
       setLoading(false)
     } catch (error) {
       setLoading(false)
@@ -198,7 +199,7 @@ export default () => {
   // 通过详细地址获取纬度
   const getGeocode = async () => {
     try {
-      setEditLoading(true)
+      setSearchLoading(true)
 
       const address = form.getFieldValue("address")
 
@@ -221,9 +222,9 @@ export default () => {
         message.warning('未找到该地址的经纬度');
       }
 
-      setEditLoading(false)
+      setSearchLoading(false)
     } catch (error) {
-      setEditLoading(false)
+      setSearchLoading(false)
     }
   };
 
@@ -266,41 +267,43 @@ export default () => {
       </Card>
 
       <Modal loading={editLoading} title={isMethod === "edit" ? "编辑足迹" : "新增足迹"} open={isModelOpen} onCancel={closeModel} destroyOnClose footer={null}>
-        <Form form={form} layout="vertical" initialValues={footprint} size='large' preserve={false} className='mt-6'>
-          <Form.Item label="标题" name="title" rules={[{ required: true, message: '标题不能为空' }]}>
-            <Input placeholder="请输入标题" />
-          </Form.Item>
+        <Spin spinning={searchLoading}>
+          <Form form={form} layout="vertical" initialValues={footprint} size='large' preserve={false} className='mt-6'>
+            <Form.Item label="标题" name="title" rules={[{ required: true, message: '标题不能为空' }]}>
+              <Input placeholder="请输入标题" />
+            </Form.Item>
 
-          <Form.Item label="地址" name="address" rules={[{ required: true, message: '地址不能为空' }]}>
-            <Input placeholder="请输入地址" />
-          </Form.Item>
+            <Form.Item label="地址" name="address" rules={[{ required: true, message: '地址不能为空' }]}>
+              <Input placeholder="请输入地址" />
+            </Form.Item>
 
-          <Form.Item label="坐标纬度" name="position" rules={[{ required: true, message: '坐标纬度不能为空' }]}>
-            <Input placeholder="请输入坐标纬度" prefix={<GiPositionMarker />} addonAfter={<IoSearch onClick={getGeocode} className='cursor-pointer' />} />
-          </Form.Item>
+            <Form.Item label="坐标纬度" name="position" rules={[{ required: true, message: '坐标纬度不能为空' }]}>
+              <Input placeholder="请输入坐标纬度" prefix={<GiPositionMarker />} addonAfter={<IoSearch onClick={getGeocode} className='cursor-pointer' />} />
+            </Form.Item>
 
-          <Form.Item label="图片" name="images">
-            <Input.TextArea
-              autoSize={{ minRows: 2, maxRows: 10 }}
-              placeholder="请输入图片链接"
-            />
-          </Form.Item>
+            <Form.Item label="图片" name="images">
+              <Input.TextArea
+                autoSize={{ minRows: 2, maxRows: 10 }}
+                placeholder="请输入图片链接"
+              />
+            </Form.Item>
 
-          <Form.Item label="内容" name="content">
-            <Input.TextArea
-              autoSize={{ minRows: 5, maxRows: 10 }}
-              placeholder="请输入内容"
-            />
-          </Form.Item>
+            <Form.Item label="内容" name="content">
+              <Input.TextArea
+                autoSize={{ minRows: 5, maxRows: 10 }}
+                placeholder="请输入内容"
+              />
+            </Form.Item>
 
-          <Form.Item label="时间" name="createTime" rules={[{ required: true, message: '时间不能为空' }]} className='!mb-4'>
-            <DatePicker showTime placeholder='请选择时间' className='w-full' />
-          </Form.Item>
+            <Form.Item label="时间" name="createTime" rules={[{ required: true, message: '时间不能为空' }]} className='!mb-4'>
+              <DatePicker showTime placeholder='请选择时间' className='w-full' />
+            </Form.Item>
 
-          <Form.Item className='!mb-0 w-full'>
-            <Button type="primary" onClick={onSubmit} loading={btnLoading} className='w-full'>{isMethod === "edit" ? "编辑足迹" : "新增足迹"}</Button>
-          </Form.Item>
-        </Form>
+            <Form.Item className='!mb-0 w-full'>
+              <Button type="primary" onClick={onSubmit} loading={btnLoading} className='w-full'>{isMethod === "edit" ? "编辑足迹" : "新增足迹"}</Button>
+            </Form.Item>
+          </Form>
+        </Spin>
       </Modal>
     </div>
   );

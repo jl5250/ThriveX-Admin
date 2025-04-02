@@ -156,7 +156,7 @@ export default () => {
 
             const query: FilterArticle = {
                 key: values.title,
-                cateIds: values.cateIds,
+                cateId: values.cateId,
                 tagId: values.tagId,
                 isDraft: 0,
                 isDel: 0,
@@ -202,10 +202,10 @@ export default () => {
                         <Input placeholder='请输入关键词' />
                     </Form.Item>
 
-                    <Form.Item label="分类" name="cateIds" className='min-w-[200px]'>
-                        <Cascader
+                    <Form.Item label="分类" name="cateId" className='min-w-[200px]'>
+                        <Select
+                            allowClear
                             options={cateList}
-                            maxTagCount="responsive"
                             fieldNames={{ label: "name", value: "id" }}
                             placeholder="请选择分类"
                         />
@@ -214,9 +214,16 @@ export default () => {
                     <Form.Item label="标签" name="tagId" className='min-w-[200px]'>
                         <Select
                             allowClear
+                            showSearch
                             options={tagList}
                             fieldNames={{ label: 'name', value: 'id' }}
                             placeholder="请选择标签"
+                            filterOption={(input, option) => {
+                                if (option?.name) {
+                                    return option.name.toLowerCase().includes(input.toLowerCase());
+                                }
+                                return false;
+                            }}
                         />
                     </Form.Item>
 

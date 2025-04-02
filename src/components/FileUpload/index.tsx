@@ -24,59 +24,64 @@ export default ({ dir, open, onCancel, onSuccess }: UploadFileProps) => {
     const onUploadFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
         let files = [...e.target.files!];
 
-        setIsLoading(true);
-
-        // 上传前先压缩文件大小
-        const compressedFiles = await Promise.all(files.map(file => {
-            return new Promise<File>((resolve, reject) => {
-                new Compressor(file, {
-                    quality,
-                    success: (blob) => {
-                        // 将 Blob 转换为 File
-                        const f = new File([blob], file.name, {
-                            type: file.type,
-                            lastModified: Date.now()
-                        });
-                        resolve(f);
-                    },
-                    error: (err) => reject(err)
-                });
-            });
-        }));
-
-        // 处理成后端需要的格式
-        const formData = new FormData();
-        formData.append("dir", dir);
-        for (let i = 0; i < compressedFiles.length; i++) {
-            formData.append('files', compressedFiles[i]);
-        }
-
-        // 发起网络请求
-        const res = await fetch(`${baseURL}/file`, {
-            method: "POST",
-            body: formData,
-            headers: {
-                "Authorization": `Bearer ${store.token}`
-            }
-        });
-
-        const { code, message: msg, data } = await res.json();
-        if (code !== 200) return message.error("文件上传失败：" + msg);
-
         try {
-            // 把数据写入到剪贴板
-            await navigator.clipboard.writeText(data.join("\n"));
-        } catch (error) {
-            message.error("复制到剪贴板失败，请手动复制");
+            setIsLoading(true);
+
+            // 上传前先压缩文件大小
+            const compressedFiles = await Promise.all(files.map(file => {
+                return new Promise<File>((resolve, reject) => {
+                    new Compressor(file, {
+                        quality,
+                        success: (blob) => {
+                            // 将 Blob 转换为 File
+                            const f = new File([blob], file.name, {
+                                type: file.type,
+                                lastModified: Date.now()
+                            });
+                            resolve(f);
+                        },
+                        error: (err) => reject(err)
+                    });
+                });
+            }));
+
+            // 处理成后端需要的格式
+            const formData = new FormData();
+            formData.append("dir", dir);
+            for (let i = 0; i < compressedFiles.length; i++) {
+                formData.append('files', compressedFiles[i]);
+            }
+
+            // 发起网络请求
+            const res = await fetch(`${baseURL}/file`, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "Authorization": `Bearer ${store.token}`
+                }
+            });
+
+            const { code, message: msg, data } = await res.json();
+            if (code !== 200) return message.error("文件上传失败：" + msg);
+
+            try {
+                // 把数据写入到剪贴板
+                await navigator.clipboard.writeText(data.join("\n"));
+            } catch (error) {
+                message.error("复制到剪贴板失败，请手动复制");
+                onSuccess(data);
+                setIsLoading(false);
+                return
+            }
+
+            message.success(`🎉 文件上传成功，URL链接已复制到剪贴板`);
             onSuccess(data);
             setIsLoading(false);
-            return
+            onCloseModel();
+        } catch (error) {
+            message.error("文件上传失败：" + (error as Error).message);
+            setIsLoading(false);
         }
-
-        message.success(`🎉 文件上传成功，URL链接已复制到剪贴板`);
-        onSuccess(data);
-        setIsLoading(false);
-        onCloseModel();
     };
 
     const onCloseModel = () => {
