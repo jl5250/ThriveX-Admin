@@ -9,7 +9,7 @@ import RandomAvatar from "@/components/RandomAvatar";
 
 import { useUserStore, useWebStore } from '@/stores';
 import TextArea from "antd/es/input/TextArea";
-import { sendDismissEmailAPI } from "@/api/Email";
+import { sendDismissEmailAPI, sendReplyWallEmailAPI } from "@/api/Email";
 
 type Menu = "comment" | "link" | "wall";
 
@@ -55,21 +55,34 @@ export default ({ item, type, fetchData, setLoading }: ListItemProps) => {
         setBtnLoading(true)
 
         try {
-            // 审核通过评论
-            await handleApproval()
+            if (type === "comment") {
+                // 审核通过评论
+                await handleApproval()
 
-            // 发送回复内容
-            await addCommentDataAPI({
-                avatar: user.avatar,
-                url: web.url,
-                content: replyInfo,
-                commentId: item?.id!,
-                auditStatus: 1,
-                email: user.email ? user.email : null,
-                name: user.name,
-                articleId: item?.articleId!,
-                createTime: new Date().getTime().toString(),
-            })
+                // 发送回复内容
+                await addCommentDataAPI({
+                    avatar: user.avatar,
+                    url: web.url,
+                    content: replyInfo,
+                    commentId: item?.id!,
+                    auditStatus: 1,
+                    email: user.email ? user.email : null,
+                    name: user.name,
+                    articleId: item?.articleId!,
+                    createTime: new Date().getTime().toString(),
+                })
+            }
+
+            if (type === "wall") {
+                await sendReplyWallEmailAPI({
+                    to: item.email!,
+                    recipient: item.name!,
+                    your_content: item.content!,
+                    reply_content: replyInfo,
+                    time: dayjs(+item?.createTime!).format('YYYY-MM-DD HH:mm:ss'),
+                    url: web.url + '/wall/all',
+                });
+            }
 
             await fetchData(type);
             message.success('🎉 回复成功');
@@ -198,7 +211,7 @@ export default ({ item, type, fetchData, setLoading }: ListItemProps) => {
 
                 <div className="flex items-end ml-15">
                     <Dropdown menu={{
-                        items: type === "comment"
+                        items: type === "comment" || type === "wall"
                             ? [
                                 { key: 'ok', label: "通过", onClick: handleApproval },
                                 { key: 'reply', label: "回复", onClick: () => [setIsModalOpen(true), setBtnType("reply")] },

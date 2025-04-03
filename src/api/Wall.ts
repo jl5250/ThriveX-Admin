@@ -31,3 +31,6 @@ export const getWallPagingAPI = (data?: QueryData) => Request<Paginate<Wall[]>>(
 
 // 获取留言分类列表
 export const getWallCateListAPI = () => Request<Cate[]>("GET", `/wall/cate`)
+
+// 设置与取消精选
+export const updateChoiceAPI = (id: number) => Request("PATCH", `/wall/choice/${id}`)

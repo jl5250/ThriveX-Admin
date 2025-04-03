@@ -4,7 +4,7 @@ import Loader from './common/Loader';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 import { ConfigProvider, theme } from 'antd';
 import RouteList from './components/RouteList';
-import "@/styles/customAntd.scss";
+import '@/styles/customAntd.scss';
 
 import { getConfigDataAPI } from '@/api/Project';
 import { useWebStore, useUserStore } from './stores';
@@ -16,7 +16,7 @@ import 'dayjs/locale/zh-cn';
 function App() {
   useAuthRedirect();
 
-  const token = useUserStore(state => state.token);
+  const token = useUserStore((state) => state.token);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
@@ -26,10 +26,10 @@ function App() {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  const setWeb = useWebStore(state => state.setWeb);
+  const setWeb = useWebStore((state) => state.setWeb);
   const getWebData = async () => {
     if (!token) return;
-    const { data } = await getConfigDataAPI<Web>("web");
+    const { data } = await getConfigDataAPI<Web>('web');
     setWeb(data);
   };
 
@@ -43,7 +43,10 @@ function App() {
       setIsDarkTheme(bodyClassList.contains('dark'));
     });
 
-    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
 
     return () => observer.disconnect();
   }, []);
@@ -62,7 +65,7 @@ function App() {
         token: {
           colorPrimary: '#727cf5',
           colorBgBase: isDarkTheme ? '#24303F' : '#ffffff',
-          colorTextBase: isDarkTheme ? '#e0e0e0' : '#000000'
+          colorTextBase: isDarkTheme ? '#e0e0e0' : '#000000',
         },
         algorithm: isDarkTheme ? theme.darkAlgorithm : theme.defaultAlgorithm,
       }}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Card, message, Table, Popconfirm, Button, Tag, Modal, Form, Input, DatePicker, Select } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import { getWallListAPI, delWallDataAPI, getWallCateListAPI } from '@/api/Wall';
+import { getWallListAPI, delWallDataAPI, getWallCateListAPI, updateChoiceAPI } from '@/api/Wall';
 import { titleSty } from '@/styles/sty';
 import Title from '@/components/Title';
 import type { Cate, Wall, FilterForm, FilterWall } from '@/types/app/wall';
@@ -12,7 +12,7 @@ import { useWebStore } from '@/stores';
 
 export default () => {
     const web = useWebStore(state => state.web)
-    
+
     const [loading, setLoading] = useState(false);
 
     const [wall, setWall] = useState<Wall>({} as Wall);
@@ -110,6 +110,18 @@ export default () => {
             align: 'center',
             render: (text: string, record: Wall) => (
                 <div className='flex justify-center space-x-2'>
+                    <Button type={record.isChoice === 1 ? 'primary' : 'default'} onClick={async () => {
+                        try {
+                            setLoading(true)
+                            await updateChoiceAPI(record.id)
+                            message.success('🎉 操作成功')
+                            getWallList()
+                            setLoading(false)
+                        } catch (error) {
+                            setLoading(false)
+                        }
+                    }}>{record.isChoice === 1 ? '取消精选' : '设置精选'}</Button>
+
                     <Button onClick={() => {
                         setWall(record)
                         setIsReplyModalOpen(true)

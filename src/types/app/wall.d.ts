@@ -14,6 +14,7 @@ export interface Wall {
     content: string;
     email: string;
     auditStatus: number;
+    isChoice: number;
     createTime: string;
 }
 
