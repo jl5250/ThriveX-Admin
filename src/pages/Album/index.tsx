@@ -14,7 +14,11 @@ import Title from '@/components/Title';
 import FileUpload from '@/components/FileUpload';
 
 import fileSvg from './image/file.svg';
-import { delFileDataAPI, getDirListAPI, getFileListAPI } from '@/api/File';
+import {
+  delFileDataAPI,
+  getLocalDirListAPI,
+  getLocalFileListAPI,
+} from '@/api/File';
 import { File, FileDir } from '@/types/app/file';
 import { PiKeyReturnFill } from 'react-icons/pi';
 import {
@@ -58,7 +62,7 @@ export default () => {
     try {
       setLoading(true);
 
-      const { data } = await getDirListAPI();
+      const { data } = await getLocalDirListAPI('album/', 'local');
       setDirList(data);
 
       setLoading(false);
@@ -72,7 +76,7 @@ export default () => {
     try {
       setLoading(true);
 
-      const { data } = await getFileListAPI(dir);
+      const { data } = await getLocalFileListAPI('album/' + dir, 'local');
       if (!fileList.length && !data.length) message.error('该目录中没有文件');
       setFileList(data);
 
@@ -126,7 +130,7 @@ export default () => {
 
   // 打开目录
   const openDir = (dir: string) => {
-    setDirName(dir);
+    setDirName('album/' + dir);
     getFileList(dir);
   };
 
@@ -142,7 +146,7 @@ export default () => {
 
   return (
     <div>
-      <Title value="文件管理" />
+      <Title value="相册中心" />
 
       <Card className="FilePage mt-2 min-h-[calc(100vh-180px)]">
         <div className="flex justify-between mb-4 px-4">
@@ -214,6 +218,7 @@ export default () => {
       {/* 文件上传 */}
       <FileUpload
         dir={dirName}
+        platform="local"
         open={openUploadModalOpen}
         onSuccess={() => getFileList(dirName)}
         onCancel={() => setOpenUploadModalOpen(false)}
@@ -252,7 +257,7 @@ export default () => {
             <div className="flex">
               <span className="min-w-20 font-bold">文件长宽</span>
               <span className="text-[#333] dark:text-white">
-                {file.arrt?.width}X{file.arrt?.height}
+                {file.arrt.width}X{file.arrt.height}
               </span>
             </div>
           )}
