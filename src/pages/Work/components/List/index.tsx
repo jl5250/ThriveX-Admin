@@ -55,10 +55,10 @@ export default ({ item, type, fetchData, setLoading }: ListItemProps) => {
         setBtnLoading(true)
 
         try {
-            if (type === "comment") {
-                // 审核通过评论
-                await handleApproval()
+            // 审核通过
+            await handleApproval()
 
+            if (type === "comment") {
                 // 发送回复内容
                 await addCommentDataAPI({
                     avatar: user.avatar,
@@ -179,9 +179,7 @@ export default ({ item, type, fetchData, setLoading }: ListItemProps) => {
 
             <div className="flex justify-between md:p-7 !pt-3 rounded-md transition-colors">
                 <div className="flex">
-                    {type !== "wall" ? (
-                        <img src={item.avatar || item.image} alt="" className="w-13 h-13 border border-[#eee] rounded-full" />
-                    ) : <RandomAvatar className="w-13 h-13 border border-[#eee] rounded-full" />}
+                    {item.avatar || item.image ? <img src={item.avatar || item.image} alt="" className="w-13 h-13 border border-[#eee] rounded-full" /> : <RandomAvatar className="w-13 h-13 border border-[#eee] rounded-full" />}
 
                     <div className="flex flex-col justify-center ml-4 px-4 py-2 min-w-[210px] text-xs md:text-sm bg-[#F9F9FD] dark:bg-[#4e5969] rounded-md">
                         {type === "link" ? (

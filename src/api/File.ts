@@ -10,8 +10,11 @@ export const getFileDataAPI = (filePath: string) =>
   Request<File>('GET', `/file/info?filePath=${filePath}`);
 
 // 获取文件列表
-export const getFileListAPI = (dir: string) =>
-  Request<File[]>('GET', `/file/list?dir=${dir}`);
+export const getFileListAPI = (dir: string, paging?: Page) => Request<Paginate<File[]>>("GET", `/file/list?dir=${dir}`, {
+  params: {
+    ...paging
+  }
+})
 
 // 获取目录列表
 export const getDirListAPI = () => Request<FileDir[]>('GET', '/file/dir');

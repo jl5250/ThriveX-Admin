@@ -7,7 +7,10 @@ export interface Config {
     id?: number,
     articleId?: number,
     status: Status,
-    password: string
+    password: string,
+    isEncrypt: number
+    isDraft: number,
+    isDel: number,
 }
 
 export interface Article {
@@ -23,9 +26,6 @@ export interface Article {
     view?: number
     comment?: number,
     config: Config,
-    isDraft: number,
-    isEncrypt: number,
-    isDel: number,
     createTime?: string,
 }
 

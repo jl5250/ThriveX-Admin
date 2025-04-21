@@ -27,10 +27,12 @@ interface FieldType {
     tagIds: (number | string)[];
     cover: string;
     description: string;
-    top: boolean;
-    isEncrypt: number;
-    status: Status;
-    password: string
+    config: {
+        top: boolean;
+        status: Status;
+        password: string;
+        isEncrypt: number;
+    }
 }
 
 const PublishForm = ({ data, closeModel }: Props) => {
@@ -65,6 +67,7 @@ const PublishForm = ({ data, closeModel }: Props) => {
             ...data,
             status: data.config.status,
             password: data.config.password,
+            isEncrypt: !!data.config.isEncrypt,
             cateIds,
             tagIds,
             createTime: dayjs(+data.createTime!)
@@ -98,9 +101,9 @@ const PublishForm = ({ data, closeModel }: Props) => {
     const onSubmit = async (values: FieldType, isDraft?: boolean) => {
         setBtnLoading(true)
 
-        try {
-            values.isEncrypt = values.isEncrypt ? 1 : 0
+        values.config.isEncrypt = values.config.isEncrypt ? 1 : 0
 
+        try {
             // 如果是文章标签，则先判断是否存在，如果不存在则添加
             let tagIds: number[] = []
             for (const item of (values.tagIds ? values.tagIds : [])) {
@@ -134,8 +137,9 @@ const PublishForm = ({ data, closeModel }: Props) => {
                     content: data.content,
                     tagIds,
                     config: {
-                        status: values.status,
-                        password: values.password
+                        isDraft: 0,
+                        isDel: 0,
+                        ...values.config
                     }
                 } as any)
                 message.success("🎉 编辑成功")
@@ -146,12 +150,10 @@ const PublishForm = ({ data, closeModel }: Props) => {
                         ...values,
                         content: data.content,
                         tagIds,
-                        isDraft: isDraft ? 1 : 0,
-                        isDel: 0,
-                        isEncrypt: 0,
                         config: {
-                            status: values.status,
-                            password: values.password
+                            isDraft: isDraft ? 1 : 0,
+                            isDel: 0,
+                            ...values.config
                         },
                         createTime: values.createTime.toString()
                     })
@@ -164,10 +166,9 @@ const PublishForm = ({ data, closeModel }: Props) => {
                         ...values,
                         content: data.content,
                         tagIds,
-                        isDraft: isDraft ? 1 : 0,
                         config: {
-                            status: values.status,
-                            password: values.password
+                            isDraft: isDraft ? 1 : 0,
+                            ...values.config
                         }
                     } as any)
                 }
@@ -190,9 +191,12 @@ const PublishForm = ({ data, closeModel }: Props) => {
 
     // 初始表单数据
     const initialValues = {
-        top: false,
-        status: "default",
-        password: "",
+        config: {
+            top: false,
+            status: "default",
+            password: "",
+            isEncrypt: 0
+        },
         createTime: dayjs(new Date())
     }
 
@@ -246,11 +250,11 @@ const PublishForm = ({ data, closeModel }: Props) => {
                     <DatePicker showTime placeholder="选择文章发布时间" className="w-full" />
                 </Form.Item>
 
-                <Form.Item label="是否置顶" name="top" valuePropName="checked">
+                <Form.Item label="是否置顶" name={["config", "top"]} valuePropName="checked">
                     <Switch />
                 </Form.Item>
 
-                <Form.Item label="状态" name="status">
+                <Form.Item label="状态" name={["config", "status"]}>
                     <Radio.Group>
                         <Radio value="default">正常</Radio>
                         <Radio value="no_home">不在首页显示</Radio>
@@ -258,14 +262,14 @@ const PublishForm = ({ data, closeModel }: Props) => {
                     </Radio.Group>
                 </Form.Item>
 
-                <Form.Item label="是否加密" name="isEncrypt" valuePropName="checked">
+                <Form.Item label="是否加密" name={["config", "isEncrypt"]} valuePropName="checked">
                     <Switch onChange={(checked: boolean) => setIsEncryptEnabled(checked)} />
                 </Form.Item>
 
                 {isEncryptEnabled && (
                     <Form.Item
                         label="访问密码"
-                        name="password"
+                        name={["config", "password"]}
                         rules={[{ required: isEncryptEnabled, message: '请输入访问密码' }]}
                     >
                         <Input.Password placeholder="请输入访问密码" />

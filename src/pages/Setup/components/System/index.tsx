@@ -71,7 +71,7 @@ export default () => {
                     name="username"
                     rules={rules.username}
                 >
-                    <Input placeholder="请输入账号" />
+                    <Input placeholder="请输入账号" disabled />
                 </Form.Item>
 
                 <Form.Item
