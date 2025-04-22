@@ -7,15 +7,23 @@ import { baseURL } from '@/utils/request';
 import Compressor from 'compressorjs';
 
 interface UploadFileProps {
-    multiple?: boolean
-    dir: DirList,
-    open: boolean,
-    onSuccess: (urls: string[]) => void,
-    onCancel: () => void
+  multiple?: boolean;
+  dir: DirList;
+  platform?: string;
+  open: boolean;
+  onSuccess: (urls: string[]) => void;
+  onCancel: () => void;
 }
 
-export default ({ multiple, dir, open, onCancel, onSuccess }: UploadFileProps) => {
-    const store = useUserStore();
+export default ({
+  multiple,
+  platform,
+  dir,
+  open,
+  onCancel,
+  onSuccess,
+}: UploadFileProps) => {
+  const store = useUserStore();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [quality, setQuality] = useState(1000);
@@ -51,7 +59,7 @@ export default ({ multiple, dir, open, onCancel, onSuccess }: UploadFileProps) =
       // 处理成后端需要的格式
       const formData = new FormData();
       formData.append('dir', dir);
-      formData.append('platform', platform);
+      if (platform) formData.append('platform', platform);
       for (let i = 0; i < compressedFiles.length; i++) {
         formData.append('files', compressedFiles[i]);
       }
@@ -151,16 +159,16 @@ export default ({ multiple, dir, open, onCancel, onSuccess }: UploadFileProps) =
               </p>
             </div>
 
-                        <input
-                            multiple={multiple}
-                            type="file"
-                            onChange={onUploadFile}
-                            ref={fileInputRef}
-                            className='hidden'
-                        />
-                    </div>
-                </Spin>
-            </Modal>
-        </>
-    );
+            <input
+              multiple={multiple}
+              type="file"
+              onChange={onUploadFile}
+              ref={fileInputRef}
+              className="hidden"
+            />
+          </div>
+        </Spin>
+      </Modal>
+    </>
+  );
 };

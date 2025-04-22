@@ -25,4 +25,4 @@ export const getLocalDirListAPI = (dir?: string, platform?: string) =>
 
 // 获取本地指定文件列表
 export const getLocalFileListAPI = (dir?: string, platform?: string) =>
-  Request<File[]>('GET', `/file/list?dir=${dir}&platform=${platform}`);
+  Request<File[]>('GET', `/file/list/local?dir=${dir}&platform=${platform}`);
