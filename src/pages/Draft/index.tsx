@@ -98,7 +98,7 @@ export default () => {
             key: 'action',
             fixed: 'right',
             align: 'center',
-            render: (text: string, record: Article) => (
+            render: (_: string, record: Article) => (
                 <div className='flex justify-center space-x-2'>
                     <Link to={`/create?id=${record.id}&draft=true`}>
                         <Button>编辑</Button>

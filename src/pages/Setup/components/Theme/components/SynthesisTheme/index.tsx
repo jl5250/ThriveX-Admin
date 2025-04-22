@@ -3,15 +3,17 @@ import { notification, Divider, Input, Alert, Button, Form } from 'antd';
 import { PictureOutlined, CloudUploadOutlined } from '@ant-design/icons';
 import { editConfigDataAPI, getConfigDataAPI } from '@/api/Project';
 import { Theme } from '@/types/app/project';
-import FileUpload from '@/components/FileUpload';
+import Material from '@/components/Material';
 
 export default () => {
     const [loading, setLoading] = useState<boolean>(false);
 
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isMaterialModalOpen, setIsMaterialModalOpen] = useState(false);
     const [theme, setTheme] = useState<Theme>({} as Theme);
 
     const [form] = Form.useForm();
+
+    const [currentUploadType, setCurrentUploadType] = useState<string>('');
 
     const onSidebar = (value: string) => {
         const rightSidebar = JSON.parse(theme.right_sidebar || '[]');
@@ -23,7 +25,7 @@ export default () => {
     const getLayoutData = async () => {
         try {
             setLoading(true);
-            
+
             const { data } = await getConfigDataAPI<Theme>("layout");
             setTheme(data);
 
@@ -76,8 +78,14 @@ export default () => {
         return new URL(`../../image/${name}.png`, import.meta.url).href;
     };
 
-    const UploadBtn = () => (
-        <CloudUploadOutlined className='text-xl cursor-pointer' onClick={() => setIsModalOpen(true)} />
+    const UploadBtn = ({ type }: { type: string }) => (
+        <CloudUploadOutlined
+            className='text-xl cursor-pointer'
+            onClick={() => {
+                setCurrentUploadType(type);
+                setIsMaterialModalOpen(true);
+            }}
+        />
     );
 
     return (
@@ -90,7 +98,7 @@ export default () => {
                     <Form.Item name="light_logo" label="亮色主题 Logo">
                         <Input
                             prefix={<PictureOutlined />}
-                            addonAfter={<UploadBtn />}
+                            addonAfter={<UploadBtn type="light_logo" />}
                             size='large'
                             placeholder="请输入亮色Logo地址"
                         />
@@ -101,7 +109,7 @@ export default () => {
                     <Form.Item name="dark_logo" label="暗色主题 Logo">
                         <Input
                             prefix={<PictureOutlined />}
-                            addonAfter={<UploadBtn />}
+                            addonAfter={<UploadBtn type="dark_logo" />}
                             size='large'
                             placeholder="请输入暗色Logo地址"
                         />
@@ -112,7 +120,7 @@ export default () => {
                     <Form.Item name="swiper_image" label="首页背景图">
                         <Input
                             prefix={<PictureOutlined />}
-                            addonAfter={<UploadBtn />}
+                            addonAfter={<UploadBtn type="swiper_image" />}
                             size='large'
                             placeholder="请输入背景图地址"
                         />
@@ -191,11 +199,20 @@ export default () => {
                 </Form>
             </div>
 
-            <FileUpload
-                dir="swiper"
-                open={isModalOpen}
-                onSuccess={(url: string[]) => setTheme({ ...theme, swiper_image: url.join("\n") })}
-                onCancel={() => setIsModalOpen(false)}
+            <Material
+                uploadDir="config"
+                open={isMaterialModalOpen}
+                onClose={() => {
+                    setIsMaterialModalOpen(false);
+                    setCurrentUploadType('');
+                }}
+                onSelect={(url: string[]) => {
+                    if (currentUploadType) {
+                        form.setFieldValue(currentUploadType, url[0]);
+                        form.validateFields([currentUploadType]);
+                        setTheme({ ...theme, [currentUploadType]: url[0] });
+                    }
+                }}
             />
         </div>
     );

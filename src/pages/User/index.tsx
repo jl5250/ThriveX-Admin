@@ -97,7 +97,7 @@ export default () => {
             key: 'action',
             fixed: 'right',
             align: 'center',
-            render: (text: string, record: User) => (
+            render: (_: string, record: User) => (
                 <div className='flex space-x-2'>
                     <Button onClick={() => editUserData(record.id!)}>修改</Button>
 

@@ -147,7 +147,7 @@ export default () => {
             key: 'action',
             fixed: 'right',
             align: 'center',
-            render: (text: string, record: Article) => (
+            render: (_: string, record: Article) => (
                 <div className='flex justify-center space-x-2'>
                     <Button onClick={() => reductionArticleData(record.id!)}>还原</Button>
 

@@ -46,7 +46,7 @@ export default () => {
         { title: '角色描述', dataIndex: 'description', key: 'description' },
         {
             title: '操作', key: 'action',
-            render: (text: string, record: Role) => (
+            render: (_: string, record: Role) => (
                 <>
                     <Button type="primary" onClick={() => bindingRoute(record)}>权限</Button>
                     <Button onClick={() => editRoleData(record)} className="mx-2">修改</Button>

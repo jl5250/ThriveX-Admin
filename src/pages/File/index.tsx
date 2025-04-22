@@ -13,23 +13,14 @@ import {
 import Title from '@/components/Title';
 import FileUpload from '@/components/FileUpload';
 
-import fileSvg from './image/file.svg';
-import { delFileDataAPI, getDirListAPI, getFileListAPI } from '@/api/File';
-import { File, FileDir } from '@/types/app/file';
-import { PiKeyReturnFill } from 'react-icons/pi';
-import {
-  DeleteOutlined,
-  DownloadOutlined,
-  RotateLeftOutlined,
-  RotateRightOutlined,
-  SwapOutlined,
-  UndoOutlined,
-  ZoomInOutlined,
-  ZoomOutOutlined,
-} from '@ant-design/icons';
-import Masonry from 'react-masonry-css';
-import './index.scss';
-import errorImg from './image/error.png';
+import fileSvg from './image/file.svg'
+import { delFileDataAPI, getDirListAPI, getFileListAPI } from '@/api/File'
+import { File, FileDir } from '@/types/app/file'
+import { PiKeyReturnFill } from "react-icons/pi";
+import { DeleteOutlined, DownloadOutlined, RotateLeftOutlined, RotateRightOutlined, SwapOutlined, UndoOutlined, ZoomInOutlined, ZoomOutOutlined, } from '@ant-design/icons';
+import Masonry from "react-masonry-css";
+import errorImg from './image/error.png'
+import "./index.scss"
 
 // Masonry布局的响应式断点配置
 const breakpointColumnsObj = {
@@ -66,19 +57,29 @@ export default () => {
   const [dirName, setDirName] = useState('');
   const [file, setFile] = useState<File>({} as File);
 
-  /**
-   * 获取目录列表
-   */
-  const getDirList = async () => {
-    try {
-      setLoading(true);
-      const { data } = await getDirListAPI();
-      setDirList(data);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
+    /**
+     * 获取目录列表
+     */
+    const getDirList = async () => {
+        try {
+            setLoading(true)
+            const { data } = await getDirListAPI()
+            
+            // 过滤掉没有文件的目录
+            const filteredDirs = await Promise.all(
+                data.map(async (dir) => {
+                    const { data: fileData } = await getFileListAPI(dir.name, { page: 1, size: 1 })
+                    return fileData.result.length > 0 ? dir : null
+                })
+            )
+            setDirList(filteredDirs.filter((dir): dir is FileDir => dir !== null))
+            
+            setLoading(false)
+        } catch (error) {
+            setLoading(false)
+        }
     }
-  };
+
 
   /**
    * 获取指定目录的文件列表
@@ -206,75 +207,68 @@ export default () => {
     <div>
       <Title value="文件管理" />
 
-      <Card className="FilePage mt-2 min-h-[calc(100vh-180px)]">
-        <div className="flex justify-between mb-4 px-4">
-          {!fileList.length ? (
-            <PiKeyReturnFill className="text-4xl text-[#E0DFDF] cursor-pointer" />
-          ) : (
-            <PiKeyReturnFill
-              className="text-4xl text-primary cursor-pointer"
-              onClick={() => setFileList([])}
-            />
-          )}
+            <Card className='FilePage mt-2 min-h-[calc(100vh-180px)]'>
+                <div className='flex justify-between mb-4 px-4'>
+                    {
+                        !fileList.length
+                            ? <PiKeyReturnFill className='text-4xl text-[#E0DFDF] cursor-pointer' />
+                            : <PiKeyReturnFill className='text-4xl text-primary cursor-pointer' onClick={() => {
+                                setFileList([])
+                                setDirName("")
+                            }} />
+                    }
 
-          <Button
-            type="primary"
-            disabled={!fileList.length}
-            onClick={() => setOpenUploadModalOpen(true)}
-          >
-            上传文件
-          </Button>
-        </div>
-
-        {/* 文件列表 */}
-        <Spin spinning={loading}>
-          <div
-            className="flex flex-wrap justify-center md:justify-normal overflow-y-auto max-h-[calc(100vh-300px)]"
-            onScroll={handleScroll}
-          >
-            {fileList.length ? (
-              <Masonry
-                breakpointCols={breakpointColumnsObj}
-                className="masonry-grid"
-                columnClassName="masonry-grid_column"
-              >
-                {fileList.map((item, index) => (
-                  <div
-                    key={index}
-                    className={`group relative overflow-hidden rounded-md cursor-pointer mb-4 border-2 border-[#eee] dark:border-transparent hover:!border-primary p-1 ${
-                      file.url === item.url
-                        ? 'border-primary'
-                        : 'border-gray-100'
-                    }`}
-                    onClick={() => viewOpenFileInfo(item)}
-                  >
-                    <Image
-                      src={item.url}
-                      className="w-full rounded-md"
-                      loading="lazy"
-                      preview={false}
-                      fallback={errorImg}
-                    />
-                  </div>
-                ))}
-              </Masonry>
-            ) : (
-              dirList.map((item, index) => (
-                <div
-                  key={index}
-                  className="group w-25 flex flex-col items-center cursor-pointer mx-4 my-2"
-                  onClick={() => openDir(item.name)}
-                >
-                  <img src={fileSvg} alt="" />
-                  <p className="group-hover:text-primary transition-colors">
-                    {item.name}
-                  </p>
+                    {
+                        dirName && <Button type="primary" disabled={!fileList.length} onClick={() => setOpenUploadModalOpen(true)}>上传文件</Button>
+                    }
                 </div>
-              ))
-            )}
-          </div>
-        </Spin>
-      </Card>
+
+                {/* 文件列表 */}
+                <Spin spinning={loading}>
+                    <div
+                        className={`flex flex-wrap ${dirName ? '!justify-center' : 'justify-start!'} md:justify-normal overflow-y-auto max-h-[calc(100vh-300px)]`}
+                        onScroll={handleScroll}
+                    >
+                        {
+                            fileList.length
+                                ? (
+                                    <Masonry
+                                        breakpointCols={breakpointColumnsObj}
+                                        className="masonry-grid"
+                                        columnClassName="masonry-grid_column"
+                                    >
+                                        {
+                                            fileList.map((item, index) =>
+                                                <div
+                                                    key={index}
+                                                    className={`group relative overflow-hidden rounded-md cursor-pointer mb-4 border-2 border-[#eee] dark:border-transparent hover:!border-primary p-1 ${file.url === item.url ? 'border-primary' : 'border-gray-100'}`}
+                                                    onClick={() => viewOpenFileInfo(item)}>
+
+                                                    <Image
+                                                        src={item.url}
+                                                        className='w-full rounded-md'
+                                                        loading="lazy"
+                                                        preview={false}
+                                                        fallback={errorImg}
+                                                    />
+                                                </div>
+                                            )
+                                        }
+                                    </Masonry>
+                                )
+                                : dirList.map((item, index) => (
+                                    <div
+                                        key={index}
+                                        className='group w-25 flex flex-col items-center cursor-pointer mx-4 my-2'
+                                        onClick={() => openDir(item.name)}>
+                                        <img src={fileSvg} alt="" />
+                                        <p className='group-hover:text-primary transition-colors'>{item.name}</p>
+                                    </div>
+                                ))
+                        }
+                    </div>
+                </Spin>
+            </Card>
 
       {/* 文件上传弹窗 */}
       <FileUpload
@@ -306,35 +300,19 @@ export default () => {
             <span className="text-[#333] dark:text-white">{file.type}</span>
           </div>
 
-          <div className="flex">
-            <span className="min-w-20 font-bold">文件大小</span>
-            <span className="text-[#333] dark:text-white">
-              {(file.size / 1048576).toFixed(2)}MB
-            </span>
-          </div>
+                    <div className='flex'>
+                        <span className='min-w-20 font-bold'>文件大小</span>
+                        <span className='text-[#333] dark:text-white'>{(file.size / 1048576).toFixed(2)}MB</span>
+                    </div>
 
-          {file.arrt && (
-            <div className="flex">
-              <span className="min-w-20 font-bold">文件长宽</span>
-              <span className="text-[#333] dark:text-white">
-                {file.arrt?.width}X{file.arrt?.height}
-              </span>
-            </div>
-          )}
-
-          <div className="flex">
-            <span className="min-w-20  font-bold">文件链接</span>
-            <span
-              className="text-[#333] dark:text-white hover:text-primary cursor-pointer transition"
-              onClick={async () => {
-                await navigator.clipboard.writeText(file.url);
-                message.success('🎉 复制成功');
-              }}
-            >
-              {file.url}
-            </span>
-          </div>
-        </div>
+                    <div className='flex'>
+                        <span className='min-w-20  font-bold'>文件链接</span>
+                        <span className='text-[#333] dark:text-white hover:text-primary cursor-pointer transition' onClick={async () => {
+                            await navigator.clipboard.writeText(file.url)
+                            message.success("🎉 复制成功")
+                        }}>{file.url}</span>
+                    </div>
+                </div>
 
         <Divider orientation="center">图片预览</Divider>
         <Image

@@ -10,7 +10,7 @@ import {
   BiShieldQuarter,
   BiCategoryAlt,
   BiBug,
-  BiImages
+  BiImages,
 } from 'react-icons/bi';
 import { LiaRssSolid } from 'react-icons/lia';
 import { TbBrandAirtable } from 'react-icons/tb';
@@ -334,7 +334,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   return (
     <aside
       ref={sidebar}
-      className={`absolute left-0 top-0 z-9999 flex h-screen w-64 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
+      className={`absolute left-0 top-0 z-99 flex h-screen w-64 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}
     >

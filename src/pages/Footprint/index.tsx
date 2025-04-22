@@ -27,6 +27,8 @@ import { GiPositionMarker } from 'react-icons/gi';
 import { IoSearch } from 'react-icons/io5';
 import dayjs from 'dayjs';
 import axios from 'axios';
+import { CloudUploadOutlined } from '@ant-design/icons';
+import Material from '@/components/Material';
 
 export default () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -36,6 +38,7 @@ export default () => {
 
   const [footprintList, setFootprintList] = useState<Footprint[]>([]);
   const [isModelOpen, setIsModelOpen] = useState(false);
+  const [isMaterialModalOpen, setIsMaterialModalOpen] = useState(false);
   const [footprint, setFootprint] = useState<Footprint>({} as Footprint);
   const [isMethod, setIsMethod] = useState<'create' | 'edit'>('create');
   const [form] = Form.useForm();
@@ -93,8 +96,8 @@ export default () => {
       key: 'action',
       fixed: 'right',
       align: 'center',
-      render: (text: string, record: Footprint) => (
-        <div className="flex space-x-2">
+      render: (_: string, record: Footprint) => (
+        <div className='flex space-x-2'>
           <Button onClick={() => editFootprintData(record.id!)}>修改</Button>
           <Popconfirm
             title="警告"
@@ -359,12 +362,18 @@ export default () => {
               />
             </Form.Item>
 
-            <Form.Item label="图片" name="images">
-              <Input.TextArea
-                autoSize={{ minRows: 2, maxRows: 10 }}
-                placeholder="请输入图片链接"
-              />
-            </Form.Item>
+            <div className='relative'>
+              <Form.Item label="图片" name="images">
+                <Input.TextArea
+                  autoSize={{ minRows: 2, maxRows: 10 }}
+                  placeholder="请输入图片链接"
+                />
+              </Form.Item>
+
+              <div onClick={() => setIsMaterialModalOpen(true)} className='absolute bottom-2 right-2 bg-white rounded-full border border-[#eee] cursor-pointer'>
+                <CloudUploadOutlined className='text-xl hover:text-primary transition-colors p-2' />
+              </div>
+            </div>
 
             <Form.Item label="内容" name="content">
               <Input.TextArea
@@ -399,6 +408,17 @@ export default () => {
           </Form>
         </Spin>
       </Modal>
+
+      <Material
+        multiple
+        uploadDir="footprint"
+        open={isMaterialModalOpen}
+        onClose={() => setIsMaterialModalOpen(false)}
+        onSelect={(url) => {
+          form.setFieldValue("images", url.join("\n"));
+          form.validateFields(['images']);
+        }}
+      />
     </div>
   );
 };

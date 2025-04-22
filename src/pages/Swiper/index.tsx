@@ -5,7 +5,7 @@ import { Swiper } from '@/types/app/swiper';
 import Title from '@/components/Title';
 import { ColumnsType } from 'antd/es/table';
 import { CloudUploadOutlined, PictureOutlined } from '@ant-design/icons';
-import FileUpload from '@/components/FileUpload';
+import Material from '@/components/Material';
 
 export default () => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -16,7 +16,7 @@ export default () => {
 
     const [swiper, setSwiper] = useState<Swiper>({} as Swiper);
     const [list, setList] = useState<Swiper[]>([]);
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isMaterialModalOpen, setIsMaterialModalOpen] = useState(false);
     const [tab, setTab] = useState<string>('list');
 
     const columns: ColumnsType<Swiper> = [
@@ -29,7 +29,7 @@ export default () => {
         { title: '描述', dataIndex: 'description', key: 'description', width: 500, },
         {
             title: '操作', key: 'action', align: 'center',
-            render: (text: string, record: Swiper) => (
+            render: (_: string, record: Swiper) => (
                 <>
                     <Button onClick={() => editSwiperData(record)}>修改</Button>
 
@@ -120,7 +120,7 @@ export default () => {
 
     // 文件上传
     const UploadBtn = () => (
-        <CloudUploadOutlined className='text-xl cursor-pointer' onClick={() => setIsModalOpen(true)} />
+        <CloudUploadOutlined className='text-xl cursor-pointer' onClick={() => setIsMaterialModalOpen(true)} />
     )
 
     const tabItems = [
@@ -169,7 +169,7 @@ export default () => {
                             <Input placeholder="https://liuyuyang.net/" />
                         </Form.Item>
 
-                        <Form.Item label="图片" name="image" rules={[{ required: true, message: '轮播图不能为空' }]}>
+                        <Form.Item label="图片" name="image" rules={[{ required: true, message: '轮播图地址不能为空' }]}>
                             <Input placeholder="https://liuyuyang.net/swiper.jpg" prefix={<PictureOutlined />} addonAfter={<UploadBtn />} className='customizeAntdInputAddonAfter' />
                         </Form.Item>
 
@@ -190,11 +190,15 @@ export default () => {
                 <Tabs activeKey={tab} onChange={handleTabChange} items={tabItems} />
             </Card>
 
-            <FileUpload
-                dir="swiper"
-                open={isModalOpen}
-                onSuccess={(url: string[]) => form.setFieldValue("image", url.join("\n"))}
-                onCancel={() => setIsModalOpen(false)}
+            <Material
+                // multiple
+                uploadDir="swiper"
+                open={isMaterialModalOpen}
+                onClose={() => setIsMaterialModalOpen(false)}
+                onSelect={(url) => {
+                    form.setFieldValue("image", url.join("\n"));
+                    form.validateFields(['image']); // 手动触发 image 字段的校验
+                }}
             />
         </div>
     );

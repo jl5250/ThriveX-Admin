@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Table, Button, Tag, notification, Card, Popconfirm, Form, Input, Cascader, Select, DatePicker } from 'antd';
+import { Table, Button, Tag, notification, Card, Popconfirm, Form, Input, Select, DatePicker } from 'antd';
 import { titleSty } from '@/styles/sty'
 import Title from '@/components/Title';
 import { Link } from 'react-router-dom';
@@ -19,6 +19,8 @@ import dayjs from 'dayjs';
 
 export default () => {
     const [loading, setLoading] = useState<boolean>(false);
+    const [btnLoading, setBtnLoading] = useState<boolean>(false);
+    
     const [form] = Form.useForm();
     const web = useWebStore(state => state.web);
     const [current, setCurrent] = useState<number>(1);
@@ -40,7 +42,7 @@ export default () => {
 
     const delArticleData = async (id: number) => {
         try {
-            setLoading(true);
+            setBtnLoading(true);
 
             // 普通删除：可从回收站恢复
             await delArticleDataAPI(id, true);
@@ -48,8 +50,9 @@ export default () => {
             form.resetFields()
             setCurrent(1)
             notification.success({ message: '🎉 删除文章成功' })
+            setBtnLoading(false);
         } catch (error) {
-            setLoading(false);
+            setBtnLoading(false);
         }
     };
 
@@ -136,14 +139,14 @@ export default () => {
             key: 'action',
             fixed: 'right',
             align: 'center',
-            render: (text: string, record: Article) => (
+            render: (_: string, record: Article) => (
                 <div className='flex justify-center space-x-2'>
                     <Link to={`/create?id=${record.id}`}>
                         <Button disabled={!perm.article.edit}>编辑</Button>
                     </Link>
 
                     <Popconfirm title="警告" description="你确定要删除吗" okText="确定" cancelText="取消" onConfirm={() => delArticleData(record.id!)}>
-                        <Button type="primary" danger disabled={!perm.article.del}>删除</Button>
+                        <Button type="primary" danger disabled={!perm.article.del} loading={btnLoading}>删除</Button>
                     </Popconfirm>
                 </div>
             ),

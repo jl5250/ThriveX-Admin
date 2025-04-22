@@ -108,7 +108,7 @@ export default () => {
             key: 'action',
             fixed: 'right',
             align: 'center',
-            render: (text: string, record: Wall) => (
+            render: (_: string, record: Wall) => (
                 <div className='flex justify-center space-x-2'>
                     <Button type={record.isChoice === 1 ? 'primary' : 'default'} onClick={async () => {
                         try {

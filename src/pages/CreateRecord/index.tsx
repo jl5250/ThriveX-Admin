@@ -6,13 +6,13 @@ import TextArea from "antd/es/input/TextArea"
 
 import { addRecordDataAPI, editRecordDataAPI, getRecordDataAPI } from '@/api/Record'
 
-import FileUpload from "@/components/FileUpload";
 import Title from "@/components/Title"
 import { titleSty } from "@/styles/sty"
 
 import { BiLogoTelegram } from "react-icons/bi";
 import { LuImagePlus } from "react-icons/lu";
 import { RiDeleteBinLine } from "react-icons/ri";
+import Material from "@/components/Material";
 
 export default () => {
     const [loading, setLoading] = useState(false)
@@ -24,7 +24,7 @@ export default () => {
     const [content, setContent] = useState("")
     const [imageList, setImageList] = useState<string[]>([])
 
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isMaterialModalOpen, setIsMaterialModalOpen] = useState(false);
 
     // 删除图片
     const handleDelImage = (data: string) => {
@@ -68,7 +68,7 @@ export default () => {
             const { data } = await getRecordDataAPI(id)
             setContent(data.content)
             setImageList(JSON.parse(data.images as string))
-            
+
             setLoading(false)
         } catch (error) {
             setLoading(false)
@@ -86,13 +86,14 @@ export default () => {
         items: [
             {
                 key: 'upload',
-                label: '上传图片',
+                label: '选择图片',
                 onClick: () => {
                     if (imageList.length >= 4) {
                         message.warning('最多只能上传 4 张图片');
                         return;
                     }
-                    setIsModalOpen(true);
+                    
+                    setIsMaterialModalOpen(true);
                 }
             },
             {
@@ -117,8 +118,9 @@ export default () => {
                                 }}
                             />
                         ),
-                        okText: '确认',
+                        okText: '添加',
                         cancelText: '取消',
+                        maskClosable: true,
                         onOk: () => {
                             if (!inputUrl.startsWith('http://') && !inputUrl.startsWith('https://')) {
                                 message.error('链接必须以 http:// 或 https:// 开头');
@@ -185,14 +187,15 @@ export default () => {
                 </Card>
             </Spin>
 
-            <FileUpload
-                dir="record"
-                open={isModalOpen}
-                onSuccess={(url: string[]) => {
+            <Material
+                maxCount={4 - imageList.length}
+                uploadDir="record"
+                open={isMaterialModalOpen}
+                onClose={() => setIsMaterialModalOpen(false)}
+                onSelect={(url) => {
                     setImageList([...imageList, ...url]);
-                    setIsModalOpen(false);
+                    setIsMaterialModalOpen(false);
                 }}
-                onCancel={() => setIsModalOpen(false)}
             />
         </div>
     )

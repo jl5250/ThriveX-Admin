@@ -20,7 +20,7 @@ export default () => {
         { title: '标签名称', dataIndex: 'name', key: 'name', align: 'center' },
         {
             title: '操作', key: 'action',
-            render: (text: string, record: Tag) => (
+            render: (_: string, record: Tag) => (
                 <>
                     <Button onClick={() => editTagData(record)}>修改</Button>
                     <Popconfirm title="警告" description="你确定要删除吗" okText="确定" cancelText="取消" onConfirm={() => delTagData(record.id!)}>

@@ -7,21 +7,15 @@ import { baseURL } from '@/utils/request';
 import Compressor from 'compressorjs';
 
 interface UploadFileProps {
-  dir: DirList;
-  platform?: string;
-  open: boolean;
-  onSuccess: (urls: string[]) => void;
-  onCancel: () => void;
+    multiple?: boolean
+    dir: DirList,
+    open: boolean,
+    onSuccess: (urls: string[]) => void,
+    onCancel: () => void
 }
 
-export default ({
-  dir,
-  platform = '',
-  open,
-  onCancel,
-  onSuccess,
-}: UploadFileProps) => {
-  const store = useUserStore();
+export default ({ multiple, dir, open, onCancel, onSuccess }: UploadFileProps) => {
+    const store = useUserStore();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [quality, setQuality] = useState(1000);
@@ -157,16 +151,16 @@ export default ({
               </p>
             </div>
 
-            <input
-              multiple
-              type="file"
-              onChange={onUploadFile}
-              ref={fileInputRef}
-              className="hidden"
-            />
-          </div>
-        </Spin>
-      </Modal>
-    </>
-  );
+                        <input
+                            multiple={multiple}
+                            type="file"
+                            onChange={onUploadFile}
+                            ref={fileInputRef}
+                            className='hidden'
+                        />
+                    </div>
+                </Spin>
+            </Modal>
+        </>
+    );
 };

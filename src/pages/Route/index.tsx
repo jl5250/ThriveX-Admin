@@ -20,7 +20,7 @@ export default () => {
         { title: '描述', dataIndex: 'description', key: 'description' },
         {
             title: '操作', key: 'action',
-            render: (text: string, record: Route) => (
+            render: (_: string, record: Route) => (
                 <>
                     <Button onClick={() => editRouteData(record)}>修改</Button>
                     <Popconfirm title="警告" description="你确定要删除吗" okText="确定" cancelText="取消" onConfirm={() => delRouteData(record.id!)}>

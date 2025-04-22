@@ -96,7 +96,7 @@ export default () => {
             key: 'action',
             fixed: 'right',
             align: 'center',
-            render: (text: string, record: Comment) => (
+            render: (_: string, record: Comment) => (
                 <div className='flex justify-center space-x-2'>
                     <Button onClick={() => {
                         setComment(record)
