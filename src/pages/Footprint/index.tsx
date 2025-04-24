@@ -411,7 +411,6 @@ export default () => {
 
       <Material
         multiple
-        uploadDir="footprint"
         open={isMaterialModalOpen}
         onClose={() => setIsMaterialModalOpen(false)}
         onSelect={(url) => {
