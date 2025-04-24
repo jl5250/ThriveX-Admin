@@ -55,15 +55,24 @@ export default ({ multiple, uploadDir = 'default', open, onClose, onSelect, maxC
       setLoading(true)
       const { data } = await getDirListAPI()
 
-      // 过滤掉没有文件的目录
-      const filteredDirs = await Promise.all(
-        data.map(async (dir) => {
-          const { data: fileData } = await getFileListAPI(dir.name, { page: 1, size: 1 })
-          return fileData.result.length > 0 ? dir : null
-        })
-      )
-      setDirList(filteredDirs.filter((dir): dir is FileDir => dir !== null))
-      
+      const dirList = ['default', 'equipment', 'record', 'article', 'footprint', 'swiper', 'album']
+      dirList.forEach(dir => {
+        if (!data.some((item: FileDir) => item.name === dir)) {
+          data.push({ name: dir, path: '' });
+        }
+      });
+
+      setDirList(data)
+
+      // // 过滤掉没有文件的目录
+      // const filteredDirs = await Promise.all(
+      //   data.map(async (dir) => {
+      //     const { data: fileData } = await getFileListAPI(dir.name, { page: 1, size: 1 })
+      //     return fileData.result.length > 0 ? dir : null
+      //   })
+      // )
+      // setDirList(filteredDirs.filter((dir): dir is FileDir => dir !== null))
+
       setLoading(false)
     } catch (error) {
       setLoading(false)

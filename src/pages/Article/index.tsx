@@ -16,6 +16,7 @@ import perm from '@/utils/permission';
 import { useWebStore } from '@/stores';
 
 import dayjs from 'dayjs';
+import { ColumnType } from 'antd/es/table';
 
 export default () => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -59,7 +60,7 @@ export default () => {
     // 标签颜色
     const colors = ['', '#2db7f5', '#87d068', '#f50', '#108ee9'];
 
-    const columns = [
+    const columns: ColumnType<Article>[] = [
         {
             title: 'ID',
             dataIndex: 'id',
@@ -142,11 +143,11 @@ export default () => {
             render: (_: string, record: Article) => (
                 <div className='flex justify-center space-x-2'>
                     <Link to={`/create?id=${record.id}`}>
-                        <Button disabled={!perm.article.edit}>编辑</Button>
+                        <Button>编辑</Button>
                     </Link>
 
                     <Popconfirm title="警告" description="你确定要删除吗" okText="确定" cancelText="取消" onConfirm={() => delArticleData(record.id!)}>
-                        <Button type="primary" danger disabled={!perm.article.del} loading={btnLoading}>删除</Button>
+                        <Button type="primary" danger loading={btnLoading}>删除</Button>
                     </Popconfirm>
                 </div>
             ),
@@ -244,7 +245,7 @@ export default () => {
                 <Table
                     rowKey="id"
                     dataSource={articleList}
-                    columns={columns as any}
+                    columns={columns}
                     scroll={{ x: 'max-content' }}
                     pagination={{
                         position: ['bottomCenter'],

@@ -1,29 +1,35 @@
-.FilePage {
-    .ant-image {
-        display: block;
-        width: 100%;
+.AlbumPage {
+    .masonry-grid {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        width: auto;
+        margin-left: -16px;
+    }
 
-        .ant-image-img {
-            width: 100%;
-            height: auto;
-            display: block;
+    .masonry-grid_column {
+        padding-left: 16px;
+        background-clip: padding-box;
+    }
+
+    .customAntdPreviewsItem {
+        display: flex;
+        gap: 12px;
+        padding: 8px 24px;
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 16px;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 100px;
+        cursor: pointer;
+
+        svg {
+            cursor: pointer;
+            transition: all 0.3s;
+
+            &:hover {
+                transform: scale(1.2);
+                color: #1677ff;
+            }
         }
     }
-}
-
-// 自定义图片预览样式
-.customAntdPreviewsItem {
-    overflow: hidden;
-    background: #fff;
-    border-radius: 10px;
-
-    .anticon {
-        font-size: 20px;
-        color: #5d5d5d;
-        padding: 10px;
-
-        &:hover {
-            color: #727cf5;
-        }
-    }
-}
+} 

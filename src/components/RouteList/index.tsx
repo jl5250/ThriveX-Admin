@@ -17,16 +17,16 @@ import User from '@/pages/User';
 import Setup from '@/pages/Setup';
 import Rss from '@/pages/Rss';
 import File from '@/pages/File';
-import Album from '@/pages/Album';
 import Iterative from '@/pages/Iterative';
 import Page from '@/pages/Route';
 import Role from '@/pages/Role';
-import Login from '@/pages/Login';
-import Work from '@/pages/Work';
-import Draft from '@/pages/Draft';
-import Decycle from '@/pages/Decycle';
-import Record from '@/pages/Record';
-import Oss from '@/pages/Oss';
+import Login from "@/pages/Login";
+import Work from "@/pages/Work";
+import Draft from "@/pages/Draft";
+import Decycle from "@/pages/Decycle";
+import Record from "@/pages/Record";
+import Oss from "@/pages/Oss";
+import Album from "@/pages/Album";
 
 import PageTitle from '../PageTitle';
 
@@ -42,32 +42,32 @@ export default () => {
   const { pathname } = useLocation();
   const isLoginRoute = pathname === '/login';
 
-  const routesAll = [
-    { path: '/', title: '仪表盘', component: <Home /> },
-    { path: '/create', title: '发挥灵感', component: <Create /> },
-    { path: '/create_record', title: '闪念', component: <CreateRecord /> },
-    { path: '/draft', title: '草稿箱', component: <Draft /> },
-    { path: '/recycle', title: '回收站', component: <Decycle /> },
-    { path: '/cate', title: '分类管理', component: <Cate /> },
-    { path: '/article', title: '文章管理', component: <Article /> },
-    { path: '/record', title: '说说管理', component: <Record /> },
-    { path: '/tag', title: '标签管理', component: <Tag /> },
-    { path: '/comment', title: '评论管理', component: <Comment /> },
-    { path: '/wall', title: '评论管理', component: <Wall /> },
-    { path: '/web', title: '网站管理', component: <Web /> },
-    { path: '/swiper', title: '轮播图管理', component: <Swiper /> },
-    { path: '/footprint', title: '足迹管理', component: <Footprint /> },
-    { path: '/user', title: '用户管理', component: <User /> },
-    { path: '/storage', title: '存储管理', component: <Oss /> },
-    { path: '/setup', title: '项目配置', component: <Setup /> },
-    { path: '/route', title: '路由配置', component: <Page /> },
-    { path: '/role', title: '角色管理', component: <Role /> },
-    { path: '/rss', title: '订阅中心', component: <Rss /> },
-    { path: '/file', title: '文件管理', component: <File /> },
-    { path: '/album', title: '相册中心', component: <Album /> },
-    { path: '/iter', title: '项目更新记录', component: <Iterative /> },
-    { path: '/work', title: '工作台', component: <Work /> },
-  ];
+    const routesAll = [
+        { path: "/", title: "仪表盘", component: <Home /> },
+        { path: "/create", title: "发挥灵感", component: <Create /> },
+        { path: "/create_record", title: "闪念", component: <CreateRecord /> },
+        { path: "/draft", title: "草稿箱", component: <Draft /> },
+        { path: "/recycle", title: "回收站", component: <Decycle /> },
+        { path: "/cate", title: "分类管理", component: <Cate /> },
+        { path: "/article", title: "文章管理", component: <Article /> },
+        { path: "/record", title: "说说管理", component: <Record /> },
+        { path: "/tag", title: "标签管理", component: <Tag /> },
+        { path: "/comment", title: "评论管理", component: <Comment /> },
+        { path: "/wall", title: "评论管理", component: <Wall /> },
+        { path: "/web", title: "网站管理", component: <Web /> },
+        { path: "/swiper", title: "轮播图管理", component: <Swiper /> },
+        { path: "/album", title: "相册管理", component: <Album /> },
+        { path: "/footprint", title: "足迹管理", component: <Footprint /> },
+        { path: "/user", title: "用户管理", component: <User /> },
+        { path: "/storage", title: "存储管理", component: <Oss /> },
+        { path: "/setup", title: "项目配置", component: <Setup /> },
+        { path: "/route", title: "路由配置", component: <Page /> },
+        { path: "/role", title: "角色管理", component: <Role /> },
+        { path: "/rss", title: "订阅中心", component: <Rss /> },
+        { path: "/file", title: "文件管理", component: <File /> },
+        { path: "/iter", title: "项目更新记录", component: <Iterative /> },
+        { path: "/work", title: "工作台", component: <Work /> },
+    ];
 
   const [routes, setRoutes] = useState<typeof routesAll | null>(null);
 
