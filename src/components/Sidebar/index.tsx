@@ -272,12 +272,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           name: '订阅中心',
         },
         {
-          to: '/album',
-          path: 'album',
-          icon: <BiImages className="text-[22px]" />,
-          name: '相册中心',
-        },
-        {
           to: '/file',
           path: 'file',
           icon: <BiFolderOpen className="text-[22px]" />,
