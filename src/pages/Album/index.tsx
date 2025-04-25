@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { Image, Card, Space, Spin, message, Popconfirm, Button, Drawer, Divider, Modal, Form, Input, DatePicker } from 'antd'
 import Title from '@/components/Title'
-import { getAlbumCateListAPI, getImagesByAlbumIdAPI, delAlbumCateDataAPI, addAlbumCateDataAPI, editAlbumCateDataAPI } from '@/api/Album'
+import { getAlbumCateListAPI, getImagesByAlbumIdAPI, delAlbumCateDataAPI, addAlbumCateDataAPI, editAlbumCateDataAPI } from '@/api/AlbumCate'
 import { delAlbumImageDataAPI, addAlbumImageDataAPI } from '@/api/AlbumImage'
 import { AlbumCate } from '@/types/app/album'
 import { PiKeyReturnFill } from "react-icons/pi";
@@ -70,7 +70,6 @@ export default () => {
     try {
       setLoading(true)
       const { data } = await getAlbumCateListAPI()
-
       setAlbumList(data)
       setLoading(false)
     } catch (error) {
@@ -85,7 +84,7 @@ export default () => {
    */
   const getImageList = async (albumId: number, isLoadMore = false) => {
     if (loadingRef.current) return
-    
+
     try {
       loadingRef.current = true
       setLoading(true)
@@ -101,10 +100,6 @@ export default () => {
       }
 
       setHasMore(data.result.length === 10)
-
-      if (!imageList.length && !data.result.length && !isLoadMore) {
-        message.error("该相册中没有照片")
-      }
 
       setLoading(false)
       loadingRef.current = false
@@ -123,6 +118,7 @@ export default () => {
       setBtnLoading(true)
       await delAlbumImageDataAPI(data.id)
       await getImageList(currentAlbum.id!)
+      await getAlbumList();
       message.success("🎉 删除照片成功")
       setCurrentImage({})
       setOpenImageInfoDrawer(false)
@@ -267,6 +263,7 @@ export default () => {
       setIsAddAlbumModalOpen(false);
       uploadForm.resetFields();
       getImageList(currentAlbum.id!);
+      getAlbumList();
       setUploadLoading(false);
     } catch (error) {
       setUploadLoading(false);
@@ -280,7 +277,7 @@ export default () => {
       <Card className='AlbumPage mt-2 min-h-[calc(100vh-180px)]'>
         <div className='flex justify-between mb-4 px-4'>
           {
-            !imageList.length
+            !imageList.length && !currentAlbum.id
               ? <PiKeyReturnFill className='text-4xl text-[#E0DFDF] cursor-pointer' />
               : <PiKeyReturnFill className='text-4xl text-primary cursor-pointer' onClick={() => {
                 setImageList([])
@@ -291,7 +288,7 @@ export default () => {
           <Space>
             {
               currentAlbum.id
-                ? <Button type="primary" disabled={!imageList.length} onClick={() => setIsAddAlbumModalOpen(true)}>上传照片</Button>
+                ? <Button type="primary" onClick={() => setIsAddAlbumModalOpen(true)}>上传照片</Button>
                 : <Button type="primary" onClick={() => openAlbumForm('add')}>新增相册</Button>
             }
           </Space>
@@ -304,7 +301,7 @@ export default () => {
             onScroll={handleScroll}
           >
             {
-              imageList.length
+              imageList.length || !imageList.length && currentAlbum.id
                 ? (
                   <Masonry
                     breakpointCols={breakpointColumnsObj}
@@ -377,7 +374,7 @@ export default () => {
                     </div>
 
                     <p className='group-hover:text-primary transition-colors text-sm mt-1'>{item.name}</p>
-                    <p className='text-slate-400 text-xs mt-1'>{item.images?.length || 0} 张照片</p>
+                    <p className='text-slate-400 text-xs mt-1'>{item.count} 张照片</p>
                   </div>
                 ))
             }
@@ -406,27 +403,17 @@ export default () => {
             <Input placeholder="请输入相册名称" />
           </Form.Item>
 
-          <div>
-            <Form.Item name="cover" label="相册封面"
-              rules={[
-                {
-                  pattern: /^https?:\/\//,
-                  message: '请输入正确的链接',
-                  warningOnly: false
-                }
-              ]}
-            >
-              <Input placeholder="请输入相册封面链接" />
-            </Form.Item>
-
-            <div className='flex justify-center'>
-              <Form.Item shouldUpdate={(prevValues, currentValues) => prevValues.cover !== currentValues.cover}>
-                {() => (
-                  <img src={form.getFieldValue('cover')} alt="" className='h-35 rounded-md object-cover object-center' />
-                )}
-              </Form.Item>
-            </div>
-          </div>
+          <Form.Item name="cover" label="相册封面"
+            rules={[
+              {
+                pattern: /^https?:\/\//,
+                message: '请输入正确的链接',
+                warningOnly: false
+              }
+            ]}
+          >
+            <Input placeholder="请输入相册封面链接" />
+          </Form.Item>
         </Form>
       </Modal>
 

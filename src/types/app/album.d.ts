@@ -3,6 +3,7 @@ export interface AlbumCate {
   name: string;
   cover: string;
   images: string[];
+  count: number;
 }
 
 export interface AlbumImage {
