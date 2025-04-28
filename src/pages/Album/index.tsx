@@ -36,8 +36,8 @@ export default () => {
   const loadingRef = useRef(false)
 
   // 弹窗状态
-  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isAddAlbumModalOpen, setIsAddAlbumModalOpen] = useState(false);
+  const [isMaterialModalOpen, setIsMaterialModalOpen] = useState(false);
   const [openImageInfoDrawer, setOpenImageInfoDrawer] = useState(false);
   const [openImagePreviewDrawer, setOpenImagePreviewDrawer] = useState(false);
 
@@ -390,7 +390,7 @@ export default () => {
         onCancel={() => setOpenAlbumModal(false)}
         confirmLoading={albumFormLoading}
       >
-        <Form form={form} layout="vertical">
+        <Form form={form} layout="vertical" size='large'>
           <Form.Item name="id" hidden>
             <Input />
           </Form.Item>
@@ -412,7 +412,7 @@ export default () => {
               }
             ]}
           >
-            <Input placeholder="请输入相册封面链接" />
+            <Input placeholder="请输入相册封面链接" prefix={<PictureOutlined />} addonAfter={<CloudUploadOutlined className='text-xl cursor-pointer' onClick={() => setIsMaterialModalOpen(true)} />} className='customizeAntdInputAddonAfter' />
           </Form.Item>
         </Form>
       </Modal>
@@ -538,7 +538,7 @@ export default () => {
                 }
               ]}
             >
-              <Input placeholder="请输入照片链接" prefix={<PictureOutlined />} addonAfter={<CloudUploadOutlined className='text-xl cursor-pointer' onClick={() => setIsUploadModalOpen(true)} />} className='customizeAntdInputAddonAfter' />
+              <Input placeholder="请输入照片链接" prefix={<PictureOutlined />} addonAfter={<CloudUploadOutlined className='text-xl cursor-pointer' onClick={() => setIsMaterialModalOpen(true)} />} className='customizeAntdInputAddonAfter' />
             </Form.Item>
           </div>
 
@@ -554,8 +554,8 @@ export default () => {
 
       {/* Material组件 */}
       <Material
-        open={isUploadModalOpen}
-        onClose={() => setIsUploadModalOpen(false)}
+        open={isMaterialModalOpen}
+        onClose={() => setIsMaterialModalOpen(false)}
         onSelect={(url) => {
           if (url.length) {
             uploadForm.setFieldValue("image", url[0]);
