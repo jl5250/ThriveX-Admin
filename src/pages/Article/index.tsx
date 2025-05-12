@@ -11,8 +11,6 @@ import type { Tag as ArticleTag } from '@/types/app/tag';
 import type { Cate } from '@/types/app/cate';
 import type { Article, Config, FilterArticle, FilterForm } from '@/types/app/article';
 
-import perm from '@/utils/permission';
-
 import { useWebStore } from '@/stores';
 
 import dayjs from 'dayjs';

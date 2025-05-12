@@ -50,7 +50,7 @@ export default () => {
   const [currentImage, setCurrentImage] = useState<any>({})
 
   // 相册表单
-  const [form] = Form.useForm();
+  const [albumForm] = Form.useForm();
   // 相册表单弹窗
   const [openAlbumModal, setOpenAlbumModal] = useState(false);
   // 相册表单类型（新增/修改）
@@ -196,9 +196,9 @@ export default () => {
   const openAlbumForm = (type: 'add' | 'edit', album?: AlbumCate) => {
     setAlbumModalType(type);
     if (type === 'edit' && album) {
-      form.setFieldsValue(album);
+      albumForm.setFieldsValue(album);
     } else {
-      form.resetFields();
+      albumForm.resetFields();
     }
     setOpenAlbumModal(true);
   }
@@ -208,7 +208,7 @@ export default () => {
    */
   const onAlbumFormSubmit = async () => {
     try {
-      const values = await form.validateFields();
+      const values = await albumForm.validateFields();
       setAlbumFormLoading(true);
 
       if (albumModalType === 'add') {
@@ -390,7 +390,7 @@ export default () => {
         onCancel={() => setOpenAlbumModal(false)}
         confirmLoading={albumFormLoading}
       >
-        <Form form={form} layout="vertical" size='large'>
+        <Form form={albumForm} layout="vertical" size='large'>
           <Form.Item name="id" hidden>
             <Input />
           </Form.Item>
