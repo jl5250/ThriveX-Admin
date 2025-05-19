@@ -25,7 +25,7 @@ const RegionDistribution = () => {
       );
       const res = await response.json();
       const { result } = res;
-      console.log('地域分布数据', result);
+ 
       // 解析数据
       const regionList: RegionData[] = result.items[1].map(
         (item: any[], idx: number) => {
@@ -49,7 +49,7 @@ const RegionDistribution = () => {
           };
         },
       );
-      console.log('地域分布数据1', regionList);
+
       setData(regionList);
     } catch (e) {
       setData([]);
