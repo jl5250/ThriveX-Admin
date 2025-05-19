@@ -48,11 +48,15 @@ export default () => {
             title: '操作', key: 'action',
             render: (_: string, record: Role) => (
                 <>
-                    <Button type="primary" onClick={() => bindingRoute(record)}>权限</Button>
-                    <Button onClick={() => editRoleData(record)} className="mx-2">修改</Button>
-                    <Popconfirm title="警告" description="你确定要删除吗" okText="确定" cancelText="取消" onConfirm={() => delRoleData(record.id!)}>
-                        <Button type="primary" danger>删除</Button>
-                    </Popconfirm>
+                    <div className='space-x-2'>
+                        {record.mark !== 'admin' && <Button type="primary" onClick={() => bindingRoute(record)}>权限</Button>}
+
+                        <Button onClick={() => editRoleData(record)}>修改</Button>
+
+                        <Popconfirm title="警告" description="你确定要删除吗" okText="确定" cancelText="取消" onConfirm={() => delRoleData(record.id!)}>
+                            <Button type="primary" danger>删除</Button>
+                        </Popconfirm>
+                    </div>
                 </>
             )
         }
@@ -209,9 +213,9 @@ export default () => {
             setBindingLoading(false);
             message.success('🎉 绑定成功');
 
-            console.log(role.id,user.roleId);
+            console.log(role.id, user.roleId);
             console.log(role.id === user.roleId);
-            
+
             // 如果修改的是当前用户所使用的角色，则退出登录
             if (role.id === +user.roleId!) {
                 return quitLogin()
@@ -293,7 +297,6 @@ export default () => {
                         initialValues={role}
                         onFinish={onSubmit}
                         size='large'
-
                     >
                         <Form.Item label="角色名称" name="name" rules={[{ required: true, message: '角色名称不能为空' }]}>
                             <Input placeholder="请输入角色名称" />
