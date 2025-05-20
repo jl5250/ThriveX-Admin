@@ -213,9 +213,6 @@ export default () => {
             setBindingLoading(false);
             message.success('🎉 绑定成功');
 
-            console.log(role.id, user.roleId);
-            console.log(role.id === user.roleId);
-
             // 如果修改的是当前用户所使用的角色，则退出登录
             if (role.id === +user.roleId!) {
                 return quitLogin()
