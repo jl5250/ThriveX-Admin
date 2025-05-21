@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { notification, Divider, Input, Alert, Button, Form } from 'antd';
+import { notification, Divider, Input, Alert, Button, Form, Checkbox } from 'antd';
 import { PictureOutlined, CloudUploadOutlined } from '@ant-design/icons';
 import { editConfigDataAPI, getConfigDataAPI } from '@/api/Project';
 import { Theme } from '@/types/app/project';
@@ -14,13 +14,6 @@ export default () => {
     const [form] = Form.useForm();
 
     const [currentUploadType, setCurrentUploadType] = useState<string>('');
-
-    const onSidebar = (value: string) => {
-        const rightSidebar = JSON.parse(theme.right_sidebar || '[]');
-        const index = rightSidebar.indexOf(value);
-        index > -1 ? rightSidebar.splice(index, 1) : rightSidebar.push(value);
-        setTheme({ ...theme, right_sidebar: JSON.stringify(rightSidebar) });
-    };
 
     const getLayoutData = async () => {
         try {
@@ -168,18 +161,20 @@ export default () => {
                     <Alert message="以换行分隔，每行表示一段文本" type="info" className="mt-2" />
 
                     <Divider orientation="left">侧边栏</Divider>
-                    <div className='overflow-auto w-full'>
-                        <div className="sidebar w-[750px] flex mb-4">
-                            {['author', 'randomArticle', 'newComments', 'hotArticle'].map((item) => (
-                                <div key={item} className={`item flex flex-col items-center p-4 m-4 border-2 rounded cursor-pointer ${theme.right_sidebar && JSON.parse(theme.right_sidebar).includes(item) ? 'border-primary' : 'border-[#eee]'}`} onClick={() => onSidebar(item)}>
-                                    <p className={`text-center ${theme.right_sidebar && JSON.parse(theme.right_sidebar).includes(item) ? 'text-primary' : ''}`}>
-                                        {item === 'author' ? '作者信息模块' : item === 'hotArticle' ? '作者推荐模块' : item === 'randomArticle' ? '随机推荐模块' : '最新评论模块'}
-                                    </p>
-                                    <img src={`${getFile(item)}`} alt="" className="mt-4 rounded" />
-                                </div>
-                            ))}
+                    <Checkbox.Group
+                        value={theme.right_sidebar ? JSON.parse(theme.right_sidebar) : []}
+                        onChange={(checkedValues) => {
+                            setTheme({ ...theme, right_sidebar: JSON.stringify(checkedValues) });
+                        }}
+                    >
+                        <div className="grid grid-cols-4 gap-2">
+                            <Checkbox value="author">作者信息模块</Checkbox>
+                            <Checkbox value="runTime">站点时间模块</Checkbox>
+                            <Checkbox value="randomArticle">随机推荐模块</Checkbox>
+                            <Checkbox value="newComments">最新评论模块</Checkbox>
+                            <Checkbox value="hotArticle">作者推荐模块</Checkbox>
                         </div>
-                    </div>
+                    </Checkbox.Group>
 
                     <Divider orientation="left">文章布局</Divider>
                     <div className='overflow-auto w-full'>
@@ -189,6 +184,7 @@ export default () => {
                                     <p className={`text-center ${theme.is_article_layout === item ? 'text-primary' : ''}`}>
                                         {item === 'classics' ? '经典布局' : item === 'card' ? '卡片布局' : '瀑布流布局'}
                                     </p>
+
                                     <img src={`${getFile(item)}`} alt="" className="w-[200px] mt-4 rounded" />
                                 </div>
                             ))}

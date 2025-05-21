@@ -29,15 +29,11 @@ export default () => {
     // 四舍五入到最接近的整数
     const roundedSeconds = Math.round(seconds);
 
-    const h = Math.floor(roundedSeconds / 3600)
-      .toString()
-      .padStart(2, '0');
-    const m = Math.floor((roundedSeconds % 3600) / 60)
-      .toString()
-      .padStart(2, '0');
-    const s = (roundedSeconds % 60).toString().padStart(2, '0');
-    return `${h}:${m}:${s}`;
-  };
+        const h = Math.floor(roundedSeconds / 3600).toString().padStart(2, '0');
+        const m = Math.floor((roundedSeconds % 3600) / 60).toString().padStart(2, '0');
+        const s = (roundedSeconds % 60).toString().padStart(2, '0');
+        return `${h}:${m}:${s}`; 
+    };
 
   // 获取统计数据
   const getDataList = async () => {

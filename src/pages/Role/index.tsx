@@ -47,17 +47,15 @@ export default () => {
         {
             title: '操作', key: 'action',
             render: (_: string, record: Role) => (
-                <>
-                    <div className='space-x-2'>
-                        {record.mark !== 'admin' && <Button type="primary" onClick={() => bindingRoute(record)}>权限</Button>}
+                <div className='space-x-2'>
+                    {record.mark !== 'admin' && <Button type="primary" onClick={() => bindingRoute(record)}>权限</Button>}
 
-                        <Button onClick={() => editRoleData(record)}>修改</Button>
+                    <Button onClick={() => editRoleData(record)}>修改</Button>
 
-                        <Popconfirm title="警告" description="你确定要删除吗" okText="确定" cancelText="取消" onConfirm={() => delRoleData(record.id!)}>
-                            <Button type="primary" danger>删除</Button>
-                        </Popconfirm>
-                    </div>
-                </>
+                    <Popconfirm title="警告" description="你确定要删除吗" okText="确定" cancelText="取消" onConfirm={() => delRoleData(record.id!)}>
+                        <Button type="primary" danger>删除</Button>
+                    </Popconfirm>
+                </div>
             )
         }
     ];

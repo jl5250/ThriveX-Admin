@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Form, Input, Button, message } from 'antd';
+import { Form, Input, Button, message, DatePicker } from 'antd';
 import { editConfigDataAPI } from '@/api/Project';
 import { Web } from '@/types/app/project'
 import { useWebStore } from '@/stores';
+import dayjs from 'dayjs';
 
 export default () => {
     const [loading, setLoading] = useState(false);
@@ -12,14 +13,32 @@ export default () => {
     const web = useWebStore(state => state.web)
     const setWeb = useWebStore(state => state.setWeb)
 
+    // 处理初始值，将时间戳转换为 dayjs 对象
+    const initialValues = {
+        ...web,
+        create_time: web.create_time ? dayjs(Number(web.create_time)) : undefined
+    };
+
     const onSubmit = async (values: Web) => {
         setLoading(true);
 
         try {
-            await editConfigDataAPI("web", values);
+            // 将日期转换为时间戳
+            const submitData = {
+                ...values,
+                create_time: values.create_time ? values.create_time.valueOf() : undefined
+            };
+
+            await editConfigDataAPI("web", submitData);
             message.success("🎉 编辑网站成功");
-            setWeb(values)
-            form.setFieldsValue(values);
+            setWeb(submitData);
+            
+            // 使用新的 submitData 来更新表单值
+            const newInitialValues = {
+                ...submitData,
+                create_time: submitData.create_time ? dayjs(Number(submitData.create_time)) : undefined
+            };
+            form.setFieldsValue(newInitialValues);
         } catch (error) {
             setLoading(false);
         }
@@ -36,7 +55,7 @@ export default () => {
                 size='large'
                 layout="vertical"
                 onFinish={onSubmit}
-                initialValues={web}
+                initialValues={initialValues}
                 className="w-full lg:w-[500px] md:ml-10"
             >
                 <Form.Item
@@ -92,6 +111,14 @@ export default () => {
                     rules={[{ required: true, message: '网站底部信息不能为空' }]}
                 >
                     <Input placeholder="记录前端、Python、Java点点滴滴" />
+                </Form.Item>
+
+                <Form.Item label="ICP 备案号" name="icp">
+                    <Input placeholder="豫ICP备2020031040号-1" />
+                </Form.Item>
+
+                <Form.Item label="网站创建时间" name="create_time">
+                    <DatePicker className='w-full' />
                 </Form.Item>
 
                 <Form.Item>
