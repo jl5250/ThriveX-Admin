@@ -290,9 +290,7 @@ ${content}
             type="primary" 
             onClick={generateTitleAndDescription}
             loading={generating}
-          >
-            一键生成标题和简介
-          </Button>
+          >一键生成标题和简介</Button>
         </Form.Item>
 
         <Form.Item label="文章封面" name="cover" rules={[{ validator: validateURL }]}>

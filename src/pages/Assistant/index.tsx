@@ -1,4 +1,4 @@
-import { Button, Card, Form, Input, List, Modal } from 'antd';
+import { Button, Card, Form, Input, List, Modal, Popconfirm, Select } from 'antd';
 import { useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import Title from '@/components/Title';
@@ -7,13 +7,13 @@ import useAssistant from '@/hooks/useAssistant';
 export default () => {
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  
+  const [id, setId] = useState<string | null>(null);
+
   const {
-    assistants,
-    testing,
+    list,
+    testingMap,
     saveAssistant,
-    deleteAssistant,
+    delAssistantData,
     setDefaultAssistant,
     testConnection
   } = useAssistant();
@@ -21,100 +21,87 @@ export default () => {
   // 提交表单
   const handleSubmit = () => {
     form.validateFields().then(values => {
-      const success = saveAssistant(values, editingId || undefined);
-      if (success) {
-        setIsModalOpen(false);
-        form.resetFields();
-        setEditingId(null);
-      }
+      saveAssistant({ ...values, id }).then(success => {
+        if (success) {
+          setIsModalOpen(false);
+          form.resetFields();
+          setId(null);
+        }
+      });
     });
   };
 
   return (
     <div>
       <Title value="助手管理">
-        <Button 
-          type="primary" 
+        <Button
+          type="primary"
           icon={<PlusOutlined />}
           onClick={() => setIsModalOpen(true)}
-        >
-          添加助手
-        </Button>
+        >添加助手</Button>
       </Title>
 
       <Card>
         <List
-          dataSource={assistants}
+          key="id"
+          dataSource={list}
           renderItem={(item) => (
             <List.Item
               actions={[
-                <Button type="link" onClick={() => {
-                  form.setFieldsValue(item);
-                  setEditingId(item.id);
-                  setIsModalOpen(true);
-                }}>
-                  编辑
-                </Button>,
-                <Button 
-                  type="link" 
+                <Button
+                  type="link"
                   onClick={() => testConnection(item)}
-                  loading={testing}
+                  loading={testingMap[item.id]}
+                >{testingMap[item.id] ? '测试中...' : '测试连接'}</Button>,
+
+                <Button type='primary' onClick={() => {
+                  form.setFieldsValue(item);
+                  setId(item.id);
+                  setIsModalOpen(true);
+                }}>编辑</Button>,
+
+                <Popconfirm
+                  title="您确定要删除这个助手吗？"
+                  onConfirm={() => delAssistantData(+item.id)}
+                  okText="确定"
+                  cancelText="取消"
                 >
-                  测试连接
-                </Button>,
-                <Button 
-                  type={item.isDefault ? 'primary' : 'default'} 
-                  onClick={() => setDefaultAssistant(item.id)}
-                >
-                  {item.isDefault ? '默认助手' : '设为默认'}
-                </Button>,
-                <Button 
-                  type="link" 
-                  danger 
-                  onClick={() => deleteAssistant(item.id)}
-                >
-                  删除
-                </Button>
+                  <Button type='primary' color="danger" danger>删除</Button>
+                </Popconfirm>,
+
+                <Button
+                  type={item.isDefault ? 'primary' : 'default'}
+                  onClick={() => setDefaultAssistant(+item.id)}
+                >{item.isDefault ? '默认助手' : '设为默认'}</Button>,
               ]}
             >
-              <List.Item.Meta
-                title={item.name}
-                description={`${item.baseUrl} (模型: ${item.modelId})`}
-              />
+              <List.Item.Meta title={item.name} description={`模型: ${item.model}`} />
             </List.Item>
           )}
         />
       </Card>
 
       <Modal
-        title={editingId ? '编辑助手' : '添加助手'}
+        title={id ? '编辑助手' : '添加助手'}
         open={isModalOpen}
         onOk={handleSubmit}
         onCancel={() => {
           setIsModalOpen(false);
           form.resetFields();
-          setEditingId(null);
+          setId(null);
         }}
       >
-        <Form form={form} layout="vertical">
+        <Form form={form} layout="vertical" size='large'>
           <Form.Item
             name="name"
             label="助手名称"
             rules={[{ required: true, message: '请输入助手名称' }]}
           >
-            <Input placeholder="例如: DeepSeek" />
+            <Input placeholder="DeepSeek" />
           </Form.Item>
 
           <Form.Item
-            name="baseUrl"
-            label="API基础地址"
-            rules={[{ required: true, message: '请输入API基础地址' }]}
-          >
-            <Input placeholder="例如: https://api.deepseek.com" />
-          </Form.Item>
-
-          <Form.Item
-            name="apiKey"
+            name="key"
             label="API密钥"
             rules={[{ required: true, message: '请输入API密钥' }]}
           >
@@ -122,11 +109,14 @@ export default () => {
           </Form.Item>
 
           <Form.Item
-            name="modelId"
-            label="模型ID"
-            rules={[{ required: true, message: '请输入模型ID' }]}
+            name="model"
+            label="模型"
+            rules={[{ required: true, message: '请输入模型' }]}
           >
-            <Input placeholder="例如: deepseek-chat" />
+            <Select placeholder="选择模型">
+              <Select.Option value="deepseek-chat">deepseek-chat</Select.Option>
+              <Select.Option value="deepseek-reasoner">deepseek-reasoner</Select.Option>
+            </Select>
           </Form.Item>
         </Form>
       </Modal>

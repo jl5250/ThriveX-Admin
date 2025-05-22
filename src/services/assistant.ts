@@ -1,29 +1,18 @@
 import { message } from 'antd';
 import { Assistant } from '@/types/app/assistant';
 
-const ASSISTANT_STORAGE_KEY = 'assistants';
-
-// 从本地存储获取助手列表
-export const getAssistants = (): Assistant[] => {
-  const saved = localStorage.getItem(ASSISTANT_STORAGE_KEY);
-  return saved ? JSON.parse(saved) : [];
-};
-
-// 保存助手列表到本地存储
-export const saveAssistants = (assistants: Assistant[]) => {
-  localStorage.setItem(ASSISTANT_STORAGE_KEY, JSON.stringify(assistants));
-};
+const url = "https://api.deepseek.com"
 
 // 测试助手连接
 export const testAssistantConnection = async (assistant: Assistant) => {
   try {
     // 确保baseURL以/v1结尾
-    const baseUrl = assistant.baseUrl.endsWith('/v1') 
-      ? assistant.baseUrl 
-      : `${assistant.baseUrl.replace(/\/+$/, '')}/v1`;
+    const baseUrl = url.endsWith('/v1') 
+      ? url 
+      : `${url.replace(/\/+$/, '')}/v1`;
     
     // 确保API密钥没有多余空格
-    const apiKey = assistant.apiKey.trim();
+    const apiKey = assistant.key.trim();
     const response = await fetch(`${baseUrl}/chat/completions`, {
       method: 'POST',
       headers: {
@@ -33,7 +22,7 @@ export const testAssistantConnection = async (assistant: Assistant) => {
         'Accept-Encoding': 'gzip, deflate, br'
       },
       body: JSON.stringify({
-        model: assistant.modelId || 'moonshot-v1-8k',
+        model: assistant.model || 'moonshot-v1-8k',
         messages: [
           { 
             role: 'system', 
@@ -46,14 +35,14 @@ export const testAssistantConnection = async (assistant: Assistant) => {
     });
 
     if (response.ok) {
-      message.success('连接测试成功');
+      message.success('测试连接成功');
       return true;
     } else {
-      message.error('连接测试失败');
+      message.error('测试连接失败');
       return false;
     }
   } catch (error) {
-    message.error('连接测试失败');
+    message.error('测试连接失败');
     return false;
   }
 };
@@ -70,12 +59,12 @@ export const callAssistantAPI = async (
 ) => {
   try {
     // 确保baseURL以/v1结尾
-    const baseUrl = assistant.baseUrl.endsWith('/v1') 
-      ? assistant.baseUrl 
-      : `${assistant.baseUrl.replace(/\/+$/, '')}/v1`;
+    const baseUrl = url.endsWith('/v1') 
+      ? url 
+      : `${url.replace(/\/+$/, '')}/v1`;
     
     // 确保API密钥没有多余空格
-    const apiKey = assistant.apiKey.trim();
+    const apiKey = assistant.key.trim();
     const response = await fetch(`${baseUrl}/chat/completions`, {
       method: 'POST',
       headers: {
@@ -85,7 +74,7 @@ export const callAssistantAPI = async (
         'Accept-Encoding': 'gzip, deflate, br'
       },
       body: JSON.stringify({
-        model: assistant.modelId || 'moonshot-v1-8k',
+        model: assistant.model || 'moonshot-v1-8k',
         messages,
         stream: options.stream ?? false,
         temperature: options.temperature ?? 0.3,

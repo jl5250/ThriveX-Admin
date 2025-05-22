@@ -94,8 +94,9 @@ export default () => {
   }, [content])
 
   const {
-    assistants,
-    selectedAssistant,
+    list,
+    assistant,
+    setAssistant,
     callAssistant
   } = useAssistant();
 
@@ -210,14 +211,14 @@ export default () => {
           <Dropdown.Button 
             menu={{ items }}
             onClick={() => {
-              if (assistants.length === 0) {
+              if (list.length === 0) {
                 message.error('请先在助手管理中添加助手');
               }
             }}
           >
             <AiOutlineEdit className='text-base' /> 
-            {selectedAssistant 
-              ? assistants.find((a: { id: string | null }) => a.id === selectedAssistant)?.name || '选择助手'
+            {assistant 
+              ? list.find((a: { id: string | null }) => a.id === assistant)?.name || '选择助手'
               : '选择助手'}
           </Dropdown.Button>
 
