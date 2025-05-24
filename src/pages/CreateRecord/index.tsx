@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { Button, Card, Dropdown, Image, Input, message, Modal, Spin } from "antd"
-import TextArea from "antd/es/input/TextArea"
 
 import { addRecordDataAPI, editRecordDataAPI, getRecordDataAPI } from '@/api/Record'
 
@@ -13,15 +12,22 @@ import { BiLogoTelegram } from "react-icons/bi";
 import { LuImagePlus } from "react-icons/lu";
 import { RiDeleteBinLine } from "react-icons/ri";
 import Material from "@/components/Material";
+import WangEditor from "@/components/WangEditor";
+
+interface EditorRef {
+    setValue: (value: string) => void,
+    getValue: () => string
+}
 
 export default () => {
     const [loading, setLoading] = useState(false)
+
+    const editorRef = useRef<EditorRef>(null)
 
     const [params] = useSearchParams()
     const id = +params.get('id')!
     const navigate = useNavigate()
 
-    const [content, setContent] = useState("")
     const [imageList, setImageList] = useState<string[]>([])
 
     const [isMaterialModalOpen, setIsMaterialModalOpen] = useState(false);
@@ -36,13 +42,14 @@ export default () => {
             setLoading(true)
 
             const data = {
-                content,
+                content: editorRef.current?.getValue() as string,
                 images: JSON.stringify(imageList),
                 createTime: new Date().getTime().toString()
             }
 
-            if (!content.trim().length) {
+            if (!data.content.trim().length) {
                 message.error("请输入内容")
+                setLoading(false)
                 return
             }
 
@@ -66,7 +73,7 @@ export default () => {
             setLoading(true)
 
             const { data } = await getRecordDataAPI(id)
-            setContent(data.content)
+            editorRef.current?.setValue(data.content)
             setImageList(JSON.parse(data.images as string))
 
             setLoading(false)
@@ -92,7 +99,7 @@ export default () => {
                         message.warning('最多只能上传 4 张图片');
                         return;
                     }
-                    
+
                     setIsMaterialModalOpen(true);
                 }
             },
@@ -143,16 +150,9 @@ export default () => {
             <Spin spinning={loading}>
                 <Card className={`${titleSty} min-h-[calc(100vh-180px)]`}>
                     <div className="relative flex w-[90%] xl:w-[800px] mx-auto mt-[50px]">
-                        <TextArea
-                            rows={10}
-                            maxLength={500}
-                            placeholder="记录此刻！"
-                            value={content}
-                            onChange={(e) => setContent(e.target.value)}
-                            className="w-full p-4 border-2 border-[#eee] dark:bg-boxdark-2 dark:border-transparent text-base rounded-md"
-                        />
+                        <WangEditor ref={editorRef} />
 
-                        <div className="absolute bottom-4 left-4 flex items-end space-x-3 max-w-[calc(100%-80px)]">
+                        <div className="absolute bottom-4 left-4 flex items-end space-x-3 max-w-[calc(100%-80px)] z-50">
                             <div className="flex space-x-2 overflow-x-auto scrollbar-hide">
                                 {imageList.length > 0 && imageList.map((item, index) => (
                                     <div key={index} className="group overflow-hidden relative shrink-0">
@@ -180,7 +180,7 @@ export default () => {
                             size="large"
                             icon={<BiLogoTelegram className="text-xl" />}
                             loading={loading}
-                            className="absolute bottom-4 right-4"
+                            className="absolute bottom-4 right-4 z-50"
                             onClick={onSubmit}
                         />
                     </div>
