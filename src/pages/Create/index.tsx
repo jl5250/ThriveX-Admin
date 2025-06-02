@@ -207,7 +207,7 @@ export default () => {
   return (
     <div>
       <Title value="创作">
-        <div className='flex items-center space-x-4 w-[360px]'>
+        <div className='flex items-center space-x-4 w-[390px]'>
           <Dropdown.Button 
             menu={{ items }}
             onClick={() => {

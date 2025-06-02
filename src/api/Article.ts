@@ -32,3 +32,19 @@ export const getArticlePagingAPI = (data?: QueryData) => Request<Paginate<Articl
     ...data?.pagination
   }
 })
+
+// 导入文章
+export const importArticleDataAPI = (list: File[]) => {
+    const formData = new FormData();
+
+    list.forEach((file, index) => {
+        formData.append(`list`, file);
+    });
+
+    return Request("POST", "/article/import", { 
+        data: formData,
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
+}

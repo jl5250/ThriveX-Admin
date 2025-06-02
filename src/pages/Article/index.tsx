@@ -1,12 +1,14 @@
-import { useState, useEffect } from 'react';
-import { Table, Button, Tag, notification, Card, Popconfirm, Form, Input, Select, DatePicker } from 'antd';
+import { useState, useEffect, useRef } from 'react';
+import { Table, Button, Tag, notification, Card, Popconfirm, Form, Input, Select, DatePicker, Upload, Modal, message } from 'antd';
+import { InboxOutlined } from '@ant-design/icons';
+import type { UploadFile, UploadFileStatus, RcFile } from 'antd/es/upload/interface';
 import { titleSty } from '@/styles/sty'
 import Title from '@/components/Title';
 import { Link } from 'react-router-dom';
 
 import { getCateListAPI } from '@/api/Cate'
 import { getTagListAPI } from '@/api/Tag'
-import { delArticleDataAPI, getArticleListAPI } from '@/api/Article';
+import { delArticleDataAPI, getArticleListAPI, importArticleDataAPI } from '@/api/Article';
 import type { Tag as ArticleTag } from '@/types/app/tag';
 import type { Cate } from '@/types/app/cate';
 import type { Article, Config, FilterArticle, FilterForm } from '@/types/app/article';
@@ -18,8 +20,12 @@ import { ColumnType } from 'antd/es/table';
 
 export default () => {
     const [loading, setLoading] = useState<boolean>(false);
-    const [btnLoading, setBtnLoading] = useState<boolean>(false);
-    
+    const [importLoading, setImportLoading] = useState<boolean>(false);
+    const [fileList, setFileList] = useState<UploadFile[]>([]);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isDragging, setIsDragging] = useState<boolean>(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
     const [form] = Form.useForm();
     const web = useWebStore(state => state.web);
     const [current, setCurrent] = useState<number>(1);
@@ -41,7 +47,7 @@ export default () => {
 
     const delArticleData = async (id: number) => {
         try {
-            setBtnLoading(true);
+            setLoading(true);
 
             // 普通删除：可从回收站恢复
             await delArticleDataAPI(id, true);
@@ -49,9 +55,9 @@ export default () => {
             form.resetFields()
             setCurrent(1)
             notification.success({ message: '🎉 删除文章成功' })
-            setBtnLoading(false);
+            setLoading(false);
         } catch (error) {
-            setBtnLoading(false);
+            setLoading(false);
         }
     };
 
@@ -145,7 +151,7 @@ export default () => {
                     </Link>
 
                     <Popconfirm title="警告" description="你确定要删除吗" okText="确定" cancelText="取消" onConfirm={() => delArticleData(record.id!)}>
-                        <Button type="primary" danger loading={btnLoading}>删除</Button>
+                        <Button type="primary" danger>删除</Button>
                     </Popconfirm>
                 </div>
             ),
@@ -188,6 +194,123 @@ export default () => {
         setTagList(data as ArticleTag[])
     }
 
+    // 处理导入文件
+    const handleImport = async () => {
+        if (fileList.length === 0) {
+            notification.warning({ message: '请选择要导入的文件' });
+            return;
+        }
+
+        try {
+            setImportLoading(true);
+            const files = fileList.map(file => file.originFileObj as File);
+            await importArticleDataAPI(files);
+            await getArticleList();
+            setFileList([]);
+            setIsModalOpen(false);
+            notification.success({ message: '🎉 导入文章成功' });
+        } catch (error) {
+            console.log("文章导入失败", error);
+        } finally {
+            setImportLoading(false);
+        }
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+        setFileList([]);
+    };
+
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+    };
+
+    const handleDragEnter = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+    };
+
+    // 拖拽上传
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+
+        const files = Array.from(e.dataTransfer.files);
+        // 检查文件扩展名是否为 .md
+        const markdownFiles = files.filter(file =>
+            file.name.toLowerCase().endsWith('.md') ||
+            file.type === 'text/markdown'
+        );
+
+        if (markdownFiles.length === 0) {
+            message.error('请上传 Markdown 格式文件（.md）');
+            return;
+        }
+
+        if (fileList.length + markdownFiles.length > 5) {
+            message.error('最多只能上传5个文件');
+            return;
+        }
+
+        const newFileList: UploadFile[] = markdownFiles.map(file => {
+            const rcFile = file as RcFile;
+            rcFile.uid = Math.random().toString();
+            return {
+                uid: rcFile.uid,
+                name: file.name,
+                status: 'done' as UploadFileStatus,
+                originFileObj: rcFile,
+            };
+        });
+
+        setFileList([...fileList, ...newFileList]);
+        message.success(`成功添加 ${markdownFiles.length} 个文件`);
+    };
+
+    const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || []);
+        
+        // 检查文件扩展名是否为 .md
+        const markdownFiles = files.filter(file =>
+            file.name.toLowerCase().endsWith('.md') ||
+            file.type === 'text/markdown'
+        );
+
+        if (markdownFiles.length === 0) {
+            message.error('请上传 Markdown 格式文件（.md）');
+            return;
+        }
+
+        if (fileList.length + markdownFiles.length > 5) {
+            message.error('最多只能上传5个文件');
+            return;
+        }
+
+        const newFileList: UploadFile[] = markdownFiles.map(file => {
+            const rcFile = file as RcFile;
+            rcFile.uid = Math.random().toString();
+            return {
+                uid: rcFile.uid,
+                name: file.name,
+                status: 'done' as UploadFileStatus,
+                originFileObj: rcFile,
+            };
+        });
+
+        setFileList([...fileList, ...newFileList]);
+        message.success(`成功添加 ${markdownFiles.length} 个文件`);
+        e.target.value = ''; // 清空 input 的值，允许重复选择相同文件
+    };
+
     useEffect(() => {
         getArticleList()
         getCateList()
@@ -199,45 +322,125 @@ export default () => {
             <Title value="文章管理" />
 
             <Card className='my-2 overflow-scroll'>
-                <Form form={form} layout="inline" onFinish={onFilterSubmit} autoComplete="off" className='flex-nowrap'>
-                    <Form.Item label="标题" name="title" className='min-w-[200px]'>
-                        <Input placeholder='请输入关键词' />
-                    </Form.Item>
+                <div className='w-full flex justify-between'>
+                    <Form form={form} layout="inline" onFinish={onFilterSubmit} autoComplete="off" className='flex-nowrap'>
+                        <Form.Item label="标题" name="title" className='min-w-[200px]'>
+                            <Input placeholder='请输入关键词' />
+                        </Form.Item>
 
-                    <Form.Item label="分类" name="cateId" className='min-w-[200px]'>
-                        <Select
-                            allowClear
-                            options={cateList}
-                            fieldNames={{ label: "name", value: "id" }}
-                            placeholder="请选择分类"
-                        />
-                    </Form.Item>
+                        <Form.Item label="分类" name="cateId" className='min-w-[200px]'>
+                            <Select
+                                allowClear
+                                options={cateList}
+                                fieldNames={{ label: "name", value: "id" }}
+                                placeholder="请选择分类"
+                            />
+                        </Form.Item>
 
-                    <Form.Item label="标签" name="tagId" className='min-w-[200px]'>
-                        <Select
-                            allowClear
-                            showSearch
-                            options={tagList}
-                            fieldNames={{ label: 'name', value: 'id' }}
-                            placeholder="请选择标签"
-                            filterOption={(input, option) => {
-                                if (option?.name) {
-                                    return option.name.toLowerCase().includes(input.toLowerCase());
-                                }
-                                return false;
-                            }}
-                        />
-                    </Form.Item>
+                        <Form.Item label="标签" name="tagId" className='min-w-[200px]'>
+                            <Select
+                                allowClear
+                                showSearch
+                                options={tagList}
+                                fieldNames={{ label: 'name', value: 'id' }}
+                                placeholder="请选择标签"
+                                filterOption={(input, option) => {
+                                    if (option?.name) {
+                                        return option.name.toLowerCase().includes(input.toLowerCase());
+                                    }
+                                    return false;
+                                }}
+                            />
+                        </Form.Item>
 
-                    <Form.Item label="时间范围" name="createTime" className='min-w-[250px]'>
-                        <RangePicker placeholder={["选择起始时间", "选择结束时间"]} />
-                    </Form.Item>
+                        <Form.Item label="时间范围" name="createTime" className='min-w-[250px]'>
+                            <RangePicker placeholder={["选择起始时间", "选择结束时间"]} />
+                        </Form.Item>
 
-                    <Form.Item className='pr-6'>
-                        <Button type="primary" htmlType="submit">查询</Button>
-                    </Form.Item>
-                </Form>
+                        <Form.Item className='pr-6'>
+                            <Button type="primary" htmlType="submit">查询</Button>
+                        </Form.Item>
+                    </Form>
+
+                    <Button
+                        type="primary"
+                        onClick={() => setIsModalOpen(true)}
+                    >
+                        导入文章
+                    </Button>
+                </div>
             </Card>
+
+            <Modal
+                title="导入文章"
+                open={isModalOpen}
+                onCancel={handleCancel}
+                footer={[
+                    <Button key="cancel" onClick={handleCancel}>取消</Button>,
+
+                    <Button
+                        key="import"
+                        type="primary"
+                        onClick={handleImport}
+                        loading={importLoading}
+                        disabled={fileList.length === 0}
+                    >开始导入</Button>
+                ]}
+            >
+                <div className='py-4'>
+                    <div
+                        onClick={() => fileInputRef?.current?.click()}
+                        onDragOver={handleDragOver}
+                        onDragEnter={handleDragEnter}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                        className={`w-full h-40 p-4 border border-dashed rounded-lg transition-all duration-300 ${isDragging
+                            ? 'border-primary bg-primary/5'
+                            : 'border-[#D7D7D7] hover:border-primary bg-[#FAFAFA]'
+                            } space-y-2 cursor-pointer`}
+                    >
+                        <div className="flex justify-center">
+                            <InboxOutlined className="text-5xl text-primary" />
+                        </div>
+
+                        <p className="text-base text-center">
+                            {isDragging ? '释放文件以上传' : '点击或拖动文件到此区域进行上传'}
+                        </p>
+                        <p className="text-sm text-[#999] text-center">
+                            支持单个或多个上传，最多5个文件，仅支持Markdown格式
+                        </p>
+                    </div>
+
+                    <input
+                        multiple
+                        type="file"
+                        onChange={handleFileInput}
+                        ref={fileInputRef}
+                        className="hidden"
+                        accept=".md"
+                    />
+
+                    {fileList.length > 0 && (
+                        <div className="mt-4">
+                            <p className="text-sm text-gray-500 mb-2">已选择的文件：</p>
+                            <ul className="space-y-2">
+                                {fileList.map((file) => (
+                                    <li key={file.uid} className="flex items-center justify-between bg-gray-50 p-2 rounded">
+                                        <span className="text-sm">{file.name}</span>
+
+                                        <Button
+                                            type="text"
+                                            danger
+                                            size="small"
+                                            onClick={() => setFileList(fileList.filter(f => f.uid !== file.uid))}
+                                        >删除</Button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </div>
+            </Modal>
 
             <Card className={`${titleSty} min-h-[calc(100vh-270px)]`}>
                 <Table
