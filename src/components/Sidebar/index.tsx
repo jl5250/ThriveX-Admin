@@ -94,8 +94,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   }, [sidebarExpanded]);
 
   // 定义导航项的样式类
-  const sidebarItemSty = "group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4"
-  const sidebarItemActiveSty = "bg-graydark dark:bg-meta-4"
+  const sidebarItemSty =
+    'group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4';
+  const sidebarItemActiveSty = 'bg-graydark dark:bg-meta-4';
 
   // 箭头图标组件：用于显示子菜单的展开/收起状态
   const Arrow = ({ open }: { open: boolean }) => {
@@ -171,14 +172,14 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               name: '文章管理',
             },
             {
-              to: "/assistant",
-              path: "assistant",
-              name: "助手管理"
+              to: '/assistant',
+              path: 'assistant',
+              name: '助手管理',
             },
             {
-              to: "/record",
-              path: "record",
-              name: "说说管理"
+              to: '/record',
+              path: 'record',
+              name: '说说管理',
             },
             {
               to: '/tag',
@@ -206,9 +207,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               name: '网站管理',
             },
             {
-              to: "/album",
-              path: "album",
-              name: "相册管理"
+              to: '/album',
+              path: 'album',
+              name: '相册管理',
             },
             {
               to: '/swiper',
@@ -301,7 +302,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   ];
 
   // 状态：存储过滤后的路由列表
-  const [routes, setRoutes] = useState<typeof routesAll>([])
+  const [routes, setRoutes] = useState<typeof routesAll>([]);
 
   // 获取角色对应的路由列表
   const getRouteList = async (id: number) => {
@@ -377,14 +378,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
               {/* 路由列表 */}
               <ul className="mb-6 flex flex-col gap-1.5">
-                {group.list.map((item, subIndex) => (
+                {group.list.map((item, subIndex) =>
                   // 根据是否有子菜单渲染不同的导航项
                   item.subMenu ? (
                     // 带子菜单的导航项组件
-                    <SidebarLinkGroup
-                      key={subIndex}
-                      activeCondition={false}
-                    >
+                    <SidebarLinkGroup key={subIndex} activeCondition={false}>
                       {(handleClick, open) => (
                         <React.Fragment>
                           {/* 父级菜单项 */}
@@ -404,7 +402,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           </NavLink>
 
                           {/* 子菜单列表 */}
-                          <div className={`translate transform overflow-hidden ${!open && 'hidden'}`}>
+                          <div
+                            className={`translate transform overflow-hidden ${
+                              !open && 'hidden'
+                            }`}
+                          >
                             <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                               {item.subMenu!.map((subItem, subSubIndex) => (
                                 <li key={subSubIndex}>
