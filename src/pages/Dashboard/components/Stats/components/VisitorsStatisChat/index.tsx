@@ -127,19 +127,19 @@ export default () => {
     },
   });
 
-  // 核心数据
-  const [state, setState] = useState<ChartOneState>({
-    series: [
-      {
-        name: '访客数量',
-        data: [],
-      },
-      {
-        name: 'IP数量',
-        data: [],
-      },
-    ],
-  });
+    // 核心数据
+    const [state, setState] = useState<ChartOneState>({
+        series: [
+            {
+                name: '浏览量',
+                data: [],
+            },
+            {
+                name: '访客',
+                data: [],
+            },
+        ],
+    });
 
   // 获取统计数据
   const getDataList = useCallback(async () => {
@@ -261,28 +261,28 @@ export default () => {
     return { categories, series: [pvList, ipList] };
   }, [result, scope]);
 
-  // 当数据发生变化时，更新图表选项和状态
-  useEffect(() => {
-    setLoading(true);
+    // 当数据发生变化时，更新图表选项和状态
+    useEffect(() => {
+        setLoading(true)
 
-    setOptions((data) => ({
-      ...data,
-      xaxis: { ...options.xaxis, categories: scopeData.categories || [] },
-    }));
+        setOptions((data) => ({
+            ...data,
+            xaxis: { ...options.xaxis, categories: scopeData.categories || [] }
+        }));
 
-    setState((prevState) => ({
-      ...prevState,
-      series: [
-        {
-          name: '访客数量',
-          data: scopeData.series[0] || 0,
-        },
-        {
-          name: 'IP数量',
-          data: scopeData.series[1] || 0,
-        },
-      ],
-    }));
+        setState((prevState) => ({
+            ...prevState,
+            series: [
+                {
+                    name: '浏览量',
+                    data: scopeData.series[0] || 0,
+                },
+                {
+                    name: '访客',
+                    data: scopeData.series[1] || 0,
+                },
+            ],
+        }));
 
     setLoading(false);
   }, [scopeData]);
@@ -306,14 +306,14 @@ export default () => {
     }
   };
 
-  return (
-    <div className="col-span-12 rounded-lg border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
-      <div className="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap">
-        <div className="flex w-full flex-wrap gap-3 sm:gap-5">
-          <div className="flex min-w-47.5">
-            <span className="mt-1 mr-2 flex h-4 w-full max-w-4 items-center justify-center rounded-full border border-primary">
-              <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-primary"></span>
-            </span>
+    return (
+        <div className="col-span-12 rounded-2xl border border-stroke px-5 pt-7.5 pb-5 shadow-default dark:border-transparent bg-light-gradient dark:bg-dark-gradient sm:px-7.5 xl:col-span-8">
+            <div className="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap">
+                <div className="flex w-full flex-wrap gap-3 sm:gap-5">
+                    <div className="flex min-w-47.5">
+                        <span className="mt-1 mr-2 flex h-4 w-full max-w-4 items-center justify-center rounded-full border border-primary">
+                            <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-primary"></span>
+                        </span>
 
             <div className="w-full">
               <p className="font-semibold text-primary">访客（UV）</p>

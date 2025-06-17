@@ -101,27 +101,22 @@ export default () => {
     getDataList();
   }, []);
 
-  return (
-    <Spin spinning={loading}>
-      {/* 基本数据 */}
-      <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-4">
-        <CardDataStats
-          title="今日访客"
-          total={stats.pv + ''}
-          rate="0.43%"
-          levelUp
-        >
-          <AiOutlineEye className="fill-primary dark:fill-white text-2xl" />
-        </CardDataStats>
+    return (
+        <Spin spinning={loading}>
+            {/* 基本数据 */}
+            <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-4">
+                <CardDataStats 
+                    title="今日浏览量" 
+                    total={stats.pv + ''} 
+                    rate="0.43%" 
+                    levelUp
+                >
+                    <AiOutlineEye className="fill-primary dark:fill-white text-2xl" />
+                </CardDataStats>
 
-        <CardDataStats
-          title="今日IP"
-          total={stats.ip + ''}
-          rate="0.95%"
-          levelDown
-        >
-          <AiOutlineMeh className="fill-primary dark:fill-white text-2xl" />
-        </CardDataStats>
+                <CardDataStats title="今日访客" total={stats.ip + ''} rate="0.95%" levelDown>
+                    <AiOutlineMeh className="fill-primary dark:fill-white text-2xl" />
+                </CardDataStats>
 
         <CardDataStats
           title="跳出率"

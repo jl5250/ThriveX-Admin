@@ -10,6 +10,7 @@ import { Role } from '@/types/app/role';
 import { Permission } from '@/types/app/permission';
 import { useUserStore } from '@/stores'
 import "./index.scss"
+import { DeleteOutlined, FormOutlined } from '@ant-design/icons';
 
 export default () => {
     const user = useUserStore(state => state.user);
@@ -50,10 +51,10 @@ export default () => {
                 <div className='space-x-2'>
                     {record.mark !== 'admin' && <Button type="primary" onClick={() => bindingRoute(record)}>权限</Button>}
 
-                    <Button onClick={() => editRoleData(record)}>修改</Button>
+                    <Button onClick={() => editRoleData(record)} icon={<FormOutlined />} />
 
                     <Popconfirm title="警告" description="你确定要删除吗" okText="确定" cancelText="取消" onConfirm={() => delRoleData(record.id!)}>
-                        <Button type="primary" danger>删除</Button>
+                        <Button type="primary" danger icon={<DeleteOutlined />} />
                     </Popconfirm>
                 </div>
             )
@@ -344,7 +345,7 @@ export default () => {
                 <div className='mt-10 mb-4'>
                     <h2 className='flex justify-center my-4 text-lg'>接口权限</h2>
 
-                    <div className='overflow-y-auto h-55 p-4 border border-[#eee] rounded-md'>
+                    <div className='overflow-y-auto h-55 p-4 border border-stroke rounded-md'>
                         {Object.keys(permissionList).map((group, index) => (
                             <div key={index}>
                                 <div className='flex justify-center items-center'>
