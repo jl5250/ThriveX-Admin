@@ -270,30 +270,21 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           name: '工作台'
         },
         {
-          to: '/rss',
-          path: 'rss',
-          icon: <LiaRssSolid className="text-[22px]" />,
-          name: '订阅中心'
-        },
-        {
           to: '/file',
           path: 'file',
           icon: <BiFolderOpen className="text-[22px]" />,
           name: '文件系统'
         },
         {
-          to: '/iter',
-          path: 'iter',
-          icon: <BiBug className="text-[22px]" />,
-          // name: <div>更新日志 <b className={`inline-block w-3 h-3 ml-2 ${version.tag_name === import.meta.env.VITE_VERSION ? 'bg-green-400' : 'bg-red-400'} rounded-full`}></b></div>
-          name: (
-            <div className="flex items-center w-full justify-between">
-              <span>更新日志</span>
-              <div className="flex items-center gap-1">
-                {version.tag_name === import.meta.env.VITE_VERSION ? (
-                  <span className={`text-xs text-white px-2 py-0.5 rounded-lg bg-green-500`}>
-                    最新版
-                  </span>
+          to: "/iter",
+          path: "iter",
+          icon: <BiBug className='text-[22px]' />,
+          name: (<div className='flex items-center w-full justify-between'>
+            <span>更新日志</span>
+            <div className='flex items-center gap-1'>
+              {
+                version.tag_name === import.meta.env.VITE_VERSION ? (
+                  <span className={`text-xs text-white px-2 py-0.5 rounded-lg bg-green-500`}>最新版</span>
                 ) : (
                   <span className={`text-xs text-white px-2 py-0.5 rounded-lg bg-red-400`}>
                     有新版本
@@ -346,13 +337,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   return (
     <aside
       ref={sidebar}
-      className={`absolute left-0 top-0 z-99 flex h-screen w-64 flex-col overflow-y-hidden duration-300 ease-linear lg:static lg:translate-x-0 ${
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } ${
-        isSideBarTheme === 'dark'
-          ? 'bg-black dark:bg-boxdark'
-          : 'bg-light-gradient dark:bg-dark-gradient border-r border-stroke dark:border-strokedark'
-      }`}
+      className={`absolute left-0 top-0 z-99 flex h-screen w-64 flex-col overflow-y-hidden duration-300 ease-linear lg:static lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} ${isSideBarTheme === "dark" ? "bg-black dark:bg-boxdark" : "bg-light-gradient dark:bg-dark-gradient border-r border-stroke dark:border-strokedark transition-all"}`}
     >
       {/* Logo 和标题区域 */}
       <div className="flex justify-center items-center gap-2 px-6 py-5.5 pb-0 lg:pt-6">

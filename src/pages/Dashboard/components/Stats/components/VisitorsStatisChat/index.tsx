@@ -27,105 +27,104 @@ interface ChartOneState {
 export default () => {
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [result, setResult] = useState<Result | null>(null);
-  const [scope, setScope] = useState<'day' | 'month' | 'year'>('day');
-  const [startDate, setStartDate] = useState(
-    dayjs(new Date()).subtract(7, 'day').format('YYYY/MM/DD'),
-  );
-  const endDate = dayjs(new Date()).format('YYYY/MM/DD');
-  // 图表相关配置
-  const [options, setOptions] = useState<ApexOptions>({
-    legend: {
-      show: false,
-      position: 'top',
-      horizontalAlign: 'left',
-    },
-    colors: ['#3C50E0', '#80CAEE'],
-    chart: {
-      fontFamily: 'Satoshi, sans-serif',
-      height: 335,
-      type: 'area',
-      dropShadow: {
-        enabled: true,
-        color: '#623CEA14',
-        top: 10,
-        blur: 4,
-        left: 0,
-        opacity: 0.1,
-      },
-      toolbar: {
-        show: false,
-      },
-    },
-    responsive: [
-      {
-        breakpoint: 1024,
-        options: {
-          chart: {
-            height: 300,
-          },
+    const [result, setResult] = useState<Result | null>(null);
+    const [scope, setScope] = useState<"day" | "month" | "year">("day");
+    const [startDate, setStartDate] = useState(dayjs(new Date()).subtract(7, "day").format("YYYY/MM/DD"));
+    const endDate = dayjs(new Date()).format("YYYY/MM/DD");
+
+    // 图表相关配置
+    const [options, setOptions] = useState<ApexOptions>({
+        legend: {
+            show: false,
+            position: 'top',
+            horizontalAlign: 'left',
         },
-      },
-      {
-        breakpoint: 1366,
-        options: {
-          chart: {
-            height: 350,
-          },
+        colors: ['#60a5fa', '#80CAEE'],
+        chart: {
+            fontFamily: 'Satoshi, sans-serif',
+            height: 335,
+            type: 'area',
+            dropShadow: {
+                enabled: true,
+                color: '#623CEA14',
+                top: 10,
+                blur: 4,
+                left: 0,
+                opacity: 0.1,
+            },
+            toolbar: {
+                show: false,
+            },
         },
-      },
-    ],
-    stroke: {
-      width: [2, 2],
-      curve: 'straight',
-    },
-    grid: {
-      xaxis: {
-        lines: {
-          show: true,
+        responsive: [
+            {
+                breakpoint: 1024,
+                options: {
+                    chart: {
+                        height: 300,
+                    },
+                },
+            },
+            {
+                breakpoint: 1366,
+                options: {
+                    chart: {
+                        height: 350,
+                    },
+                },
+            },
+        ],
+        stroke: {
+            width: [2, 2],
+            curve: 'straight',
         },
-      },
-      yaxis: {
-        lines: {
-          show: true,
+        grid: {
+            xaxis: {
+                lines: {
+                    show: true,
+                },
+            },
+            yaxis: {
+                lines: {
+                    show: true,
+                },
+            },
         },
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    markers: {
-      size: 4,
-      colors: '#fff',
-      strokeColors: ['#3056D3', '#80CAEE'],
-      strokeWidth: 3,
-      strokeOpacity: 0.9,
-      strokeDashArray: 0,
-      fillOpacity: 1,
-      discrete: [],
-      hover: {
-        size: undefined,
-        sizeOffset: 5,
-      },
-    },
-    xaxis: {
-      type: 'category',
-      categories: [],
-      axisBorder: {
-        show: false,
-      },
-      axisTicks: {
-        show: false,
-      },
-    },
-    yaxis: {
-      title: {
-        style: {
-          fontSize: '0px',
+        dataLabels: {
+            enabled: false,
         },
-      },
-    },
-  });
+        markers: {
+            size: 4,
+            colors: '#fff',
+            strokeColors: ['#60a5fa', '#80CAEE'],
+            strokeWidth: 3,
+            strokeOpacity: 0.9,
+            strokeDashArray: 0,
+            fillOpacity: 1,
+            discrete: [],
+            hover: {
+                size: undefined,
+                sizeOffset: 5,
+            },
+        },
+        xaxis: {
+            type: 'category',
+            categories: [],
+            axisBorder: {
+                show: false,
+            },
+            axisTicks: {
+                show: false,
+            },
+        },
+        yaxis: {
+            title: {
+                style: {
+                    fontSize: '0px',
+                },
+            },
+        },
+    });
 
     // 核心数据
     const [state, setState] = useState<ChartOneState>({

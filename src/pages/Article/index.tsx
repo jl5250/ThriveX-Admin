@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Table, Button, Tag, notification, Card, Popconfirm, Form, Input, Select, DatePicker, Modal, message } from 'antd';
+import { Table, Button, Tag, notification, Card, Popconfirm, Form, Input, Select, DatePicker, Modal, message, Pagination } from 'antd';
 import { DeleteOutlined, FormOutlined, InboxOutlined } from '@ant-design/icons';
 import type { UploadFile, UploadFileStatus, RcFile } from 'antd/es/upload/interface';
 import { titleSty } from '@/styles/sty'
@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 
 import { getCateListAPI } from '@/api/Cate'
 import { getTagListAPI } from '@/api/Tag'
-import { delArticleDataAPI, getArticleListAPI, importArticleDataAPI } from '@/api/Article';
+import { delArticleDataAPI, getArticlePagingAPI, importArticleDataAPI } from '@/api/Article';
 import type { Tag as ArticleTag } from '@/types/app/tag';
 import type { Cate } from '@/types/app/cate';
 import type { Article, Config, FilterArticle, FilterForm } from '@/types/app/article';
@@ -28,20 +28,40 @@ export default () => {
 
     const [form] = Form.useForm();
     const web = useWebStore(state => state.web);
-    const [current, setCurrent] = useState<number>(1);
     const [articleList, setArticleList] = useState<Article[]>([]);
     const { RangePicker } = DatePicker;
 
+    // 分页获得的文章列表
+    const [total, setTotal] = useState<number>(0);
+    // 分页参数
+    const [paging, setPaging] = useState<Page>({
+        page: 1,
+        size: 8,
+    });
+    // 条件参数
+    const [query, setQuery] = useState<FilterArticle>({
+        key: undefined,
+        cateId: undefined,
+        tagId: undefined,
+        isDraft: 0,
+        isDel: 0,
+        startDate: undefined,
+        endDate: undefined
+    })
+
+    // 分页获取文章
     const getArticleList = async () => {
         try {
             setLoading(true);
-
-            const { data } = await getArticleListAPI();
-            setArticleList(data);
-
-            setLoading(false);
+            const { data } = await getArticlePagingAPI({
+                pagination: paging,
+                query
+            })
+            setTotal(data.total)
+            setArticleList(data.result)
+            setLoading(false)
         } catch (error) {
-            setLoading(false);
+            setLoading(false)
         }
     };
 
@@ -53,7 +73,6 @@ export default () => {
             await delArticleDataAPI(id, true);
             await getArticleList();
             form.resetFields()
-            setCurrent(1)
             notification.success({ message: '🎉 删除文章成功' })
             setLoading(false);
         } catch (error) {
@@ -160,24 +179,20 @@ export default () => {
 
     const onFilterSubmit = async (values: FilterForm) => {
         try {
-            setLoading(true)
+            setPaging({
+                ...paging,
+                page: 1 // 条件参数发生变化，重置分页
+            });
 
-            const query: FilterArticle = {
+            setQuery({
                 key: values.title,
                 cateId: values.cateId,
                 tagId: values.tagId,
-                isDraft: 0,
-                isDel: 0,
                 startDate: values.createTime && values.createTime[0].valueOf() + '',
                 endDate: values.createTime && values.createTime[1].valueOf() + ''
-            }
-
-            const { data } = await getArticleListAPI({ query });
-            setArticleList(data);
-
-            setLoading(false)
+            });
         } catch (error) {
-            setLoading(false)
+            console.log(error);
         }
     }
 
@@ -313,6 +328,10 @@ export default () => {
 
     useEffect(() => {
         getArticleList()
+    }, [paging, query])
+
+    useEffect(() => {
+        getArticleList()
         getCateList()
         getTagList()
     }, [])
@@ -440,22 +459,19 @@ export default () => {
                 </div>
             </Modal>
 
-            <Card className={`${titleSty} min-h-[calc(100vh-270px)]`}>
+            <Card className={`${titleSty} min-h-[calc(100vh-250px)]`}>
                 <Table
                     rowKey="id"
                     dataSource={articleList}
                     columns={columns}
                     scroll={{ x: 'max-content' }}
-                    pagination={{
-                        position: ['bottomCenter'],
-                        current,
-                        defaultPageSize: 8,
-                        onChange(current) {
-                            setCurrent(current)
-                        }
-                    }}
+                    pagination={false}
                     loading={loading}
                 />
+
+                <div className='flex justify-center my-5'>
+                    <Pagination total={total} current={paging.page} pageSize={paging.size} onChange={(page, pageSize) => setPaging({ ...paging, page, size: pageSize })} />
+                </div>
             </Card>
         </div>
     );
