@@ -29,6 +29,7 @@ import dayjs from 'dayjs';
 import axios from 'axios';
 import { CloudUploadOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons';
 import Material from '@/components/Material';
+import { getEnvConfigDataAPI } from '@/api/Project';
 
 export default () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -36,6 +37,7 @@ export default () => {
   const [btnLoading, setBtnLoading] = useState(false);
   const [editLoading, setEditLoading] = useState(false);
 
+  const [gaodeApKey, setGaodeApKey] = useState<string>('');
   const [footprintList, setFootprintList] = useState<Footprint[]>([]);
   const [isModelOpen, setIsModelOpen] = useState(false);
   const [isMaterialModalOpen, setIsMaterialModalOpen] = useState(false);
@@ -109,6 +111,12 @@ export default () => {
 
   const { RangePicker } = DatePicker;
 
+  // 获取高德地图秘钥
+  const getEnvConfigData = async () => {
+    const { data } = await getEnvConfigDataAPI('gaode_coordinate');
+    setGaodeApKey(data.value.key)
+  }
+
   const getFootprintList = async () => {
     try {
       const { data } = await getFootprintListAPI();
@@ -122,6 +130,7 @@ export default () => {
 
   useEffect(() => {
     setLoading(true);
+    getEnvConfigData()
     getFootprintList();
   }, []);
 
@@ -229,15 +238,12 @@ export default () => {
 
       const address = form.getFieldValue('address');
 
-      const { data } = await axios.get(
-        'https://restapi.amap.com/v3/geocode/geo',
-        {
-          params: {
-            address,
-            key: import.meta.env.VITE_GAODE_WEB_API,
-          },
-        },
-      );
+      const { data } = await axios.get('https://restapi.amap.com/v3/geocode/geo', {
+        params: {
+          address,
+          key: gaodeApKey
+        }
+      });
 
       if (data.geocodes && data.geocodes.length > 0) {
         const location = data.geocodes[0].location;

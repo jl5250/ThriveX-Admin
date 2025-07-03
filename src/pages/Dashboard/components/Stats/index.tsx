@@ -33,7 +33,7 @@ export default () => {
         const h = Math.floor(roundedSeconds / 3600).toString().padStart(2, '0');
         const m = Math.floor((roundedSeconds % 3600) / 60).toString().padStart(2, '0');
         const s = (roundedSeconds % 60).toString().padStart(2, '0');
-        return `${h}:${m}:${s}`; 
+        return `${h}:${m}:${s}`;
     };
 
   // 获取统计数据
@@ -79,12 +79,12 @@ export default () => {
         }
       });
 
-      setStats({
-        pv,
-        ip,
-        bounce: count !== 0 ? bounce / count : 0,
-        avgTime: count !== 0 ? formatTime(avgTime / count) : '00:00:00',
-      });
+            setStats({
+                pv,
+                ip,
+                bounce: count !== 0 ? bounce / count : 0,
+                avgTime: count !== 0 ? formatTime(avgTime / count) : '00:00:00',
+            })
 
       setLoading(false);
     } catch (error) {
@@ -92,18 +92,18 @@ export default () => {
     }
   };
 
-  useEffect(() => {
-    getDataList();
-  }, []);
+    useEffect(() => {
+        getDataList()
+    }, []);
 
     return (
         <Spin spinning={loading}>
             {/* 基本数据 */}
             <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-4">
-                <CardDataStats 
-                    title="今日浏览量" 
-                    total={stats.pv + ''} 
-                    rate="0.43%" 
+                <CardDataStats
+                    title="今日浏览量"
+                    total={stats.pv + ''}
+                    rate="0.43%"
                     levelUp
                 >
                     <AiOutlineEye className="fill-primary dark:fill-white text-2xl" />

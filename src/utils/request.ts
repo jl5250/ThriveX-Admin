@@ -49,21 +49,23 @@ instance.interceptors.request.use(
 
 // 响应拦截
 instance.interceptors.response.use(
-  (res: AxiosResponse) => {
-    // 只要code不等于200, 就相当于响应失败
-    if (res.data?.code !== 200) {
-      notification.error({
-        message: '响应异常',
-        description: res.data?.message || '未知错误',
-      });
+    (res: AxiosResponse) => {
+        if (res.data?.code === 600) return res.data
+
+        // 只要code不等于200, 就相当于响应失败
+        if (res.data?.code !== 200) {
+            notification.error({
+                message: '响应异常',
+                description: res.data?.message || "未知错误",
+            })
 
       return Promise.reject(res.data);
     }
 
-    return res.data;
-  },
-  (err: AxiosError) => {
-    if (isHandling401Error) return;
+        return res.data;
+    },
+    (err: AxiosError) => {
+        if (isHandling401Error) return;
 
     // 如果code为401就证明认证失败
     if (err.response?.status === 401) {
