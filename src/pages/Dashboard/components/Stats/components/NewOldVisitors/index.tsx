@@ -1,9 +1,18 @@
+<<<<<<< HEAD
 import { ApexOptions } from 'apexcharts'
 import { useEffect, useState } from 'react'
 import ReactApexChart from 'react-apexcharts'
 import dayjs from 'dayjs'
 import { Spin } from 'antd'
 import { getStatisAPI } from '@/api/Statis'
+=======
+import { ApexOptions } from 'apexcharts';
+import { useEffect, useState } from 'react';
+import ReactApexChart from 'react-apexcharts';
+import dayjs from 'dayjs';
+import { Spin } from 'antd';
+import { getStatisAPI } from '@/api/Statis';
+>>>>>>> b77b202a1c1877f6829b37d09a9b00a1a961073a
 
 interface ChartThreeState {
   series: number[]
@@ -68,8 +77,13 @@ export default () => {
       const { data } = await getStatisAPI('new-visitor', date, date)
       const { result } = data as any
 
+<<<<<<< HEAD
       const newVisitors = result.items[1][0][1] !== '--' ? result.items[1][0][1] : 0
       const oldVisitors = result.items[1][0][1] !== '--' ? 100 - result.items[1][0][1] : 0
+=======
+      const newVisitors = result.items[1][0][1] !== "--" ? Number(Number(result.items[1][0][1]).toFixed(2)) : 0
+      const oldVisitors = result.items[1][0][1] !== "--" ? Number((100 - result.items[1][0][1]).toFixed(2)) : 0
+>>>>>>> b77b202a1c1877f6829b37d09a9b00a1a961073a
 
       setState({ series: [newVisitors, oldVisitors] })
       setResult({ newVisitors, oldVisitors })
