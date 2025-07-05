@@ -132,7 +132,6 @@ export default () => {
         </CardDataStats>
       </div>
 
-<<<<<<< HEAD
       <div className="rounded-lg mt-2 grid grid-cols-12 gap-2">
         {/* IP访客折线图 */}
         <VisitorsStatisChat />
@@ -140,18 +139,7 @@ export default () => {
         <NewOldVisitors />
         {/* 地域分布 */}
         <RegionDistribution />
-        {/* <ChartTwo />
-                <ChatCard /> */}
       </div>
     </Spin>
   );
 };
-=======
-            <div className="rounded-lg mt-2 grid grid-cols-12 gap-2">
-                <VisitorsStatisChat />
-                <NewOldVisitors />
-            </div>
-        </Spin>
-    )
-}
->>>>>>> b77b202a1c1877f6829b37d09a9b00a1a961073a
