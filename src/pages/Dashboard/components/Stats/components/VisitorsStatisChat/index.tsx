@@ -311,9 +311,7 @@ export default () => {
                 padding: 16,
                 extraCssText: 'box-shadow: 0 4px 24px rgba(0,0,0,0.08); border-radius: 10px;',
                 formatter: function (params: any) {
-                  let str = `<div style=\"font-weight:700;margin-bottom:8px;\">${
-                    params[0].axisValue
-                  }${scope === 'month' ? '月' : scope === 'year' ? '年' : ''}</div>`
+                  let str = `<div style=\"font-weight:700;margin-bottom:8px;\">${params[0].axisValue}${scope === 'month' ? '月' : scope === 'year' ? '年' : ''}</div>`
                   params.forEach((item: any) => {
                     let color
                     if (item.seriesName === '访客') {
@@ -344,7 +342,7 @@ export default () => {
               },
               grid: {
                 left: 50,
-                right: 10,
+                right: 20,
                 top: 20,
                 bottom: 60
               },

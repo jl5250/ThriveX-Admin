@@ -1,7 +1,7 @@
 {
   "name": "thrivex-admin",
   "private": true,
-  "version": "3.0.0",
+  "version": "3.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,6 +12,10 @@
     "name": "刘宇阳",
     "email": "liuyuyang1024@yeah.net",
     "url": "https://liuyuyang.net"
+  },
+  "engines": {
+    "node": ">=20",
+    "npm": ">=10"
   },
   "dependencies": {
     "@ant-design/icons": "^5.5.2",
@@ -25,9 +29,11 @@
     "@wangeditor-next/editor": "^5.6.35",
     "@wangeditor-next/editor-for-react": "^1.0.9",
     "antd": "^5.19.3",
-    "apexcharts": "^4.0.0",
+    "apexcharts": "^4.7.0",
     "axios": "^1.7.2",
+    "bytemd": "^1.22.0",
     "compressorjs": "^1.2.1",
+    "dayjs": "^1.11.13",
     "dicebear": "^9.2.1",
     "echarts": "^5.6.0",
     "echarts-for-react": "^3.0.2",
@@ -63,5 +69,13 @@
     "tailwindcss": "^3.4.1",
     "vite": "^4.4.7",
     "webpack": "^5.88.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "es5-ext",
+      "esbuild",
+      "sharp"
+    ]
   }
 }
