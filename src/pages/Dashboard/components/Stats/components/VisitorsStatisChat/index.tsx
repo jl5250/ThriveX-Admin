@@ -231,34 +231,29 @@ export default () => {
     setLoading(false)
   }, [scopeData])
 
-  // 处理范围变更并相应地更新日期范围
-  const handleScopeChange = (newScope: 'day' | 'month' | 'year') => {
-    setScope(newScope)
-    const now = dayjs()
-    switch (newScope) {
-      case 'day': {
-        // 本月1号到本月最后一天
-        setStartDate(now.startOf('month').format('YYYY/MM/DD'))
-        break
-      }
-      case 'month': {
-        // 本年1月1日到12月31日
-        setStartDate(now.startOf('year').format('YYYY/MM/DD'))
-        break
-      }
-      case 'year': {
-        // 取接口最早的年（如果有数据），否则5年前
-        if (result && result.items[0].length > 0) {
-          const years = result.items[0].map((arr) => dayjs(arr[0], 'YYYY/MM/DD').year())
-          const minYear = Math.min(...years)
-          setStartDate(dayjs(`${minYear}-01-01`).format('YYYY/MM/DD'))
-        } else {
-          setStartDate(now.subtract(5, 'year').startOf('year').format('YYYY/MM/DD'))
+    // 处理范围变更并相应地更新日期范围
+    const handleScopeChange = (newScope: "day" | "month" | "year") => {
+        setScope(newScope);
+        const now = dayjs();
+        switch (newScope) {
+            case "day": {
+                // 本月1号到本月最后一天
+                setStartDate(now.startOf('month').format('YYYY/MM/DD'));
+                break;
+            }
+            case "month": {
+                // 本年1月1日到12月31日
+                setStartDate(now.startOf('year').format('YYYY/MM/DD'));
+                break;
+            }
+            case "year": {
+                // 近五年（含今年），起始时间为五年前的1月1日
+                const startYear = now.year() - 4;
+                setStartDate(dayjs(`${startYear}-01-01`).format('YYYY/MM/DD'));
+                break;
+            }
         }
-        break
-      }
-    }
-  }
+    };
 
   return (
     <div className="col-span-12 rounded-2xl border border-stroke px-5 pt-7.5 pb-5 shadow-default dark:border-transparent bg-light-gradient dark:bg-dark-gradient sm:px-7.5 xl:col-span-8">
