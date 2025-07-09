@@ -14,13 +14,13 @@ export default () => {
     const [form] = Form.useForm<EditUser>();
 
     const initialValues: EditUser = {
-        username: store.user?.username || '',
+        newUsername: store.user?.username || '',
         oldPassword: '',
         newPassword: ''
-    };
+    } as EditUser;
 
     const rules = {
-        username: [
+        newUsername: [
             { required: true, message: '管理员账号不能为空' },
             { min: 5, max: 16, message: '账号限制在5 ~ 16个字符' }
         ],
@@ -38,7 +38,7 @@ export default () => {
         try {
             setLoading(true)
 
-            await editAdminPassAPI(values);
+            await editAdminPassAPI({ ...values, oldUsername: store.user?.username || '' });
 
             confirm({
                 title: '提示',
@@ -56,7 +56,7 @@ export default () => {
 
     return (
         <div>
-            <h2 className="text-xl pb-4 pl-10">系统配置</h2>
+            <h2 className="text-xl pb-4 pl-10">账户配置</h2>
 
             <Form
                 form={form}
@@ -68,10 +68,10 @@ export default () => {
             >
                 <Form.Item
                     label="管理员账号"
-                    name="username"
-                    rules={rules.username}
+                    name="newUsername"
+                    rules={rules.newUsername}
                 >
-                    <Input placeholder="请输入账号" disabled />
+                    <Input placeholder="请输入账号" />
                 </Form.Item>
 
                 <Form.Item

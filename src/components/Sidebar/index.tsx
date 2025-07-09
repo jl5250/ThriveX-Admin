@@ -2,24 +2,14 @@ import React, { useEffect, useRef, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import SidebarLinkGroup from './SidebarLinkGroup'
 
-import {
-  BiEditAlt,
-  BiFolderOpen,
-  BiHomeSmile,
-  BiSliderAlt,
-  BiShieldQuarter,
-  BiCategoryAlt,
-  BiBug,
-  BiImages
-} from 'react-icons/bi'
-import { LiaRssSolid } from 'react-icons/lia'
-import { TbBrandAirtable } from 'react-icons/tb'
+import { BiEditAlt, BiFolderOpen, BiHomeSmile, BiSliderAlt, BiShieldQuarter, BiCategoryAlt, BiBug } from "react-icons/bi";
+import { TbBrandAirtable } from "react-icons/tb";
 
 import { useUserStore } from '@/stores'
 import { getRoleRouteListAPI } from '@/api/Role'
-import { Route } from '@/types/app/route'
-import logo from '@/images/logo/logo.png'
-import useVersionData from '@/hooks/useVersionData'
+import { Route } from '@/types/app/route';
+import logo from '/logo.png'
+import useVersionData from '@/hooks/useVersionData';
 
 interface SidebarProps {
   sidebarOpen: boolean
@@ -235,7 +225,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             {
               to: "/config",
               path: "config",
-              name: "环境配置"
+              name: "项目配置"
             },
           ]
         },
