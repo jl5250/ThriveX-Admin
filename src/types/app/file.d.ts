@@ -1,8 +1,4 @@
-export type DirList = 'default' | 'article' | 'swiper' | string;
-
-type Dictionary = {
-  [key: string]: number;
-};
+export type DirList = ('default' | 'article' | 'swiper' | string)
 
 export interface File {
   name: string;

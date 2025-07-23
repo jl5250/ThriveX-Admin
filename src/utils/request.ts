@@ -1,8 +1,4 @@
-import axios, {
-  AxiosError,
-  AxiosResponse,
-  InternalAxiosRequestConfig,
-} from 'axios';
+import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { Modal, notification } from 'antd';
 import { useUserStore } from '@/stores';
 
@@ -27,13 +23,12 @@ let isHandling401Error = false;
 
 // 请求拦截
 instance.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    // 获取token
-    const token = JSON.parse(localStorage.getItem('user_storage') || '{}')
-      ?.state.token;
+    (config: InternalAxiosRequestConfig) => {
+        // 获取token
+        const token = JSON.parse(localStorage.getItem('user_storage') || '{}')?.state.token
 
-    // 如果有token就把赋值给请求头
-    if (token) config.headers['Authorization'] = `Bearer ${token}`;
+        // 如果有token就把赋值给请求头
+        if (token) config.headers['Authorization'] = `Bearer ${token}`;
 
     return config;
   },
@@ -56,7 +51,7 @@ instance.interceptors.response.use(
         if (res.data?.code !== 200) {
             notification.error({
                 message: '响应异常',
-                description: res.data?.message || "未知错误",
+                description: res.data?.message || '未知错误',
             })
 
       return Promise.reject(res.data);
@@ -71,16 +66,16 @@ instance.interceptors.response.use(
     if (err.response?.status === 401) {
       isHandling401Error = true; // 标记为正在处理401错误
 
-      Modal.error({
-        title: '暂无权限',
-        content: '🔒️ 登录已过期，请重新登录?',
-        okText: '去登录',
-        onOk: () => {
-          const store = useUserStore.getState();
-          store.quitLogin();
-          isHandling401Error = false; // 重置标记
-        },
-      });
+            Modal.error({
+                title: '暂无权限',
+                content: '🔒️ 登录已过期，请重新登录?',
+                okText: '去登录',
+                onOk: () => {
+                    const store = useUserStore.getState()
+                    store.quitLogin()
+                    isHandling401Error = false; // 重置标记
+                }
+            });
 
       // 取消后续的所有请求
       source.cancel('认证失败，取消所有请求');
@@ -88,10 +83,10 @@ instance.interceptors.response.use(
       return Promise.reject(err.response?.data);
     }
 
-    notification.error({
-      message: '程序异常',
-      description: err.message || '未知错误',
-    });
+        notification.error({
+            message: '程序异常',
+            description: err.message || '未知错误',
+        })
 
     return Promise.reject(err);
   },

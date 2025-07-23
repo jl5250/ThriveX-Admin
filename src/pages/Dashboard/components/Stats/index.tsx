@@ -1,25 +1,25 @@
 import { useEffect, useState } from 'react'
-import { Spin } from 'antd'
+import { Spin } from 'antd';
 import VisitorsStatisChat from './components/VisitorsStatisChat'
 import NewOldVisitors from './components/NewOldVisitors'
 import CardDataStats from '@/components/CardDataStats'
 import RegionDistribution from './components/RegionDistribution'
 
-import { AiOutlineEye, AiOutlineMeh, AiOutlineStock, AiOutlineFieldTime } from 'react-icons/ai'
-import dayjs from 'dayjs'
-import { getStatisAPI } from '@/api/Statis'
+import { AiOutlineEye, AiOutlineMeh, AiOutlineStock, AiOutlineFieldTime } from 'react-icons/ai';
+import dayjs from 'dayjs';
+import { getStatisAPI } from '@/api/Statis';
 
 export default () => {
   const [loading, setLoading] = useState(false)
 
-  const [stats, setStats] = useState({
-    pv: 0,
-    ip: 0,
-    bounce: 0,
-    avgTime: ''
-  })
+    const [stats, setStats] = useState({
+        pv: 0,
+        ip: 0,
+        bounce: 0,
+        avgTime: '',
+    });
 
-  const date = dayjs(new Date()).format('YYYY/MM/DD')
+    const date = dayjs(new Date()).format('YYYY/MM/DD');
 
   const formatTime = (seconds: number) => {
     // 四舍五入到最接近的整数
@@ -40,14 +40,14 @@ export default () => {
     try {
       setLoading(true)
 
-      const { data } = await getStatisAPI('overview', date, date)
-      const { result } = data as any
+            const { data } = await getStatisAPI('overview', date, date);
+            const { result } = data as any;
 
-      let pv = 0
-      let ip = 0
-      let bounce = 0
-      let avgTime = 0
-      let count = 0
+            let pv = 0;
+            let ip = 0;
+            let bounce = 0;
+            let avgTime = 0;
+            let count = 0
 
       result.items[1].forEach((item: number[]) => {
         if (!Number(item[0])) return
@@ -85,11 +85,12 @@ export default () => {
         avgTime: count !== 0 ? formatTime(avgTime / count) : '00:00:00'
       })
 
-      setLoading(false)
-    } catch (error) {
-      setLoading(false)
-    }
-  }
+            setLoading(false)
+        } catch (error) {
+            console.error(error);
+            setLoading(false)
+        }
+    };
 
   useEffect(() => {
     getDataList()
