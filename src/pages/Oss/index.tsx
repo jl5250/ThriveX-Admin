@@ -88,6 +88,7 @@ export default () => {
 
       const { data } = await getOssListAPI();
       setOssList(data);
+      setLoading(false);
     } catch (error) {
       console.error(error);
       setLoading(false);
@@ -101,21 +102,16 @@ export default () => {
 
   const enableOssData = async (id: number) => {
     try {
-      setLoading(true);
-
       await enableOssDataAPI(id);
       getOssList();
       message.success('启用成功');
     } catch (error) {
       console.error(error);
-      setLoading(false);
     }
   };
 
   const disableOssData = async (id: number) => {
     try {
-      setLoading(true);
-
       await disableOssDataAPI(id);
       getOssList();
       message.success('禁用成功');
@@ -143,8 +139,6 @@ export default () => {
 
   const delOssData = async (id: number) => {
     try {
-      setLoading(true);
-
       await delOssDataAPI(id);
       getOssList();
       message.success('🎉 删除存储配置成功');
