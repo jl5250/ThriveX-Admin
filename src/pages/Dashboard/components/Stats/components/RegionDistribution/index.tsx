@@ -19,10 +19,12 @@ const RegionDistribution = () => {
     try {
       setLoading(true)
       const { data } = await getStatisAPI('distribution', startDate, endDate)
+      console.log('获取地域分布数据', data)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { result } = data as any
 
       // 解析数据
-      const regionList: RegionData[] = result.items[1].map((item: any[], idx: number) => {
+      const regionList: RegionData[] = result.items[1].map((item: string[], idx: number) => {
         const name = result.items[0][idx][0].name
         // 根据省份名称添加对应的后缀
         let fullName = name
@@ -43,7 +45,7 @@ const RegionDistribution = () => {
       console.log('regionList', regionList)
       setLoading(false)
       setData(regionList)
-    } catch (e) {
+    } catch {
       setLoading(false)
       setData([])
     }
