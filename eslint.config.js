@@ -7,6 +7,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 
 export default defineConfig([
+  { ignores: ['dist'] },
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     plugins: { js },
@@ -26,7 +27,6 @@ export default defineConfig([
   pluginReact.configs.flat.recommended,
   {
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
       'no-unused-vars': 'off', // 关闭未使用变量的检查
       'react-refresh/only-export-components': 'off',
       'react/display-name': 'off',
@@ -35,6 +35,8 @@ export default defineConfig([
       'jsx-quotes': ['error', 'prefer-double'],
       'react-hooks/exhaustive-deps': 'off',
       'react/react-in-jsx-scope': 'off',
+      // 禁止使用 any 类型
+      '@typescript-eslint/no-explicit-any': 'error',
     },
   },
 ]);

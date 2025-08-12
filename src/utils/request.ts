@@ -93,12 +93,12 @@ instance.interceptors.response.use(
 );
 
 const Request = <T>(method: string, url: string, reqParams?: object) => {
-  return instance.request<any, Response<T>>({
-    method,
-    url,
-    ...reqParams,
-    cancelToken: source.token,
-  });
+    return instance.request<Response<T>, Response<T>>({
+        method,
+        url,
+        ...reqParams,
+        cancelToken: source.token
+    });
 };
 
 export default Request;

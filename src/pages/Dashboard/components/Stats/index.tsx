@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import { Spin } from 'antd';
 import VisitorsStatisChat from './components/VisitorsStatisChat'
 import NewOldVisitors from './components/NewOldVisitors'
@@ -8,93 +8,94 @@ import RegionDistribution from './components/RegionDistribution'
 import { AiOutlineEye, AiOutlineMeh, AiOutlineStock, AiOutlineFieldTime } from 'react-icons/ai';
 import dayjs from 'dayjs';
 import { getStatisAPI } from '@/api/Statis';
+import { StatisResponse } from './components/VisitorsStatisChat/type';
 
 export default () => {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
-    const [stats, setStats] = useState({
-        pv: 0,
-        ip: 0,
-        bounce: 0,
-        avgTime: '',
-    });
+  const [stats, setStats] = useState({
+    pv: 0,
+    ip: 0,
+    bounce: 0,
+    avgTime: '',
+  });
 
-    const date = dayjs(new Date()).format('YYYY/MM/DD');
+  const date = dayjs(new Date()).format('YYYY/MM/DD');
 
   const formatTime = (seconds: number) => {
     // 四舍五入到最接近的整数
-    const roundedSeconds = Math.round(seconds)
+    const roundedSeconds = Math.round(seconds);
 
     const h = Math.floor(roundedSeconds / 3600)
       .toString()
-      .padStart(2, '0')
+      .padStart(2, '0');
     const m = Math.floor((roundedSeconds % 3600) / 60)
       .toString()
-      .padStart(2, '0')
-    const s = (roundedSeconds % 60).toString().padStart(2, '0')
-    return `${h}:${m}:${s}`
-  }
+      .padStart(2, '0');
+    const s = (roundedSeconds % 60).toString().padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  };
 
   // 获取统计数据
   const getDataList = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
 
-            const { data } = await getStatisAPI('overview', date, date);
-            const { result } = data as any;
+      const { data } = await getStatisAPI('overview', date, date);
+      const { result } = data as StatisResponse;
 
-            let pv = 0;
-            let ip = 0;
-            let bounce = 0;
-            let avgTime = 0;
-            let count = 0
+      let pv = 0;
+      let ip = 0;
+      let bounce = 0;
+      let avgTime = 0;
+      let count = 0;
 
-      result.items[1].forEach((item: number[]) => {
-        if (!Number(item[0])) return
+      result.items[1].forEach((item: (string | number)[]) => {
+        if (!Number(item[0])) return;
 
         // 检查并累加 pv
         if (!isNaN(Number(item[0]))) {
-          pv += Number(item[0])
+          pv += Number(item[0]);
         }
 
         // 检查并累加 ip
         if (!isNaN(Number(item[1]))) {
-          ip += Number(item[1])
+          ip += Number(item[1]);
         }
 
         // 检查并累加 bounce
         if (!isNaN(Number(item[2]))) {
-          bounce += Number(item[2])
+          bounce += Number(item[2]);
         }
 
         // 检查并累加 avgTime
         if (!isNaN(Number(item[3]))) {
-          avgTime += Number(item[3])
+          avgTime += Number(item[3]);
         }
 
         // 只有第三个和第四个数据都有值时才增加 count
         if (!isNaN(Number(item[2])) && !isNaN(Number(item[3]))) {
-          count++
+          count++;
         }
-      })
+      });
 
       setStats({
         pv,
         ip,
         bounce: count !== 0 ? bounce / count : 0,
-        avgTime: count !== 0 ? formatTime(avgTime / count) : '00:00:00'
-      })
+        avgTime: count !== 0 ? formatTime(avgTime / count) : '00:00:00',
+      });
 
-            setLoading(false)
-        } catch (error) {
-            console.error(error);
-            setLoading(false)
-        }
-    };
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    getDataList()
-  }, [])
+    getDataList();
+  }, []);
 
   return (
     <Spin spinning={loading}>
