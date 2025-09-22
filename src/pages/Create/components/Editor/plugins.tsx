@@ -12,6 +12,8 @@ import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 import type { Element, Root } from 'hast';
 import { Modal, Input, message } from 'antd';
+import hljs from 'highlight.js/lib/core';
+import dos from 'highlight.js/lib/languages/dos';
 
 import videoSvg from './icon/video.svg?raw';
 import markerSvg from './icon/marker.svg?raw';
@@ -22,6 +24,11 @@ import warningSvg from './icon/warning.svg?raw';
 import checkSvg from './icon/check.svg?raw';
 import dangerSvg from './icon/danger.svg?raw';
 import imageSvg from './icon/image.svg?raw';
+
+// 注册 batch 语言支持
+hljs.registerLanguage('batch', dos);
+hljs.registerLanguage('bat', dos);
+hljs.registerLanguage('cmd', dos);
 
 const rehypeDouyinVideo: Plugin<[], Root> = () => {
   return (tree) => {
