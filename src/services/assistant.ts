@@ -149,7 +149,7 @@ export const callAssistantAPI = async (
     temperature?: number;
     max_tokens?: number;
   } = {},
-): Promise<ReadableStreamDefaultReader<Uint8Array> | any> => {
+): Promise<ReadableStreamDefaultReader<Uint8Array> | unknown> => {
   try {
     const baseUrl = assistant.url || 'https://api.deepseek.com/v1';
     const apiKey = assistant.key.trim();
