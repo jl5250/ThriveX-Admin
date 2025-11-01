@@ -461,6 +461,22 @@ export default () => {
           setOpenImageInfoDrawer(false);
           setCurrentImage({} as AlbumImage);
         }}
+        footer={
+          <div>
+            <Divider orientation="center">照片操作</Divider>
+            <Button type="default" onClick={() => openEditImageForm(currentImage)} className="w-full mb-2">
+              编辑照片
+            </Button>
+            <Button type="primary" loading={downloadLoading} onClick={() => onDownloadImage(currentImage)} className="w-full mb-2">
+              下载照片
+            </Button>
+            <Popconfirm title="警告" description="删除后无法恢复，确定要删除吗" onConfirm={() => onDeleteImage(currentImage)} okText="删除" cancelText="取消">
+              <Button type="primary" danger loading={btnLoading} className="w-full">
+                删除照片
+              </Button>
+            </Popconfirm>
+          </div>
+        }
       >
         <div className="flex flex-col">
           <div className="flex">
@@ -476,7 +492,7 @@ export default () => {
           <div className="flex">
             <span className="min-w-20  font-bold">照片链接</span>
             <span
-              className="text-[#333] dark:text-white hover:text-primary cursor-pointer transition"
+              className="text-[#333] dark:text-white hover:!text-primary cursor-pointer transition"
               onClick={async () => {
                 await navigator.clipboard.writeText(currentImage.image);
                 message.success('🎉 复制成功');
@@ -515,19 +531,6 @@ export default () => {
             ),
           }}
         />
-
-        <Divider orientation="center">照片操作</Divider>
-        <Button type="default" onClick={() => openEditImageForm(currentImage)} className="w-full mb-2">
-          编辑照片
-        </Button>
-        <Button type="primary" loading={downloadLoading} onClick={() => onDownloadImage(currentImage)} className="w-full mb-2">
-          下载照片
-        </Button>
-        <Popconfirm title="警告" description="删除后无法恢复，确定要删除吗" onConfirm={() => onDeleteImage(currentImage)} okText="删除" cancelText="取消">
-          <Button type="primary" danger loading={btnLoading} className="w-full">
-            删除照片
-          </Button>
-        </Popconfirm>
       </Drawer>
 
       {/* 上传照片弹窗 */}
