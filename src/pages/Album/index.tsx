@@ -7,7 +7,7 @@ import { PiKeyReturnFill } from 'react-icons/pi';
 import TextArea from 'antd/es/input/TextArea';
 
 import { addAlbumCateDataAPI, delAlbumCateDataAPI, editAlbumCateDataAPI, getAlbumCateListAPI, getImagesByAlbumIdAPI } from '@/api/AlbumCate';
-import { addAlbumImageDataAPI, delAlbumImageDataAPI } from '@/api/AlbumImage';
+import { addAlbumImageDataAPI, delAlbumImageDataAPI, editAlbumImageDataAPI } from '@/api/AlbumImage';
 import Material from '@/components/Material';
 import Title from '@/components/Title';
 import { AlbumCate, AlbumImage } from '@/types/app/album';
@@ -66,6 +66,13 @@ export default () => {
   const [uploadForm] = Form.useForm();
   // 上传照片加载状态
   const [uploadLoading, setUploadLoading] = useState(false);
+
+  // 编辑照片表单
+  const [editImageForm] = Form.useForm();
+  // 编辑照片弹窗状态
+  const [openEditImageModal, setOpenEditImageModal] = useState(false);
+  // 编辑照片加载状态
+  const [editImageLoading, setEditImageLoading] = useState(false);
 
   /**
    * 获取相册列表
@@ -279,6 +286,56 @@ export default () => {
     }
   };
 
+  /**
+   * 打开编辑照片表单
+   * @param data 照片数据
+   */
+  const openEditImageForm = (data: AlbumImage) => {
+    editImageForm.setFieldsValue({
+      id: data.id,
+      name: data.name,
+      description: data.description,
+      image: data.image,
+    });
+    setOpenEditImageModal(true);
+  };
+
+  /**
+   * 提交编辑照片表单
+   */
+  const onEditImageSubmit = async () => {
+    try {
+      const values = await editImageForm.validateFields();
+      setEditImageLoading(true);
+
+      await editAlbumImageDataAPI({
+        id: values.id,
+        name: values.name,
+        description: values.description,
+        image: values.image,
+        cateId: currentAlbum.id!,
+        createTime: currentImage.createTime,
+      });
+
+      message.success('🎉 修改照片成功');
+      setOpenEditImageModal(false);
+      editImageForm.resetFields();
+      getImageList(currentAlbum.id!);
+      getAlbumList();
+      // 更新当前照片信息
+      setCurrentImage({
+        ...currentImage,
+        name: values.name,
+        description: values.description,
+        image: values.image,
+      });
+      setEditImageLoading(false);
+    } catch (error) {
+      console.error(error);
+      setEditImageLoading(false);
+    }
+  };
+
   return (
     <div>
       <Title value="相册管理" />
@@ -404,6 +461,22 @@ export default () => {
           setOpenImageInfoDrawer(false);
           setCurrentImage({} as AlbumImage);
         }}
+        footer={
+          <div>
+            <Divider orientation="center">照片操作</Divider>
+            <Button type="default" onClick={() => openEditImageForm(currentImage)} className="w-full mb-2">
+              编辑照片
+            </Button>
+            <Button type="primary" loading={downloadLoading} onClick={() => onDownloadImage(currentImage)} className="w-full mb-2">
+              下载照片
+            </Button>
+            <Popconfirm title="警告" description="删除后无法恢复，确定要删除吗" onConfirm={() => onDeleteImage(currentImage)} okText="删除" cancelText="取消">
+              <Button type="primary" danger loading={btnLoading} className="w-full">
+                删除照片
+              </Button>
+            </Popconfirm>
+          </div>
+        }
       >
         <div className="flex flex-col">
           <div className="flex">
@@ -419,7 +492,7 @@ export default () => {
           <div className="flex">
             <span className="min-w-20  font-bold">照片链接</span>
             <span
-              className="text-[#333] dark:text-white hover:text-primary cursor-pointer transition"
+              className="text-[#333] dark:text-white hover:!text-primary cursor-pointer transition"
               onClick={async () => {
                 await navigator.clipboard.writeText(currentImage.image);
                 message.success('🎉 复制成功');
@@ -458,16 +531,6 @@ export default () => {
             ),
           }}
         />
-
-        <Divider orientation="center">照片操作</Divider>
-        <Button type="primary" loading={downloadLoading} onClick={() => onDownloadImage(currentImage)} className="w-full mb-2">
-          下载照片
-        </Button>
-        <Popconfirm title="警告" description="删除后无法恢复，确定要删除吗" onConfirm={() => onDeleteImage(currentImage)} okText="删除" cancelText="取消">
-          <Button type="primary" danger loading={btnLoading} className="w-full">
-            删除照片
-          </Button>
-        </Popconfirm>
       </Drawer>
 
       {/* 上传照片弹窗 */}
@@ -513,16 +576,63 @@ export default () => {
         </Form>
       </Modal>
 
+      {/* 编辑照片弹窗 */}
+      <Modal
+        title="编辑照片"
+        open={openEditImageModal}
+        onOk={onEditImageSubmit}
+        onCancel={() => {
+          setOpenEditImageModal(false);
+          editImageForm.resetFields();
+        }}
+        confirmLoading={editImageLoading}
+      >
+        <Form form={editImageForm} layout="vertical" size="large">
+          <Form.Item name="id" hidden>
+            <Input />
+          </Form.Item>
+
+          <Form.Item name="name" label="照片名称" rules={[{ required: true, message: '请输入照片名称' }]}>
+            <Input placeholder="请输入照片名称" />
+          </Form.Item>
+
+          <Form.Item name="description" label="照片描述">
+            <TextArea rows={2} placeholder="请输入照片描述" />
+          </Form.Item>
+
+          <Form.Item
+            name="image"
+            label="照片链接"
+            rules={[
+              { required: true, message: '请输入照片链接' },
+              {
+                pattern: /^https?:\/\//,
+                message: '请输入正确的链接',
+                warningOnly: false,
+              },
+            ]}
+          >
+            <Input placeholder="请输入照片链接" prefix={<PictureOutlined />} addonAfter={<CloudUploadOutlined className="text-xl cursor-pointer" onClick={() => setIsMaterialModalOpen(true)} />} className="customizeAntdInputAddonAfter" />
+          </Form.Item>
+        </Form>
+      </Modal>
+
       {/* Material组件 */}
       <Material
         open={isMaterialModalOpen}
         onClose={() => setIsMaterialModalOpen(false)}
         onSelect={(url) => {
           if (url.length) {
-            if (currentAlbum.id) {
+            if (openEditImageModal) {
+              // 编辑照片时
+              editImageForm.setFieldValue('image', url[0]);
+              editImageForm.validateFields(['image']);
+            } else if (currentAlbum.id) {
+              // 上传照片时
               uploadForm.setFieldValue('image', url[0]);
               uploadForm.validateFields(['image']);
             } else {
+              // 相册封面时
               albumForm.setFieldValue('cover', url[0]);
               albumForm.validateFields(['cover']);
             }
