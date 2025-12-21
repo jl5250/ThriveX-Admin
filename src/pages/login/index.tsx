@@ -6,7 +6,6 @@ import { UserOutlined, LockOutlined, EyeOutlined, EyeInvisibleOutlined } from '@
 
 import { loginDataAPI } from '@/api/user';
 import { useUserStore } from '@/stores';
-import { getRolePermissionListAPI } from '@/api/role';
 import { setShowLoginNotification } from '@/components/SystemNotification';
 
 export default () => {
@@ -27,13 +26,11 @@ export default () => {
 
       const values = await form.validateFields();
       const { data } = await loginDataAPI(values);
-      const { data: permission } = await getRolePermissionListAPI(data.role.id as number);
 
       // 将用户信息和token保存起来
       store.setToken(data.token);
       store.setUser(data.user);
       store.setRole(data.role);
-      store.setPermission(permission);
 
       // 设置显示登录通知的标记
       setShowLoginNotification();

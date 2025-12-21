@@ -5,9 +5,6 @@ import SidebarLinkGroup from './SidebarLinkGroup';
 import { BiEditAlt, BiFolderOpen, BiHomeSmile, BiSliderAlt, BiCategoryAlt, BiBug } from 'react-icons/bi';
 import { TbBrandAirtable } from 'react-icons/tb';
 
-import { useUserStore } from '@/stores';
-import { getRoleRouteListAPI } from '@/api/role';
-import { Route } from '@/types/app/route';
 import logo from '/logo.png';
 import useVersionData from '@/hooks/useVersionData';
 
@@ -33,7 +30,6 @@ interface SubMenuItem {
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const location = useLocation();
-  const store = useUserStore();
   const version = useVersionData();
   const { pathname } = location;
 
@@ -93,7 +89,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   };
 
   // 定义完整的路由列表配置
-  const routesAll: { group: string; list: MenuItem[] }[] = [
+  const routes: { group: string; list: MenuItem[] }[] = [
     {
       group: '',
       list: [
@@ -241,41 +237,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       ],
     },
   ];
-
-  // 状态：存储过滤后的路由列表
-  const [routes, setRoutes] = useState<typeof routesAll>([]);
-
-  // 获取角色对应的路由列表
-  const getRouteList = async (id: number) => {
-    const { data } = await getRoleRouteListAPI(id);
-    // 处理成路径
-    const pathSet = new Set(data.map((item: Route) => item.path));
-
-    // 过滤出接口中存在的路由
-    const filteredRoutes = routesAll
-      .map((group) => ({
-        ...group,
-        list: group.list
-          .map((item) => {
-            if (item.subMenu) {
-              // 过滤出当前子菜单中所有存在的路由
-              const filteredSubMenu = item.subMenu.filter((subItem) => pathSet.has(subItem.to));
-              return filteredSubMenu.length > 0 ? { ...item, subMenu: filteredSubMenu } : null;
-            }
-
-            return pathSet.has(item.to) ? item : null;
-          })
-          .filter((item) => item !== null),
-      }))
-      .filter((group) => group.list.length > 0);
-
-    setRoutes(filteredRoutes);
-  };
-
-  // 当用户角色信息更新时，重新获取路由列表
-  useEffect(() => {
-    if (store.role.id) getRouteList(store.role.id);
-  }, [store]);
 
   // 渲染侧边栏组件
   return (

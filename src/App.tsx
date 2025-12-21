@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Loader from './components/Loader';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
-import { ConfigProvider, theme } from 'antd';
+import { App as AntdApp, ConfigProvider, theme } from 'antd';
 import RouteList from './components/RouteList';
 import '@/styles/antd.scss';
 
@@ -71,7 +71,9 @@ function App() {
       }}
       locale={zhCN}
     >
-      <RouteList />
+      <AntdApp>
+        <RouteList />
+      </AntdApp>
     </ConfigProvider>
   );
 }
