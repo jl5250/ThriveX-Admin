@@ -174,11 +174,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               name: '网站管理',
             },
             {
-              to: '/album',
-              path: 'album',
-              name: '相册管理',
-            },
-            {
               to: '/swiper',
               path: 'swiper',
               name: '轮播图管理',

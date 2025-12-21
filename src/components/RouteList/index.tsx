@@ -22,7 +22,6 @@ import Draft from '@/pages/draft';
 import Decycle from '@/pages/decycle';
 import Record from '@/pages/record';
 import Oss from '@/pages/oss';
-import Album from '@/pages/album';
 import Assistant from '@/pages/assistant';
 import Config from '@/pages/config';
 
@@ -52,7 +51,6 @@ export default () => {
     { path: '/wall', title: '评论管理', component: <Wall /> },
     { path: '/web', title: '网站管理', component: <Web /> },
     { path: '/swiper', title: '轮播图管理', component: <Swiper /> },
-    { path: '/album', title: '相册管理', component: <Album /> },
     { path: '/footprint', title: '足迹管理', component: <Footprint /> },
     { path: '/storage', title: '存储管理', component: <Oss /> },
     { path: '/setup', title: '项目配置', component: <Setup /> },
