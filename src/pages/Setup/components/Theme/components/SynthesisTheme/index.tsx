@@ -4,7 +4,7 @@ import { Alert, Button, Checkbox, Divider, Form, Input, notification } from 'ant
 import { CloudUploadOutlined, PictureOutlined } from '@ant-design/icons';
 
 import { Theme } from '@/types/app/config';
-import { editWebConfigDataAPI, getWebConfigDataAPI } from '@/api/Config';
+import { editWebConfigDataAPI, getWebConfigDataAPI } from '@/api/config';
 import Material from '@/components/Material';
 import { ThemeFormValues } from './type';
 

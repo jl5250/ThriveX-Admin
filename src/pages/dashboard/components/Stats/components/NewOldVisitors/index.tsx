@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import dayjs from 'dayjs';
 import { Spin } from 'antd';
-import { getStatisAPI } from '@/api/Statis';
+import { getStatisAPI } from '@/api/statis';
 import { StatisResponse } from '../VisitorsStatisChat/type';
 
 interface ChartThreeState {

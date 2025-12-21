@@ -5,7 +5,7 @@ import { Form, Input, Button, Tree, Modal, Spin, Dropdown, Card, MenuProps, Popc
 import type { DataNode } from 'antd/es/tree';
 
 import { Cate } from '@/types/app/cate';
-import { addCateDataAPI, delCateDataAPI, editCateDataAPI, getCateDataAPI, getCateListAPI } from '@/api/Cate';
+import { addCateDataAPI, delCateDataAPI, editCateDataAPI, getCateDataAPI, getCateListAPI } from '@/api/cate';
 import Title from '@/components/Title';
 
 import './index.scss';

@@ -13,9 +13,9 @@ import dayjs from 'dayjs';
 import { titleSty } from '@/styles/sty';
 import Title from '@/components/Title';
 
-import { getCateListAPI } from '@/api/Cate';
-import { getTagListAPI } from '@/api/Tag';
-import { delArticleDataAPI, getArticlePagingAPI, addArticleDataAPI, getArticleListAPI, delBatchArticleDataAPI } from '@/api/Article';
+import { getCateListAPI } from '@/api/cate';
+import { getTagListAPI } from '@/api/tag';
+import { delArticleDataAPI, getArticlePagingAPI, addArticleDataAPI, getArticleListAPI, delBatchArticleDataAPI } from '@/api/article';
 
 import type { Tag as ArticleTag } from '@/types/app/tag';
 import type { Cate } from '@/types/app/cate';

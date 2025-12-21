@@ -9,7 +9,7 @@ import Title from '@/components/Title';
 import { titleSty } from '@/styles/sty';
 import Material from '@/components/Material';
 import WangEditor from '@/components/WangEditor';
-import { addRecordDataAPI, editRecordDataAPI, getRecordDataAPI } from '@/api/Record';
+import { addRecordDataAPI, editRecordDataAPI, getRecordDataAPI } from '@/api/record';
 
 interface EditorRef {
     setValue: (value: string) => void,

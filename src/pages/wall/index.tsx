@@ -5,8 +5,8 @@ import dayjs from 'dayjs';
 import TextArea from 'antd/es/input/TextArea';
 import { DeleteOutlined, SendOutlined, StarFilled, StarOutlined } from '@ant-design/icons';
 
-import { getWallListAPI, delWallDataAPI, getWallCateListAPI, updateChoiceAPI } from '@/api/Wall';
-import { sendReplyWallEmailAPI } from '@/api/Email';
+import { getWallListAPI, delWallDataAPI, getWallCateListAPI, updateChoiceAPI } from '@/api/wall';
+import { sendReplyWallEmailAPI } from '@/api/email';
 import Title from '@/components/Title';
 import { useWebStore } from '@/stores';
 import { titleSty } from '@/styles/sty';

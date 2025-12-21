@@ -8,7 +8,7 @@ import Title from '@/components/Title';
 import Drawer from '@/components/Drawer';
 import useAssistant from '@/hooks/useAssistant';
 import { Article } from '@/types/app/article';
-import { getArticleDataAPI } from '@/api/Article';
+import { getArticleDataAPI } from '@/api/article';
 import { titleSty } from '@/styles/sty';
 
 import Editor from './components/Editor';

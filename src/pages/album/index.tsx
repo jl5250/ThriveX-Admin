@@ -6,8 +6,8 @@ import { CloudUploadOutlined, DeleteOutlined, DownloadOutlined, EditOutlined, Pi
 import { PiKeyReturnFill } from 'react-icons/pi';
 import TextArea from 'antd/es/input/TextArea';
 
-import { addAlbumCateDataAPI, delAlbumCateDataAPI, editAlbumCateDataAPI, getAlbumCateListAPI, getImagesByAlbumIdAPI } from '@/api/AlbumCate';
-import { addAlbumImageDataAPI, delAlbumImageDataAPI, editAlbumImageDataAPI } from '@/api/AlbumImage';
+import { addAlbumCateDataAPI, delAlbumCateDataAPI, editAlbumCateDataAPI, getAlbumCateListAPI, getImagesByAlbumIdAPI } from '@/api/album_cate';
+import { addAlbumImageDataAPI, delAlbumImageDataAPI, editAlbumImageDataAPI } from '@/api/album_image';
 import Material from '@/components/Material';
 import Title from '@/components/Title';
 import { AlbumCate, AlbumImage } from '@/types/app/album';

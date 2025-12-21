@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Button, Card, Empty, Form, Input, Popconfirm, Select, Spin, Tabs, message } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 
-import { getLinkListAPI, addLinkDataAPI, editLinkDataAPI, delLinkDataAPI, getWebTypeListAPI } from '@/api/Web';
+import { getLinkListAPI, addLinkDataAPI, editLinkDataAPI, delLinkDataAPI, getWebTypeListAPI } from '@/api/web';
 import Title from '@/components/Title';
 import { WebType, Web } from '@/types/app/web';
 import { RuleObject } from 'antd/es/form';

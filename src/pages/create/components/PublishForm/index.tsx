@@ -7,10 +7,10 @@ import { RuleObject } from 'antd/es/form';
 import dayjs from 'dayjs';
 import { CloudUploadOutlined, PictureOutlined } from '@ant-design/icons';
 
-import { addArticleDataAPI, editArticleDataAPI } from '@/api/Article';
-import { getCateListAPI } from '@/api/Cate';
+import { addArticleDataAPI, editArticleDataAPI } from '@/api/article';
+import { getCateListAPI } from '@/api/cate';
 import useAssistant from '@/hooks/useAssistant';
-import { addTagDataAPI, getTagListAPI } from '@/api/Tag';
+import { addTagDataAPI, getTagListAPI } from '@/api/tag';
 
 import { Cate } from '@/types/app/cate';
 import { Tag } from '@/types/app/tag';

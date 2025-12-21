@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Form, notification, Input, Button } from 'antd';
 
 import { Theme } from '@/types/app/config';
-import { editWebConfigDataAPI, getWebConfigDataAPI } from '@/api/Config';
+import { editWebConfigDataAPI, getWebConfigDataAPI } from '@/api/config';
 
 export default () => {
   const [loading, setLoading] = useState<boolean>(false);

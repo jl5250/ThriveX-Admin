@@ -4,9 +4,9 @@ import { useForm } from 'antd/es/form/Form';
 import { Button, Form, Input, notification } from 'antd';
 import { UserOutlined, LockOutlined, EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 
-import { loginDataAPI } from '@/api/User';
+import { loginDataAPI } from '@/api/user';
 import { useUserStore } from '@/stores';
-import { getRolePermissionListAPI } from '@/api/Role';
+import { getRolePermissionListAPI } from '@/api/role';
 
 export default () => {
   const navigate = useNavigate();

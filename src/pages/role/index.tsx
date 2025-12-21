@@ -6,9 +6,9 @@ import { AppstoreOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icon
 
 import Title from '@/components/Title';
 import { useUserStore } from '@/stores';
-import { getRouteListAPI } from '@/api/Route';
-import { getPermissionListAPI } from '@/api/Permission';
-import { getRoleListAPI, addRoleDataAPI, editRoleDataAPI, delRoleDataAPI, getRoleRouteListAPI, bindingRouteAPI, getRoleDataAPI, getRolePermissionListAPI } from '@/api/Role';
+import { getRouteListAPI } from '@/api/route';
+import { getPermissionListAPI } from '@/api/permission';
+import { getRoleListAPI, addRoleDataAPI, editRoleDataAPI, delRoleDataAPI, getRoleRouteListAPI, bindingRouteAPI, getRoleDataAPI, getRolePermissionListAPI } from '@/api/role';
 import { Role } from '@/types/app/role';
 import { Permission } from '@/types/app/permission';
 import './index.scss';

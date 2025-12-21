@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Form, Input, Button, message } from 'antd';
 
 import { useUserStore } from '@/stores';
-import { editUserDataAPI, getUserDataAPI } from '@/api/User';
+import { editUserDataAPI, getUserDataAPI } from '@/api/user';
 import { User } from '@/types/app/user';
 
 interface UserForm {

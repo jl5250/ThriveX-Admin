@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { getCommentListAPI } from '@/api/Comment';
-import { getWallListAPI } from '@/api/Wall';
-import { getLinkListAPI } from '@/api/Web';
+import { getCommentListAPI } from '@/api/comment';
+import { getWallListAPI } from '@/api/wall';
+import { getLinkListAPI } from '@/api/web';
 
 export default function InfoCard() {
   const navigate = useNavigate()

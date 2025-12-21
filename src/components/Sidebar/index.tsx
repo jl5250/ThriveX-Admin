@@ -14,7 +14,7 @@ import {
 import { TbBrandAirtable } from 'react-icons/tb';
 
 import { useUserStore } from '@/stores';
-import { getRoleRouteListAPI } from '@/api/Role';
+import { getRoleRouteListAPI } from '@/api/role';
 import { Route } from '@/types/app/route';
 import logo from '/logo.png';
 import useVersionData from '@/hooks/useVersionData';

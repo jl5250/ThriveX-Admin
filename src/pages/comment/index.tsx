@@ -6,7 +6,7 @@ import TextArea from 'antd/es/input/TextArea';
 import { ColumnsType } from 'antd/es/table';
 import { DeleteOutlined, SendOutlined } from '@ant-design/icons';
 
-import { addCommentDataAPI, getCommentListAPI, delCommentDataAPI } from '@/api/Comment';
+import { addCommentDataAPI, getCommentListAPI, delCommentDataAPI } from '@/api/comment';
 import { titleSty } from '@/styles/sty';
 import Title from '@/components/Title';
 import { Comment, FilterForm } from '@/types/app/comment';

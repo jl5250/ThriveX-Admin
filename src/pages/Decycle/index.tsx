@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 
 import { titleSty } from '@/styles/sty';
 import Title from '@/components/Title';
-import { delArticleDataAPI, getArticleListAPI, reductionArticleDataAPI } from '@/api/Article';
+import { delArticleDataAPI, getArticleListAPI, reductionArticleDataAPI } from '@/api/article';
 import { useWebStore } from '@/stores';
 import type { Tag as ArticleTag } from '@/types/app/tag';
 import type { Cate } from '@/types/app/cate';

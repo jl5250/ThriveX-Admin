@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { Spin } from 'antd';
 import { ApexOptions } from 'apexcharts';
 import dayjs from 'dayjs';
-import { getStatisAPI } from '@/api/Statis';
+import { getStatisAPI } from '@/api/statis';
 import ReactECharts from 'echarts-for-react';
 import { EChartsParams, Result, StatisResponse } from './type';
 import { useConfigStore } from '@/stores';

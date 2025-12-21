@@ -3,10 +3,10 @@ import { useState } from 'react';
 import { Button, Dropdown, message, Modal } from 'antd';
 import dayjs from 'dayjs';
 
-import { auditCommentDataAPI, delCommentDataAPI, addCommentDataAPI } from '@/api/Comment';
-import { auditWallDataAPI, delWallDataAPI } from '@/api/Wall';
-import { delLinkDataAPI, auditWebDataAPI } from '@/api/Web';
-import { sendDismissEmailAPI, sendReplyWallEmailAPI } from '@/api/Email';
+import { auditCommentDataAPI, delCommentDataAPI, addCommentDataAPI } from '@/api/comment';
+import { auditWallDataAPI, delWallDataAPI } from '@/api/wall';
+import { delLinkDataAPI, auditWebDataAPI } from '@/api/web';
+import { sendDismissEmailAPI, sendReplyWallEmailAPI } from '@/api/email';
 
 import RandomAvatar from '@/components/RandomAvatar';
 import { useUserStore, useWebStore } from '@/stores';

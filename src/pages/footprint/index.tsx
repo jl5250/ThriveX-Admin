@@ -9,8 +9,8 @@ import { CloudUploadOutlined, DeleteOutlined, FormOutlined } from '@ant-design/i
 import { titleSty } from '@/styles/sty';
 import Title from '@/components/Title';
 import Material from '@/components/Material';
-import { delFootprintDataAPI, getFootprintListAPI, addFootprintDataAPI, editFootprintDataAPI, getFootprintDataAPI } from '@/api/Footprint';
-import { getEnvConfigDataAPI } from '@/api/Config';
+import { delFootprintDataAPI, getFootprintListAPI, addFootprintDataAPI, editFootprintDataAPI, getFootprintDataAPI } from '@/api/footprint';
+import { getEnvConfigDataAPI } from '@/api/config';
 import type { FilterForm, Footprint } from '@/types/app/footprint';
 import { ColumnType } from 'antd/es/table';
 

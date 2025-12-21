@@ -6,7 +6,7 @@ import { ConfigProvider, theme } from 'antd';
 import RouteList from './components/RouteList';
 import '@/styles/antd.scss';
 
-import { getWebConfigDataAPI } from '@/api/Config';
+import { getWebConfigDataAPI } from '@/api/config';
 import { useWebStore, useUserStore } from './stores';
 import { Web } from './types/app/config';
 

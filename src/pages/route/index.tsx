@@ -3,7 +3,7 @@ import { Table, Button, Form, Input, Popconfirm, message, Card } from 'antd';
 import { DeleteOutlined, FormOutlined } from '@ant-design/icons';
 
 import Title from '@/components/Title';
-import { getRouteListAPI, addRouteDataAPI, editRouteDataAPI, delRouteDataAPI, getRouteDataAPI } from '@/api/Route';
+import { getRouteListAPI, addRouteDataAPI, editRouteDataAPI, delRouteDataAPI, getRouteDataAPI } from '@/api/route';
 import { Route } from '@/types/app/route';
 import { ColumnsType } from 'antd/es/table';
 

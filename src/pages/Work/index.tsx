@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 
 import { Card, Spin } from 'antd';
 
-import { getCommentListAPI } from '@/api/Comment';
-import { getLinkListAPI } from '@/api/Web';
-import { getWallListAPI } from '@/api/Wall';
+import { getCommentListAPI } from '@/api/comment';
+import { getLinkListAPI } from '@/api/web';
+import { getWallListAPI } from '@/api/wall';
 
 import { Wall } from '@/types/app/wall';
 import { Web } from '@/types/app/web';

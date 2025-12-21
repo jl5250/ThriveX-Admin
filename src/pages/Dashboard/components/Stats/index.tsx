@@ -6,7 +6,7 @@ import CardDataStats from '@/components/CardDataStats';
 
 import { AiOutlineEye, AiOutlineMeh, AiOutlineStock, AiOutlineFieldTime } from 'react-icons/ai';
 import dayjs from 'dayjs';
-import { getStatisAPI } from '@/api/Statis';
+import { getStatisAPI } from '@/api/statis';
 import { StatisResponse } from './components/VisitorsStatisChat/type';
 
 export default () => {

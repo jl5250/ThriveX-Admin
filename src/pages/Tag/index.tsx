@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Table, Button, Form, Input, Popconfirm, message, Card, Spin } from 'antd';
-import { getTagListAPI, addTagDataAPI, editTagDataAPI, delTagDataAPI, getTagDataAPI } from '@/api/Tag';
+import { getTagListAPI, addTagDataAPI, editTagDataAPI, delTagDataAPI, getTagDataAPI } from '@/api/tag';
 import { Tag } from '@/types/app/tag';
 import Title from '@/components/Title';
 import { ColumnsType } from 'antd/es/table';

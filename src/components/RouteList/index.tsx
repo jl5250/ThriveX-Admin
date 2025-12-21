@@ -32,8 +32,8 @@ import Config from '@/pages/config';
 import PageTitle from '../PageTitle';
 
 import { useUserStore } from '@/stores';
-import { getRoleRouteListAPI } from '@/api/Role';
-import { checkTokenAPI } from '@/api/User'
+import { getRoleRouteListAPI } from '@/api/role';
+import { checkTokenAPI } from '@/api/user'
 import { Route as RouteType } from '@/types/app/route';
 import NotFound from '../NotFound';
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Form, Input, Button, message } from 'antd';
-import { editWebConfigDataAPI, getWebConfigDataAPI } from '@/api/Config';
+import { editWebConfigDataAPI, getWebConfigDataAPI } from '@/api/config';
 import { Other, Web } from '@/types/app/config';
 import dayjs from 'dayjs';
 

@@ -6,7 +6,7 @@ import Masonry from 'react-masonry-css';
 
 import Title from '@/components/Title';
 import FileUpload from '@/components/FileUpload';
-import { delFileDataAPI, getDirListAPI, getFileListAPI } from '@/api/File';
+import { delFileDataAPI, getDirListAPI, getFileListAPI } from '@/api/file';
 import { File, FileDir } from '@/types/app/file';
 import fileSvg from './image/file.svg';
 import errorImg from './image/error.png';

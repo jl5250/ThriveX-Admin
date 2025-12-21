@@ -6,7 +6,7 @@ import { DeleteOutlined, FormOutlined } from '@ant-design/icons';
 
 import { titleSty } from '@/styles/sty';
 import Title from '@/components/Title';
-import { delRecordDataAPI, getRecordListAPI } from '@/api/Record';
+import { delRecordDataAPI, getRecordListAPI } from '@/api/record';
 import type { Record } from '@/types/app/record';
 import { ColumnsType } from 'antd/es/table';
 
