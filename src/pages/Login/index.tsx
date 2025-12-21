@@ -7,6 +7,7 @@ import { UserOutlined, LockOutlined, EyeOutlined, EyeInvisibleOutlined } from '@
 import { loginDataAPI } from '@/api/user';
 import { useUserStore } from '@/stores';
 import { getRolePermissionListAPI } from '@/api/role';
+import { setShowLoginNotification } from '@/components/SystemNotification';
 
 export default () => {
   const navigate = useNavigate();
@@ -33,6 +34,9 @@ export default () => {
       store.setUser(data.user);
       store.setRole(data.role);
       store.setPermission(permission);
+
+      // 设置显示登录通知的标记
+      setShowLoginNotification();
 
       notification.success({
         message: '🎉 登录成功',
