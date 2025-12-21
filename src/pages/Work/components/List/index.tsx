@@ -183,9 +183,9 @@ export default ({ item, type, fetchData, setLoading }: ListItemProps) => {
 
       <div className="flex justify-between md:p-7 !pt-3 rounded-md transition-colors">
         <div className="flex">
-          {item.avatar || item.image ? <img src={item.avatar || item.image} alt="" className="w-13 h-13 border border-stroke rounded-full" /> : <RandomAvatar className="w-13 h-13 border border-stroke rounded-full" />}
+          {item.avatar || item.image ? <img src={item.avatar || item.image} alt="" className="w-12 h-12 p-0.5 border border-stroke rounded-full" /> : <RandomAvatar className="w-12 h-12 p-0.5 border border-stroke rounded-full" />}
 
-          <div className="flex flex-col justify-center ml-4 px-4 py-2 min-w-[210px] text-xs md:text-sm bg-[#F9F9FD] dark:bg-[#4e5969] rounded-md">
+          <div className="flex flex-col justify-center ml-4 px-4 py-2 min-w-[300px] text-xs md:text-sm bg-[#F9F9FD] dark:bg-[#4e5969] rounded-md">
             {type === 'link' ? (
               <>
                 <div>名称：{item.title}</div>
@@ -209,7 +209,7 @@ export default ({ item, type, fetchData, setLoading }: ListItemProps) => {
                 <div>
                   网站：
                   {item?.url ? (
-                    <a href={item?.url} target="_blank" className="hover:text-primary font-bold" rel="noreferrer">
+                    <a href={item?.url} target="_blank" className="hover:text-primary font-bold transition-none" rel="noreferrer">
                       {item?.url}
                     </a>
                   ) : (
@@ -218,7 +218,7 @@ export default ({ item, type, fetchData, setLoading }: ListItemProps) => {
                 </div>
                 <div>
                   所属文章：
-                  <a href={`${web.url}/article/${item.articleId}`} target="_blank" className="hover:text-primary" rel="noreferrer">
+                  <a href={`${web.url}/article/${item.articleId}`} target="_blank" className="hover:text-primary transition-none" rel="noreferrer">
                     {item.articleTitle || '暂无'}
                   </a>
                 </div>
@@ -250,7 +250,7 @@ export default ({ item, type, fetchData, setLoading }: ListItemProps) => {
                     ],
             }}
           >
-            <div className="flex justify-evenly items-center bg-[#F9F9FD] dark:bg-[#4e5969] w-11 h-5 rounded-md cursor-pointer">
+            <div className="flex justify-evenly items-center bg-[#F9F9FD] dark:bg-[#4e5969] w-10 h-5 mb-2 rounded-md cursor-pointer">
               <span className="inline-block w-2 h-2 bg-[#b5c2d3] rounded-full"></span>
               <span className="inline-block w-2 h-2 bg-[#b5c2d3] rounded-full"></span>
             </div>

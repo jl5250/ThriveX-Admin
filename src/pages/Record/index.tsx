@@ -146,17 +146,17 @@ export default () => {
 
       <Card className="border-stroke my-2 overflow-scroll">
         <Form form={form} layout="inline" onFinish={onFilterSubmit} autoComplete="off" className="flex-nowrap">
-          <Form.Item label="内容" name="content" className="min-w-[200px]">
+          <Form.Item name="content" className="min-w-[200px]">
             <Input placeholder="请输入关键词" />
           </Form.Item>
 
-          <Form.Item label="时间范围" name="createTime" className="min-w-[250px]">
-            <RangePicker placeholder={['选择起始时间', '选择结束时间']} />
+          <Form.Item name="createTime" className="min-w-[250px]">
+            <RangePicker placeholder={['选择起始时间', '选择结束时间']} disabledDate={(current) => current && current > dayjs().endOf('day')} />
           </Form.Item>
 
           <Form.Item className="pr-6">
             <Button type="primary" htmlType="submit">
-              查询
+              筛选
             </Button>
           </Form.Item>
         </Form>

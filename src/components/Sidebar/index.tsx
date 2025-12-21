@@ -7,7 +7,6 @@ import {
   BiFolderOpen,
   BiHomeSmile,
   BiSliderAlt,
-  BiShieldQuarter,
   BiCategoryAlt,
   BiBug,
 } from 'react-icons/bi';
@@ -217,11 +216,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               name: '足迹管理',
             },
             {
-              to: '/user',
-              path: 'user',
-              name: '用户管理',
-            },
-            {
               to: '/storage',
               path: 'storage',
               name: '存储管理',
@@ -230,24 +224,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               to: '/config',
               path: 'config',
               name: '项目配置',
-            },
-          ],
-        },
-        {
-          to: '#',
-          path: 'rights',
-          icon: <BiShieldQuarter className="text-[22px]" />,
-          name: '权限',
-          subMenu: [
-            {
-              to: '/route',
-              path: 'route',
-              name: '路由管理',
-            },
-            {
-              to: '/role',
-              path: 'role',
-              name: '角色管理',
             },
           ],
         },

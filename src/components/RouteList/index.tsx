@@ -13,12 +13,9 @@ import Tag from '@/pages/tag';
 import Web from '@/pages/web';
 import Swiper from '@/pages/swiper';
 import Footprint from '@/pages/footprint';
-import User from '@/pages/user';
 import Setup from '@/pages/Setup';
 import File from '@/pages/file';
 import Iterative from '@/pages/iterative';
-import Page from '@/pages/route';
-import Role from '@/pages/role';
 import Login from '@/pages/login';
 import Work from '@/pages/work';
 import Draft from '@/pages/draft';
@@ -59,11 +56,8 @@ export default () => {
         { path: '/swiper', title: '轮播图管理', component: <Swiper /> },
         { path: '/album', title: '相册管理', component: <Album /> },
         { path: '/footprint', title: '足迹管理', component: <Footprint /> },
-        { path: '/user', title: '用户管理', component: <User /> },
         { path: '/storage', title: '存储管理', component: <Oss /> },
         { path: '/setup', title: '项目配置', component: <Setup /> },
-        { path: '/route', title: '路由配置', component: <Page /> },
-        { path: '/role', title: '角色管理', component: <Role /> },
         { path: '/file', title: '文件管理', component: <File /> },
         { path: '/iter', title: '项目更新记录', component: <Iterative /> },
         { path: '/work', title: '工作台', component: <Work /> },

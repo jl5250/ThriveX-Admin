@@ -638,15 +638,15 @@ export default () => {
       <Card className="border-stroke my-2 overflow-scroll">
         <div className="w-full flex justify-between">
           <Form form={form} layout="inline" onFinish={onFilterSubmit} autoComplete="off" className="flex-nowrap">
-            <Form.Item label="标题" name="title" className="min-w-[200px]">
+            <Form.Item name="title" className="min-w-[200px]">
               <Input placeholder="请输入关键词" />
             </Form.Item>
 
-            <Form.Item label="分类" name="cateId" className="min-w-[200px]">
+            <Form.Item name="cateId" className="min-w-[200px]">
               <Select allowClear options={cateList} fieldNames={{ label: 'name', value: 'id' }} placeholder="请选择分类" />
             </Form.Item>
 
-            <Form.Item label="标签" name="tagId" className="min-w-[200px]">
+            <Form.Item name="tagId" className="min-w-[200px]">
               <Select
                 allowClear
                 showSearch
@@ -662,8 +662,8 @@ export default () => {
               />
             </Form.Item>
 
-            <Form.Item label="时间范围" name="createTime" className="min-w-[250px]">
-              <RangePicker placeholder={['选择起始时间', '选择结束时间']} />
+            <Form.Item name="createTime" className="min-w-[250px]">
+              <RangePicker placeholder={['选择起始时间', '选择结束时间']} disabledDate={(current) => current && current > dayjs().endOf('day')} />
             </Form.Item>
 
             <Form.Item className="pr-6">
