@@ -113,7 +113,7 @@ export default () => {
           <AiOutlineStock className="fill-primary dark:fill-white text-2xl" />
         </CardDataStats>
 
-        <CardDataStats title="平均访问时长" total={stats.avgTime}>
+        <CardDataStats title="平均访问时长" total={stats.avgTime || '00:00:00'}>
           <AiOutlineFieldTime className="fill-primary dark:fill-white text-2xl" />
         </CardDataStats>
       </div>

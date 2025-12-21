@@ -13,7 +13,7 @@ import Tag from '@/pages/tag';
 import Web from '@/pages/web';
 import Swiper from '@/pages/swiper';
 import Footprint from '@/pages/footprint';
-import Setup from '@/pages/Setup';
+import Setup from '@/pages/setup';
 import File from '@/pages/file';
 import Iterative from '@/pages/iterative';
 import Login from '@/pages/login';
