@@ -1,6 +1,21 @@
 .CatePage {
-    .ant-tree-treenode,
-    .ant-tree-node-content-wrapper {
+    .ant-tree-treenode {
         width: 100% !important;
+    }
+    
+    .ant-tree-node-content-wrapper {
+        display: flex !important;
+        width: 100% !important;
+        flex: 1 !important;
+    }
+    
+    .ant-tree-title {
+        width: 100% !important;
+        display: block !important;
+        flex: 1 !important;
+    }
+    
+    .ant-tree-switcher {
+        flex-shrink: 0 !important;
     }
 }

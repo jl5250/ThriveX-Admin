@@ -183,7 +183,7 @@ export default () => {
 
       <Card className={`border-stroke [&>.ant-card-body]:!p-[30px_20px] [&>.ant-card-body]:!pb-6 mt-2 min-h-[calc(100vh-160px)]`}>
         <Spin spinning={loading}>
-          <Tree defaultExpandAll={true} treeData={toTreeData(list)} />
+          <Tree className="CatePage" defaultExpandAll={true} treeData={toTreeData(list)} />
         </Spin>
 
         <Modal loading={editLoading} title={isMethod === 'edit' ? '编辑分类' : '新增分类'} open={isModelOpen} onCancel={closeModel} destroyOnClose footer={null}>
