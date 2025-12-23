@@ -1,0 +1,89 @@
+{
+  "name": "thrivex-admin",
+  "private": true,
+  "version": "3.0",
+  "type": "module",
+  "scripts": {
+    "dev": "eslint . && vite",
+    "build": "eslint . && vite build",
+    "preview": "vite preview",
+    "lint": "eslint ."
+  },
+  "author": {
+    "name": "刘宇阳",
+    "email": "liuyuyang1024@yeah.net",
+    "url": "https://liuyuyang.net"
+  },
+  "engines": {
+    "node": ">=20",
+    "npm": ">=10"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.5.2",
+    "@bytemd/plugin-gemoji": "^1.21.0",
+    "@bytemd/plugin-gfm": "^1.21.0",
+    "@bytemd/plugin-highlight": "^1.21.0",
+    "@bytemd/plugin-math": "^1.21.0",
+    "@bytemd/react": "^1.21.0",
+    "@codemirror/lang-json": "^6.0.2",
+    "@uiw/react-codemirror": "^4.23.14",
+    "@wangeditor-next/editor": "^5.6.45",
+    "@wangeditor-next/editor-for-react": "^1.0.10",
+    "antd": "^5.19.3",
+    "apexcharts": "^4.7.0",
+    "axios": "^1.7.2",
+    "bytemd": "^1.22.0",
+    "compressorjs": "^1.2.1",
+    "dayjs": "^1.11.13",
+    "dicebear": "^9.2.1",
+    "echarts": "^5.6.0",
+    "echarts-for-react": "^3.0.2",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "exiftool-vendored": "^29.0.0",
+    "file-saver": "^2.0.5",
+    "highlight.js": "^11.11.1",
+    "jszip": "^3.10.1",
+    "react": "^18.2.0",
+    "react-apexcharts": "^1.7.0",
+    "react-dom": "^18.2.0",
+    "react-github-calendar": "^4.2.2",
+    "react-hot-toast": "^2.4.1",
+    "react-icons": "^4.12.0",
+    "react-masonry-css": "^1.0.16",
+    "react-router-dom": "^6.14.2",
+    "react-toastify": "^9.1.3",
+    "rehype-callouts": "^1.4.1",
+    "remark-mark-highlight": "^0.1.1",
+    "sass": "^1.77.8",
+    "vite-plugin-sass-dts": "^1.3.25",
+    "zustand": "^4.5.4"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.31.0",
+    "@types/file-saver": "^2.0.7",
+    "@types/react": "^18.2.17",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.0.3",
+    "autoprefixer": "^10.4.14",
+    "eslint": "^9.31.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "file-loader": "^6.2.0",
+    "globals": "^16.3.0",
+    "postcss": "^8.4.27",
+    "prettier": "^3.0.0",
+    "prettier-plugin-tailwindcss": "^0.4.1",
+    "tailwindcss": "^3.4.1",
+    "typescript-eslint": "^8.37.0",
+    "vite": "^4.4.7",
+    "webpack": "^5.88.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "es5-ext",
+      "esbuild",
+      "sharp"
+    ]
+  }
+}
