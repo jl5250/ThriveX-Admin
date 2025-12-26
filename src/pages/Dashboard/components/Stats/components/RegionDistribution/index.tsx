@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 import { getStatisAPI } from '@/api/statis'
 import * as echarts from 'echarts'
 
+
 interface RegionData {
   name: string
   value: number
