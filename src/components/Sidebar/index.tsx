@@ -2,20 +2,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import SidebarLinkGroup from './SidebarLinkGroup'
 
-import {
-  BiEditAlt,
-  BiFolderOpen,
-  BiHomeSmile,
-  BiSliderAlt,
-  BiShieldQuarter,
-  BiCategoryAlt,
-  BiBug,
-} from 'react-icons/bi';
+import { BiEditAlt, BiFolderOpen, BiHomeSmile, BiSliderAlt, BiCategoryAlt, BiBug } from 'react-icons/bi';
 import { TbBrandAirtable } from 'react-icons/tb';
 
-import { useUserStore } from '@/stores';
-import { getRoleRouteListAPI } from '@/api/Role';
-import { Route } from '@/types/app/route';
 import logo from '/logo.png';
 import useVersionData from '@/hooks/useVersionData';
 
@@ -40,20 +29,17 @@ interface SubMenuItem {
 }
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
-  const location = useLocation()
-  const store = useUserStore()
-  const version = useVersionData()
-  const { pathname } = location
+  const location = useLocation();
+  const version = useVersionData();
+  const { pathname } = location;
 
   // 创建 ref 用于触发器和侧边栏元素
   const trigger = useRef<HTMLButtonElement>(null);
   const sidebar = useRef<HTMLDivElement>(null);
 
   // 从 localStorage 获取侧边栏展开状态
-  const storedSidebarExpanded = localStorage.getItem('sidebar-expanded')
-  const [sidebarExpanded, setSidebarExpanded] = useState(
-    storedSidebarExpanded === null ? false : storedSidebarExpanded === 'true',
-  );
+  const storedSidebarExpanded = localStorage.getItem('sidebar-expanded');
+  const [sidebarExpanded, setSidebarExpanded] = useState(storedSidebarExpanded === null ? false : storedSidebarExpanded === 'true');
 
   // 点击事件处理：点击侧边栏外部时关闭侧边栏
   useEffect(() => {
@@ -86,38 +72,24 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     }
   }, [sidebarExpanded])
 
-  const [isSideBarTheme] = useState<'dark' | 'light'>('light')
+  const [isSideBarTheme] = useState<'dark' | 'light'>('light');
 
   // 定义导航项的样式类
-  const sidebarItemStyDark =
-    'group relative flex items-center gap-2.5 py-2 px-4 text-[#DEE4EE] duration-300 ease-in-out hover:bg-graydark dark:hover:bg-[#313D4A] rounded-sm font-medium';
-  const sidebarItemStyLight =
-    'group relative flex items-center gap-2.5 py-2 px-4 text-[#444] dark:text-slate-200 duration-300 ease-in-out hover:bg-[rgba(241,241,244,0.9)] dark:hover:bg-[#313D4A] rounded-md hover:backdrop-blur-[15px]';
+  const sidebarItemStyDark = 'group relative flex items-center gap-2.5 py-2 px-4 text-[#DEE4EE] duration-300 ease-in-out hover:bg-graydark dark:hover:bg-[#313D4A] rounded-sm font-medium';
+  const sidebarItemStyLight = 'group relative flex items-center gap-2.5 py-2 px-4 text-[#444] dark:text-slate-200 duration-300 ease-in-out hover:bg-[rgba(241,241,244,0.9)] dark:hover:bg-[#313D4A] rounded-md hover:backdrop-blur-[15px]';
   const sidebarItemActiveSty = `${isSideBarTheme === 'dark' ? 'bg-graydark' : '!text-primary'}`;
 
   // 箭头图标组件：用于显示子菜单的展开/收起状态
   const Arrow = ({ open }: { open: boolean }) => {
     return (
-      <svg
-        className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'}`}
-        width="17"
-        height="17"
-        viewBox="0 0 20 20"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
-          fill="#ccc"
-        />
+      <svg className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'}`} width="17" height="17" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fillRule="evenodd" clipRule="evenodd" d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z" fill="#ccc" />
       </svg>
     );
   };
 
   // 定义完整的路由列表配置
-  const routesAll: { group: string; list: MenuItem[] }[] = [
+  const routes: { group: string; list: MenuItem[] }[] = [
     {
       group: '',
       list: [
@@ -202,11 +174,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               name: '网站管理',
             },
             {
-              to: '/album',
-              path: 'album',
-              name: '相册管理',
-            },
-            {
               to: '/swiper',
               path: 'swiper',
               name: '轮播图管理',
@@ -217,11 +184,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               name: '足迹管理',
             },
             {
-              to: '/user',
-              path: 'user',
-              name: '用户管理',
-            },
-            {
               to: '/storage',
               path: 'storage',
               name: '存储管理',
@@ -230,24 +192,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               to: '/config',
               path: 'config',
               name: '项目配置',
-            },
-          ],
-        },
-        {
-          to: '#',
-          path: 'rights',
-          icon: <BiShieldQuarter className="text-[22px]" />,
-          name: '权限',
-          subMenu: [
-            {
-              to: '/route',
-              path: 'route',
-              name: '路由管理',
-            },
-            {
-              to: '/role',
-              path: 'role',
-              name: '角色管理',
             },
           ],
         },
@@ -281,13 +225,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           name: (
             <div className="flex items-center w-full justify-between">
               <span>更新日志</span>
-              <div className="flex items-center gap-1">
-                {version.tag_name === import.meta.env.VITE_VERSION ? (
-                  <span className={`text-xs text-white px-2 py-0.5 rounded-lg bg-green-500`}>最新版</span>
-                ) : (
-                  <span className={`text-xs text-white px-2 py-0.5 rounded-lg bg-red-400`}>有新版本</span>
-                )}
-              </div>
+              <div className="flex items-center gap-1">{version.tag_name === import.meta.env.VITE_VERSION ? <span className={`text-xs text-white px-2 py-0.5 rounded-lg bg-green-500`}>最新版</span> : <span className={`text-xs text-white px-2 py-0.5 rounded-lg bg-red-400`}>有新版本</span>}</div>
             </div>
           ),
         },
@@ -295,65 +233,18 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     },
   ];
 
-  // 状态：存储过滤后的路由列表
-  const [routes, setRoutes] = useState<typeof routesAll>([]);
-
-  // 获取角色对应的路由列表
-  const getRouteList = async (id: number) => {
-    const { data } = await getRoleRouteListAPI(id);
-    // 处理成路径
-    const pathSet = new Set(data.map((item: Route) => item.path))
-
-    // 过滤出接口中存在的路由
-    const filteredRoutes = routesAll
-      .map((group) => ({
-        ...group,
-        list: group.list
-          .map((item) => {
-            if (item.subMenu) {
-              // 过滤出当前子菜单中所有存在的路由
-              const filteredSubMenu = item.subMenu.filter((subItem) => pathSet.has(subItem.to));
-              return filteredSubMenu.length > 0 ? { ...item, subMenu: filteredSubMenu } : null;
-            }
-
-            return pathSet.has(item.to) ? item : null;
-          })
-          .filter((item) => item !== null),
-      }))
-      .filter((group) => group.list.length > 0);
-
-    setRoutes(filteredRoutes);
-  };
-
-  // 当用户角色信息更新时，重新获取路由列表
-  useEffect(() => {
-    if (store.role.id) getRouteList(store.role.id);
-  }, [store]);
-
   // 渲染侧边栏组件
   return (
-    <aside
-      ref={sidebar}
-      className={`absolute left-0 top-0 z-[99] flex h-screen w-64 flex-col overflow-y-hidden duration-300 ease-linear lg:static lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} ${isSideBarTheme === 'dark' ? 'bg-black dark:bg-boxdark' : 'bg-light-gradient dark:bg-dark-gradient border-r border-stroke dark:border-strokedark transition-all'}`}
-    >
+    <aside ref={sidebar} className={`absolute left-0 top-0 z-[99] flex h-screen w-64 flex-col overflow-y-hidden duration-300 ease-linear lg:static lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} ${isSideBarTheme === 'dark' ? 'bg-black dark:bg-boxdark' : 'bg-light-gradient dark:bg-dark-gradient border-r border-stroke dark:border-strokedark transition-all'}`}>
       {/* Logo 和标题区域 */}
       <div className="flex justify-center items-center gap-2 px-6 py-5.5 pb-0 lg:pt-6">
-        <NavLink
-          to="/"
-          className={`flex items-center ${isSideBarTheme === 'dark' ? 'font-bold text-white' : 'text-[#555] dark:text-white'}`}
-        >
+        <NavLink to="/" className={`flex items-center ${isSideBarTheme === 'dark' ? 'font-bold text-white' : 'text-[#555] dark:text-white'}`}>
           <img src={logo} alt="logo" className="w-8 mr-2.5" />
           <div>Thrive X</div>
         </NavLink>
 
         {/* 移动端侧边栏触发器按钮 */}
-        <button
-          ref={trigger}
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          aria-controls="sidebar"
-          aria-expanded={sidebarOpen}
-          className="block lg:hidden"
-        />
+        <button ref={trigger} onClick={() => setSidebarOpen(!sidebarOpen)} aria-controls="sidebar" aria-expanded={sidebarOpen} className="block lg:hidden" />
       </div>
 
       {/* 导航菜单区域 */}
@@ -371,7 +262,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   // 根据是否有子菜单渲染不同的导航项
                   item.subMenu ? (
                     // 带子菜单的导航项组件
-                    <SidebarLinkGroup key={subIndex} activeCondition={false}>
+                    <SidebarLinkGroup
+                      key={subIndex}
+                      activeCondition={
+                        // 默认展开"创作"菜单，或当前路径属于该菜单的子菜单
+                        item.path === 'write' || (item.subMenu && item.subMenu.some((subItem) => pathname.includes(subItem.path)))
+                      }
+                    >
                       {(handleClick, open) => (
                         <React.Fragment>
                           {/* 父级菜单项 */}
@@ -380,7 +277,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             className={`${isSideBarTheme === 'dark' ? sidebarItemStyDark : sidebarItemStyLight}`}
                             onClick={(e) => {
                               e.preventDefault();
-                              
+
                               if (sidebarExpanded) {
                                 handleClick();
                               } else {
@@ -400,13 +297,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                               {item.subMenu!.map((subItem, subSubIndex) => (
                                 <li key={subSubIndex}>
-                                  <NavLink
-                                    to={subItem.to}
-                                    className={({ isActive }) =>
-                                      `group relative flex items-center gap-2.5 rounded-md px-4 duration-300 ease-in-out ${isSideBarTheme === 'dark' ? 'hover:text-white text-[#8A99AF] font-medium' : 'hover:!text-primary text-[#666] dark:text-slate-400'} ` +
-                                      (isActive && '!text-primary')
-                                    }
-                                  >
+                                  <NavLink to={subItem.to} className={({ isActive }) => `group relative flex items-center gap-2.5 rounded-md px-4 duration-300 ease-in-out ${isSideBarTheme === 'dark' ? 'hover:text-white text-[#8A99AF] font-medium' : 'hover:!text-primary text-[#666] dark:text-slate-400'} ` + (isActive && '!text-primary')}>
                                     {subItem.name}
                                   </NavLink>
                                 </li>
@@ -419,10 +310,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   ) : (
                     // 普通导航项
                     <li key={subIndex}>
-                      <NavLink
-                        to={item.to}
-                        className={`${isSideBarTheme === 'dark' ? sidebarItemStyDark : sidebarItemStyLight} ${pathname.includes(item.path) && sidebarItemActiveSty}`}
-                      >
+                      <NavLink to={item.to} className={`${isSideBarTheme === 'dark' ? sidebarItemStyDark : sidebarItemStyLight} ${pathname.includes(item.path) && sidebarItemActiveSty}`}>
                         {item.icon}
                         {item.name}
                       </NavLink>

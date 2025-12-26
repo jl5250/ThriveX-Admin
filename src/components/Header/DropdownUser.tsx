@@ -13,7 +13,7 @@ const DropdownUser = () => {
       <Link onClick={() => setDropdownOpen(!dropdownOpen)} className="flex items-center gap-4" to="#">
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">{store.user?.name}</span>
-          <span className="block text-xs">{store.role.name}</span>
+          <span className="block text-xs">超级管理员</span>
         </span>
 
         <span className="overflow-hidden h-8 w-8 rounded-full border border-stroke">

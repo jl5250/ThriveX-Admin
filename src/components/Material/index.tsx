@@ -3,7 +3,7 @@ import { Image, Spin, message, Button } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
 import { Modal } from 'antd';
 import Masonry from 'react-masonry-css';
-import { getFileListAPI, getDirListAPI } from '@/api/File';
+import { getFileListAPI, getDirListAPI } from '@/api/file';
 import { File, FileDir } from '@/types/app/file';
 import errorImg from '@/pages/File/image/error.png';
 import fileSvg from '@/pages/File/image/file.svg';
