@@ -235,9 +235,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
   // 渲染侧边栏组件
   return (
-    <aside ref={sidebar} className={`absolute left-0 top-0 z-[99] flex h-screen w-64 flex-col overflow-y-hidden duration-300 ease-linear lg:static lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} ${isSideBarTheme === 'dark' ? 'bg-black dark:bg-boxdark' : 'bg-light-gradient dark:bg-dark-gradient border-r border-stroke dark:border-strokedark transition-all'}`}>
+    <aside ref={sidebar} className={`absolute left-0 top-0 z-[999] flex h-screen w-64 flex-col overflow-y-hidden duration-300 ease-linear lg:static lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} ${isSideBarTheme === 'dark' ? 'bg-black dark:bg-boxdark' : 'bg-light-gradient dark:bg-dark-gradient border-r border-stroke dark:border-strokedark transition-all backdrop-blur-2xl'}`}>
       {/* Logo 和标题区域 */}
-      <div className="flex justify-center items-center gap-2 px-6 py-5.5 pb-0 lg:pt-6">
+      <div className="flex justify-center items-center gap-2 px-6 py-5 pb-0 lg:pt-6">
         <NavLink to="/" className={`flex items-center ${isSideBarTheme === 'dark' ? 'font-bold text-white' : 'text-[#555] dark:text-white'}`}>
           <img src={logo} alt="logo" className="w-8 mr-2.5" />
           <div>Thrive X</div>

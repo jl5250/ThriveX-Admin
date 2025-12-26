@@ -2,13 +2,14 @@ import { Link } from 'react-router-dom';
 import DropdownUser from './DropdownUser';
 import DarkModeSwitcher from './DarkModeSwitcher';
 import logo from '/logo.png';
+import PageTab from '../PageTab';
 
 const Header = (props: { sidebarOpen: string | boolean | undefined; setSidebarOpen: (arg0: boolean) => void }) => {
   return (
-    <header className="sticky top-0 z-[999] flex w-full bg-light-gradient dark:bg-dark-gradient drop-shadow-1 dark:drop-shadow-none backdrop-blur-lg">
-      <div className="flex flex-grow items-center justify-between px-4 py-3 shadow-2 md:px-6 2xl:px-11">
-        <div className="flex items-center">
-          <div className="flex items-center gap-4 lg:hidden">
+    <header className="sticky top-0 z-[99] flex w-full bg-light-gradient dark:bg-dark-gradient drop-shadow-1 dark:drop-shadow-none">
+      <div className="flex flex-grow items-center justify-between px-4 py-3 shadow-2 md:px-6 2xl:px-11 backdrop-blur-2xl">
+        <div className="flex items-center gap-4 flex-1 min-w-0">
+          <div className="flex items-center gap-4 lg:hidden flex-shrink-0">
             <button
               aria-controls="sidebar"
               onClick={(e) => {
@@ -35,13 +36,15 @@ const Header = (props: { sidebarOpen: string | boolean | undefined; setSidebarOp
             </Link>
           </div>
 
-          <div className="hidden xs:block ml-5 2xl:ml-0">有些梦虽然遥不可及，但并不是不可能实现</div>
+          <div className="flex-1 min-w-0">
+            <PageTab />
+          </div>
         </div>
 
-        <div className="flex items-center gap-3 2xsm:gap-7">
+        <div className="flex items-center gap-3 2xsm:gap-7 flex-shrink-0 ml-4">
           <ul className="flex items-center gap-2 2xsm:gap-4">
             <li className="hidden md:block">
-              <a href="https://github.com/LiuYuYang01/ThriveX-Admin" target="_blank" className="hover:text-primary text-sm" rel="noreferrer">
+              <a href="https://github.com/LiuYuYang01/ThriveX-Admin" target="_blank" className="text-gray-500 dark:text-gray-400 hover:!text-primary text-sm" rel="noreferrer">
                 开源不易，赏个 Star 吧！！！
               </a>
             </li>
