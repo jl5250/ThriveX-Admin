@@ -42,7 +42,7 @@ const Header = (props: { sidebarOpen: string | boolean | undefined; setSidebarOp
         </div>
 
         <div className="flex items-center gap-3 2xsm:gap-7 flex-shrink-0 ml-4">
-          <ul className="flex items-center gap-2 2xsm:gap-4">
+          <ul className="flex items-center gap-2 2xsm:gap-4 sm:mr-4">
             <DarkModeSwitcher />
           </ul>
 
