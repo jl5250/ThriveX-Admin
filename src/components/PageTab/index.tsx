@@ -87,7 +87,7 @@ export default () => {
   return (
     <div className="relative flex items-center">
       {/* 标签容器 */}
-      <div ref={tabsContainerRef} className="flex-1 flex items-center overflow-x-auto overflow-y-hidden scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+      <div ref={tabsContainerRef} className="flex-1 flex items-center" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
         <div className="flex items-center h-10">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.path;
