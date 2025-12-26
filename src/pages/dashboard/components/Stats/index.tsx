@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { Spin } from 'antd';
 import VisitorsStatisChat from './components/VisitorsStatisChat'
 import NewOldVisitors from './components/NewOldVisitors'
-import CardDataStats from '@/components/CardDataStats'
 import RegionDistribution from './components/RegionDistribution'
+import CardDataStats from '@/components/CardDataStats'
 
 import { AiOutlineEye, AiOutlineMeh, AiOutlineStock, AiOutlineFieldTime } from 'react-icons/ai';
 import dayjs from 'dayjs';

@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { Spin, Table } from 'antd'
 import dayjs from 'dayjs'
-import { getStatisAPI } from '@/api/Statis'
+import { getStatisAPI } from '@/api/statis'
 import * as echarts from 'echarts'
 
 interface RegionData {
