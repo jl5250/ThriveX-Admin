@@ -43,6 +43,7 @@
     "file-saver": "^2.0.5",
     "highlight.js": "^11.11.1",
     "jszip": "^3.10.1",
+    "katex": "^0.16.11",
     "react": "^18.2.0",
     "react-apexcharts": "^1.7.0",
     "react-dom": "^18.2.0",

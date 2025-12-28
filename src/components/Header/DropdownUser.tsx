@@ -10,7 +10,7 @@ const DropdownUser = () => {
 
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
-      <Link onClick={() => setDropdownOpen(!dropdownOpen)} className="flex items-center gap-4" to="#">
+      <Link onClick={() => setDropdownOpen(!dropdownOpen)} className="flex items-center gap-2" to="#">
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">{store.user?.name}</span>
           <span className="block text-xs">超级管理员</span>

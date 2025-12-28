@@ -7,7 +7,7 @@ import PageTab from '../PageTab';
 const Header = (props: { sidebarOpen: string | boolean | undefined; setSidebarOpen: (arg0: boolean) => void }) => {
   return (
     <header className="sticky top-0 z-[99] flex w-full bg-light-gradient dark:bg-dark-gradient">
-      <div className="flex flex-grow items-center justify-between px-4 py-3 shadow-2 md:px-6 2xl:px-11 overflow-x-auto">
+      <div className="flex flex-grow items-center justify-between px-4 py-3 shadow-2 md:px-6 2xl:px-11 overflow-scroll">
         <div className="flex items-center gap-4 flex-1 min-w-0">
           <div className="flex items-center gap-4 lg:hidden flex-shrink-0">
             <button
