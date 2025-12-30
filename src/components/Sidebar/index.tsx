@@ -166,7 +166,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             {
               to: '/cate',
               path: 'cate',
-              name: '分类管理',
+              name: '导航管理',
             },
             {
               to: '/web',
