@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import { Card } from 'antd';
 import { AiOutlineSetting } from 'react-icons/ai';
@@ -19,7 +20,27 @@ interface Setup {
 }
 
 export default () => {
-  const [active, setActive] = useState('system');
+  const [params, setParams] = useSearchParams();
+  const tabFromUrl = params.get('tab');
+
+  // 验证 tab 值是否有效，有效配置项的 key 列表
+  const validKeys = ['system', 'web', 'theme', 'my', 'other'];
+  const initialActive = tabFromUrl && validKeys.includes(tabFromUrl) ? tabFromUrl : 'system';
+
+  const [active, setActive] = useState(initialActive);
+
+  // 监听 URL 参数变化，更新激活的 tab
+  useEffect(() => {
+    if (tabFromUrl && validKeys.includes(tabFromUrl)) {
+      setActive(tabFromUrl);
+    }
+  }, [tabFromUrl]);
+
+  // 处理配置项点击，同时更新状态和 URL
+  const handleTabClick = (key: string) => {
+    setActive(key);
+    setParams({ tab: key });
+  };
 
   const iconSty = 'w-5 h-8 mr-1';
 
@@ -49,11 +70,11 @@ export default () => {
       key: 'my',
     },
     {
-        title: '其他设置',
-        description: '杂七八乱的各种配置',
-        icon: <AiOutlineSetting className={iconSty} />,
-        key: 'other'
-    }
+      title: '其他设置',
+      description: '杂七八乱的各种配置',
+      icon: <AiOutlineSetting className={iconSty} />,
+      key: 'other',
+    },
   ];
 
   return (
@@ -64,7 +85,7 @@ export default () => {
         <div className="flex flex-col md:flex-row">
           <ul className="w-full md:w-[20%] md:mr-5 mb-10 md:mb-0 border-b-0 md:border-r border-stroke dark:border-strokedark divide-y divide-solid divide-[#F6F6F6] dark:divide-strokedark">
             {list.map((item) => (
-              <li key={item.key} className={`relative p-3 pl-5 before:content-[''] before:absolute before:top-1/2 before:left-0 before:-translate-y-1/2 before:w-[3.5px] before:h-[0%] before:bg-[#60a5fa] cursor-pointer transition-all ${active === item.key ? 'bg-[#f7f7f8] dark:bg-[#3c5370] before:h-full' : ''}`} onClick={() => setActive(item.key)}>
+              <li key={item.key} className={`relative p-3 pl-5 before:content-[''] before:absolute before:top-1/2 before:left-0 before:-translate-y-1/2 before:w-[3.5px] before:h-[0%] before:bg-[#60a5fa] cursor-pointer transition-all ${active === item.key ? 'bg-[#f7f7f8] dark:bg-[#3c5370] before:h-full' : ''}`} onClick={() => handleTabClick(item.key)}>
                 <h3 className="flex items-center text-base dark:text-white">
                   {item.icon} {item.title}
                 </h3>
