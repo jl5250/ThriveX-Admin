@@ -63,7 +63,7 @@ export default () => {
       setLoading(true);
 
       await reductionArticleDataAPI(id);
-      notification.success({ message: '🎉 还原文章成功' });
+      notification.success({ message: '🎉 恢复文章成功' });
       navigate('/article');
 
       setLoading(false);

@@ -122,7 +122,6 @@ export default () => {
       title: '摘要',
       dataIndex: 'description',
       key: 'description',
-      align: 'center',
       width: 350,
       render: (text: string) => <div className="line-clamp-2">{text ? text : '该文章暂未设置文章摘要'}</div>,
     },
@@ -142,7 +141,6 @@ export default () => {
       title: '标签',
       dataIndex: 'tagList',
       key: 'tagList',
-      align: 'center',
       render: (tags: ArticleTag[]) =>
         tags.map((item, index) => (
           <Tag key={item.id} color={colors[index]}>
