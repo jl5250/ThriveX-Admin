@@ -10,6 +10,7 @@ import Title from '@/components/Title';
 import { getEnvConfigListAPI, updateEnvConfigDataAPI, getPageConfigListAPI, updatePageConfigDataAPI } from '@/api/config';
 import { Config } from '@/types/app/config';
 import { titleSty } from '@/styles/sty';
+import { ColumnsType } from 'antd/es/table';
 
 interface Props {
   open: boolean;
@@ -145,10 +146,26 @@ export default () => {
     }
   };
 
-  const columns = [
-    { title: 'ID', dataIndex: 'id', key: 'id', align: 'center' as const },
-    { title: '名称', dataIndex: 'name', key: 'name' },
-    { title: '备注', dataIndex: 'notes', key: 'notes' },
+  const columns: ColumnsType<Config> = [
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+      align: 'center' as const,
+      width: 120,
+    },
+    {
+      title: '名称',
+      dataIndex: 'name',
+      key: 'name',
+      width: 150,
+    },
+    {
+      title: '备注',
+      dataIndex: 'notes',
+      key: 'notes',
+      width: 150,
+    },
     {
       title: '配置内容',
       dataIndex: 'value',
@@ -158,7 +175,9 @@ export default () => {
     {
       title: '操作',
       key: 'action',
-      align: 'center' as const,
+      align: 'center',
+      width: 100,
+      fixed: 'right',
       render: (_: unknown, record: Config) => <Button type="text" icon={<FormOutlined className="text-primary" />} onClick={() => handleEdit(record)} />,
     },
   ];
@@ -176,7 +195,7 @@ export default () => {
           items={Object.keys(tabConfig).map((key) => ({
             key,
             label: tabConfig[key as 'env' | 'page'].label,
-            children: <Table rowKey="id" dataSource={data[key]} columns={columns} loading={loading[key]} pagination={false} />,
+            children: <Table rowKey="id" dataSource={data[key]} columns={columns} scroll={{ x: '1000px' }} loading={loading[key]} pagination={false} />,
           }))}
           className="[&_.ant-tabs-nav]:mb-0 [&_.ant-tabs-nav-wrap]:justify-center"
         />

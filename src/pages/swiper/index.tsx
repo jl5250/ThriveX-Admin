@@ -20,20 +20,28 @@ export default () => {
   const [tab, setTab] = useState<string>('list');
 
   const columns: ColumnsType<Swiper> = [
-    { title: 'ID', dataIndex: 'id', key: 'id', align: 'center' },
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+      align: 'center',
+      width: 120,
+    },
     {
       title: '图片',
       dataIndex: 'image',
       key: 'image',
       width: 200,
+      align: 'center',
       render: (url: string) => <Image width={200} src={url} className="w-full rounded cursor-pointer" />,
     },
-    { title: '标题', dataIndex: 'title', key: 'title' },
-    { title: '描述', dataIndex: 'description', key: 'description', width: 500 },
+    { title: '标题', dataIndex: 'title', key: 'title', width: 200 },
+    { title: '描述', dataIndex: 'description', key: 'description' },
     {
       title: '操作',
       key: 'action',
       align: 'center',
+      width: 130,
       render: (_: string, record: Swiper) => (
         <div className="space-x-2">
           <Button type="text" onClick={() => editSwiperData(record)} icon={<FormOutlined className="text-primary" />} />
@@ -139,7 +147,7 @@ export default () => {
           rowKey="id"
           dataSource={list}
           columns={columns}
-          scroll={{ x: 'max-content' }}
+          scroll={{ x: '1000px' }}
           pagination={{
             position: ['bottomCenter'],
             pageSize: 8,

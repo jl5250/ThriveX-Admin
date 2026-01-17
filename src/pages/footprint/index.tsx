@@ -34,36 +34,33 @@ export default () => {
       dataIndex: 'id',
       key: 'id',
       align: 'center',
-      width: 100,
+      width: 120,
     },
     {
       title: '标题',
       dataIndex: 'title',
       key: 'title',
-      align: 'center',
       width: 200,
     },
     {
       title: '地址',
       dataIndex: 'address',
       key: 'address',
-      align: 'center',
       width: 250,
     },
     {
       title: '内容',
       dataIndex: 'content',
       key: 'content',
-      align: 'center',
       width: 400,
-      render: (value: string) => <div className="line-clamp-3">{value}</div>,
+      render: (value: string) => <div className="line-clamp-3">{value || '---'}</div>,
     },
     {
       title: '坐标纬度',
       dataIndex: 'position',
       key: 'position',
       align: 'center',
-      width: 250,
+      width: 170,
       render: (value: string) => <Tag>{value}</Tag>,
     },
     {
@@ -71,7 +68,6 @@ export default () => {
       dataIndex: 'createTime',
       key: 'createTime',
       align: 'center',
-      width: 230,
       render: (time: string) => dayjs(+time).format('YYYY-MM-DD HH:mm:ss'),
       sorter: (a: Footprint, b: Footprint) => +a.createTime! - +b.createTime!,
       showSorterTooltip: false,
@@ -81,7 +77,7 @@ export default () => {
       key: 'action',
       fixed: 'right',
       align: 'center',
-      width: 120,
+      width: 130,
       render: (_: string, record: Footprint) => (
         <div className="flex justify-center space-x-2">
           <Button type="text" onClick={() => editFootprintData(record.id!)} icon={<FormOutlined className="text-primary" />} />

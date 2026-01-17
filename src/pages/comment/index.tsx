@@ -57,18 +57,21 @@ export default () => {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
-      align: 'center',
+      align: 'right',
+      width: 120,
     },
     {
       title: '名称',
       dataIndex: 'name',
       key: 'name',
+      align: 'center',
+      width: 150,
     },
     {
       title: '内容',
       dataIndex: 'content',
       key: 'content',
-      width: 400,
+      width: 350,
       render: (text: string, record: Comment) => (
         <span
           className="hover:text-primary cursor-pointer line-clamp-2"
@@ -85,12 +88,14 @@ export default () => {
       title: '邮箱',
       dataIndex: 'email',
       key: 'email',
+      width: 180,
       render: (text: string) => (text ? text : '暂无邮箱'),
     },
     {
       title: '网站',
       dataIndex: 'url',
       key: 'url',
+      width: 200,
       render: (url: string) =>
         url ? (
           <a href={url} target="_blank" className="hover:text-primary" rel="noreferrer">
@@ -104,6 +109,7 @@ export default () => {
       title: '所属文章',
       dataIndex: 'articleTitle',
       key: 'articleTitle',
+      width: 230,
       render: (text: string, record: Comment) =>
         text ? (
           <a href={`${web.url}/article/${record.articleId}`} target="_blank" className="hover:text-primary" rel="noreferrer">
@@ -126,6 +132,7 @@ export default () => {
       key: 'action',
       fixed: 'right',
       align: 'center',
+      width: 130,
       render: (_: string, record: Comment) => (
         <div className="flex justify-center space-x-2">
           <Button
@@ -287,7 +294,7 @@ export default () => {
           dataSource={list}
           columns={columns}
           expandable={{ defaultExpandAllRows: true }}
-          scroll={{ x: 'max-content' }}
+          scroll={{ x: '1550px' }}
           pagination={{
             position: ['bottomCenter'],
             defaultPageSize: 8,

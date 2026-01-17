@@ -19,11 +19,30 @@ export default () => {
   const [list, setList] = useState<Tag[]>([]);
 
   const columns: ColumnsType<Tag> = [
-    { title: 'ID', dataIndex: 'id', key: 'id', align: 'center' },
-    { title: '标签名称', dataIndex: 'name', key: 'name', align: 'center' },
+    {
+      title: 'ID',
+      width: 100,
+      key: 'id',
+      dataIndex: 'id',
+      align: 'center',
+    },
+    {
+      title: '标签名称',
+      key: 'name',
+      dataIndex: 'name',
+      width: 150,
+      align: 'center',
+    },
+    {
+      title: '文章数量',
+      key: 'count',
+      dataIndex: 'count',
+    },
     {
       title: '操作',
       key: 'action',
+      align: 'center',
+      width: 130,
       render: (_: string, record: Tag) => (
         <div className="space-x-2">
           <Button type="text" onClick={() => editTagData(record)} icon={<FormOutlined className="text-primary" />} />

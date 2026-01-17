@@ -20,20 +20,12 @@ export default () => {
   const [form] = Form.useForm();
 
   const columns: ColumnsType<Oss> = [
-    { title: 'ID', dataIndex: 'id', key: 'id', align: 'center', width: 80 },
     {
-      title: '状态',
-      fixed: 'left',
-      dataIndex: 'isEnable',
-      key: 'isEnable',
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
       align: 'center',
-      width: 150,
-      render: (isEnable: number) => (
-        <div className="space-x-2">
-          <span className={`inline-block w-3 h-3 ${isEnable ? 'bg-green-500' : 'bg-red-500'} rounded-full`} />
-          <span>{isEnable ? '开启' : '禁用'}</span>
-        </div>
-      ),
+      width: 120,
     },
     {
       title: '平台',
@@ -42,16 +34,48 @@ export default () => {
       align: 'center',
       width: 120,
     },
-    { title: '地域', dataIndex: 'endPoint', key: 'endPoint' },
-    { title: '存储桶', dataIndex: 'bucketName', key: 'bucketName' },
-    { title: '域名', dataIndex: 'domain', key: 'domain' },
-    { title: '文件目录', dataIndex: 'basePath', key: 'basePath', align: 'center', width: 120 },
+    {
+      title: '状态',
+      dataIndex: 'isEnable',
+      key: 'isEnable',
+      align: 'center',
+      width: 120,
+      render: (isEnable: number) => (
+        <div className="space-x-2">
+          <span className={`inline-block w-3 h-3 ${isEnable ? 'bg-green-500' : 'bg-red-500'} rounded-full`} />
+          <span>{isEnable ? '开启' : '禁用'}</span>
+        </div>
+      ),
+    },
+    {
+      title: '地域',
+      dataIndex: 'endPoint',
+      key: 'endPoint',
+      width: 200,
+    },
+    {
+      title: '存储桶',
+      dataIndex: 'bucketName',
+      key: 'bucketName',
+      width: 200,
+    },
+    {
+      title: '域名',
+      dataIndex: 'domain',
+      key: 'domain',
+      width: 300,
+    },
+    {
+      title: '文件目录',
+      dataIndex: 'basePath',
+      key: 'basePath',
+    },
     {
       title: '操作',
       key: 'action',
       fixed: 'right',
       align: 'center',
-      width: 200,
+      width: 130,
       render: (_, record: Oss) => (
         <div className="flex justify-center space-x-2">
           {record.isEnable ? <Button type="text" disabled onClick={() => disableOssData(record.id!)} icon={<StarOutlined />} /> : <Button type="text" onClick={() => enableOssData(record.id!)} icon={<PoweroffOutlined />} />}
@@ -205,7 +229,7 @@ export default () => {
           loading={loading}
           dataSource={ossList}
           columns={columns}
-          scroll={{ x: 'max-content' }}
+          scroll={{ x: '1350px' }}
           pagination={{
             position: ['bottomCenter'],
             pageSize: 8,

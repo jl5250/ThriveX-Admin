@@ -72,6 +72,7 @@ export default () => {
       dataIndex: 'id',
       key: 'id',
       align: 'center',
+      width: 120,
     },
     {
       title: '分类',
@@ -87,6 +88,7 @@ export default () => {
       title: '名称',
       dataIndex: 'name',
       key: 'name',
+      width: 150,
     },
     {
       title: '内容',
@@ -109,6 +111,7 @@ export default () => {
       title: '邮箱',
       dataIndex: 'email',
       key: 'email',
+      width: 180,
       render: (text: string) => (text ? text : '暂无邮箱'),
     },
     {
@@ -124,6 +127,7 @@ export default () => {
       key: 'action',
       fixed: 'right',
       align: 'center',
+      width: 130,
       render: (_: string, record: Wall) => (
         <div className="flex justify-center space-x-2">
           <Button
@@ -242,7 +246,7 @@ export default () => {
           columns={columns}
           loading={loading}
           expandable={{ defaultExpandAllRows: true }}
-          scroll={{ x: 'max-content' }}
+          scroll={{ x: '1400px' }}
           pagination={{
             position: ['bottomCenter'],
             defaultPageSize: 8,

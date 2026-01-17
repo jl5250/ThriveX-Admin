@@ -64,14 +64,14 @@ export default () => {
       dataIndex: 'id',
       key: 'id',
       align: 'center',
-      width: 100,
+      width: 120,
     },
     {
       title: '标题',
       dataIndex: 'title',
       key: 'title',
       align: 'center',
-      width: 300,
+      width: 200,
       render: (text: string, record: Article) => (
         <a href={`${web.url}/article/${record.id}`} target="_blank" className="hover:text-primary line-clamp-1" rel="noreferrer">
           {text}
@@ -82,7 +82,6 @@ export default () => {
       title: '摘要',
       dataIndex: 'description',
       key: 'description',
-      align: 'center',
       width: 350,
       render: (text: string) => <div className="line-clamp-2">{text ? text : '该文章暂未设置文章摘要'}</div>,
     },
@@ -90,7 +89,7 @@ export default () => {
       title: '分类',
       dataIndex: 'cateList',
       key: 'cateList',
-      align: 'center',
+      width: 200,
       render: (cates: Cate[]) =>
         cates.map((item, index) => (
           <Tag key={item.id} color={colors[index]}>
@@ -102,7 +101,6 @@ export default () => {
       title: '标签',
       dataIndex: 'tagList',
       key: 'tagList',
-      align: 'center',
       render: (tags: ArticleTag[]) =>
         tags.map((item, index) => (
           <Tag key={item.id} color={colors[index]}>
@@ -115,6 +113,7 @@ export default () => {
       key: 'action',
       fixed: 'right',
       align: 'center',
+      width: 130,
       render: (_: string, record: Article) => (
         <div className="flex justify-center space-x-2">
           <Link to={`/create?id=${record.id}&draft=true`}>
@@ -139,7 +138,7 @@ export default () => {
           dataSource={articleList}
           columns={columns}
           loading={loading}
-          scroll={{ x: 'max-content' }}
+          scroll={{ x: '1000px' }}
           pagination={{
             position: ['bottomCenter'],
             current,
