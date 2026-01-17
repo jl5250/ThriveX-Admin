@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import Loader from './components/Loader';
+// import Loader from './components/Loader';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 import { App as AntdApp, ConfigProvider, theme } from 'antd';
 import RouteList from './components/RouteList';
@@ -18,7 +18,7 @@ function App() {
 
   const token = useUserStore((state) => state.token);
 
-  const [loading, setLoading] = useState<boolean>(true);
+  // const [loading, setLoading] = useState<boolean>(true);
   const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
   const { pathname } = useLocation();
 
@@ -34,7 +34,7 @@ function App() {
   };
 
   useEffect(() => {
-    setTimeout(() => setLoading(false), 1000);
+    // setTimeout(() => setLoading(false), 1000);
 
     const bodyClassList = document.body.classList;
 
@@ -55,10 +55,29 @@ function App() {
     getWebData();
   }, [token]);
 
-  return loading ? (
-    <Loader />
-  ) : (
-    // 根据主题切换配置主题
+  // return loading ? (
+  //   <Loader />
+  // ) : (
+  //   // 根据主题切换配置主题
+  //   <ConfigProvider
+  //     theme={{
+  //       token: {
+  //         colorPrimary: '#60a5fa',
+  //         borderRadius: 4,
+  //         colorBgBase: isDarkTheme ? '#24303F' : '#ffffff',
+  //         colorTextBase: isDarkTheme ? '#e0e0e0' : '#000000',
+  //       },
+  //       algorithm: isDarkTheme ? theme.darkAlgorithm : theme.defaultAlgorithm,
+  //     }}
+  //     locale={zhCN}
+  //   >
+  //     <AntdApp>
+  //       <RouteList />
+  //     </AntdApp>
+  //   </ConfigProvider>
+  // );
+
+  return (
     <ConfigProvider
       theme={{
         token: {

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
-import { Table, Button, Tag, notification, Card, Popconfirm, Form, Input, Select, DatePicker, Modal, message, Pagination, Dropdown } from 'antd';
+import { Table, Button, Tag, notification, Card, Popconfirm, Form, Input, Select, DatePicker, Modal, message, Pagination, Dropdown, Skeleton } from 'antd';
 import { DeleteOutlined, FormOutlined, InboxOutlined, DownloadOutlined } from '@ant-design/icons';
 import type { UploadFile, UploadFileStatus, RcFile } from 'antd/es/upload/interface';
 import { ColumnType } from 'antd/es/table';
@@ -25,11 +25,13 @@ import { useWebStore } from '@/stores';
 
 export default () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
   const [importLoading, setImportLoading] = useState<boolean>(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const isFirstLoadRef = useRef<boolean>(true);
 
   const [form] = Form.useForm();
   const web = useWebStore((state) => state.web);
@@ -54,16 +56,25 @@ export default () => {
   // 分页获取文章
   const getArticleList = async () => {
     try {
-      setLoading(true);
+      // 如果是第一次加载，使用 initialLoading
+      // 否则使用 loading
+      if (isFirstLoadRef.current) {
+        setInitialLoading(true);
+      } else {
+        setLoading(true);
+      }
+
       const { data } = await getArticlePagingAPI({
         pagination: paging,
         query,
       });
       setTotal(data.total);
       setArticleList(data.result);
-      setLoading(false);
+      isFirstLoadRef.current = false;
     } catch (error) {
       console.error(error);
+    } finally {
+      setInitialLoading(false);
       setLoading(false);
     }
   };
@@ -630,6 +641,58 @@ export default () => {
     getCateList();
     getTagList();
   }, []);
+
+  // 初始加载时显示骨架屏
+  if (initialLoading) {
+    return (
+      <div>
+        {/* Title 骨架屏 */}
+        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-4">
+          <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
+        </Card>
+
+        {/* 筛选卡片骨架屏 */}
+        <Card className="border-stroke my-2 overflow-scroll [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
+          <div className="w-full flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <div className="flex flex-wrap items-center gap-3 flex-1">
+              <Skeleton.Input active size="default" style={{ width: 200, height: 32 }} />
+              <Skeleton.Input active size="default" style={{ width: 200, height: 32 }} />
+              <Skeleton.Input active size="default" style={{ width: 200, height: 32 }} />
+              <Skeleton.Input active size="default" style={{ width: 250, height: 32 }} />
+              <Skeleton.Button active size="default" style={{ width: 80, height: 32 }} />
+            </div>
+          </div>
+        </Card>
+
+        {/* 表格卡片骨架屏 */}
+        <Card className={`${titleSty} min-h-[calc(100vh-250px)] [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5`}>
+          {/* 表格头部骨架屏 */}
+          <div className="mb-4">
+            {/* 表格行骨架屏 - 模拟多行 */}
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+              <div key={item} className="flex items-center gap-4 mb-2 py-2 border-b border-gray-100">
+                <Skeleton.Input active size="small" className="1/12 h-5" />
+                <Skeleton.Input active size="small" style={{ width: 60, height: 20 }} />
+                <Skeleton.Input active size="small" style={{ width: 200, height: 20, flex: 1 }} />
+                <Skeleton.Input active size="small" style={{ width: 250, height: 20, flex: 1 }} />
+                <Skeleton.Input active size="small" style={{ width: 80, height: 20 }} />
+                <Skeleton.Input active size="small" style={{ width: 80, height: 20 }} />
+                <Skeleton.Input active size="small" style={{ width: 60, height: 20 }} />
+                <Skeleton.Input active size="small" style={{ width: 60, height: 20 }} />
+                <Skeleton.Input active size="small" style={{ width: 60, height: 20 }} />
+                <Skeleton.Input active size="small" style={{ width: 150, height: 20 }} />
+                <Skeleton.Input active size="small" style={{ width: 100, height: 20 }} />
+              </div>
+            ))}
+          </div>
+          {/* 分页骨架屏 */}
+          <div className="flex justify-center my-5">
+            <Skeleton.Input active size="default" style={{ width: 300, height: 32 }} />
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div>

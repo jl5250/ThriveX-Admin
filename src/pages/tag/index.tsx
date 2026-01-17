@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Table, Button, Form, Input, Popconfirm, message, Card, Spin } from 'antd';
+import { useState, useEffect, useRef } from 'react';
+import { Table, Button, Form, Input, Popconfirm, message, Card, Spin, Skeleton } from 'antd';
 import { getTagListAPI, addTagDataAPI, editTagDataAPI, delTagDataAPI, getTagDataAPI } from '@/api/tag';
 import { Tag } from '@/types/app/tag';
 import Title from '@/components/Title';
@@ -8,8 +8,10 @@ import { DeleteOutlined, FormOutlined } from '@ant-design/icons';
 
 export default () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
   const [btnLoading, setBtnLoading] = useState(false);
   const [editLoading, setEditLoading] = useState(false);
+  const isFirstLoadRef = useRef<boolean>(true);
 
   const [form] = Form.useForm();
 
@@ -35,14 +37,21 @@ export default () => {
 
   const getTagList = async () => {
     try {
-      setLoading(true);
+      // 如果是第一次加载，使用 initialLoading
+      // 否则使用 loading
+      if (isFirstLoadRef.current) {
+        setInitialLoading(true);
+      } else {
+        setLoading(true);
+      }
 
       const { data } = await getTagListAPI();
       setList(data as Tag[]);
-
-      setLoading(false);
+      isFirstLoadRef.current = false;
     } catch (error) {
       console.error(error);
+    } finally {
+      setInitialLoading(false);
       setLoading(false);
     }
   };
@@ -107,6 +116,45 @@ export default () => {
       setBtnLoading(false);
     }
   };
+
+  // 初始加载时显示骨架屏
+  if (initialLoading) {
+    return (
+      <div>
+        {/* Title 骨架屏 */}
+        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-4">
+          <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
+        </Card>
+
+        <div className="flex md:justify-between flex-col md:flex-row mx-auto mt-2 h-[calc(100vh-180px)]">
+          {/* 左侧表单卡片骨架屏 */}
+          <div className="w-full md:w-[40%]">
+            <Card className="border-stroke w-full h-46 [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
+              <Skeleton style={{ width: '100%', height: 30 }} />
+            </Card>
+          </div>
+
+          {/* 右侧表格卡片骨架屏 */}
+          <Card className="border-stroke w-full md:w-[59%] [&>.ant-card-body]:!p-0 mt-2 md:mt-0">
+            {/* 表格行骨架屏 - 模拟多行 */}
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+              <div key={item} className="flex items-center gap-4 mb-2 py-2 px-4 border-b border-gray-100">
+                <Skeleton.Input active size="small" style={{ width: 60, height: 20 }} />
+                <Skeleton.Input active size="small" style={{ width: 150, height: 20, flex: 1 }} />
+                <Skeleton.Input active size="small" style={{ width: 100, height: 20 }} />
+                <Skeleton.Input active size="small" style={{ width: 80, height: 20 }} />
+                <Skeleton.Input active size="small" style={{ width: 110, height: 20 }} />
+              </div>
+            ))}
+            {/* 分页骨架屏 */}
+            <div className="flex justify-center my-5">
+              <Skeleton.Input active size="default" style={{ width: 300, height: 32 }} />
+            </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>

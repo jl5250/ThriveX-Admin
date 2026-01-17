@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import dayjs from 'dayjs';
 
-import { Card, message, Table, Popconfirm, Button, Modal, Form, Input, DatePicker } from 'antd';
+import { Card, message, Table, Popconfirm, Button, Modal, Form, Input, DatePicker, Skeleton } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { ColumnsType } from 'antd/es/table';
 import { DeleteOutlined, SendOutlined } from '@ant-design/icons';
@@ -14,6 +14,8 @@ import { useWebStore, useUserStore } from '@/stores';
 
 export default () => {
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
+  const isFirstLoadRef = useRef<boolean>(true);
 
   const web = useWebStore((state) => state.web);
   const user = useUserStore((state) => state.user);
@@ -27,12 +29,21 @@ export default () => {
 
   const getCommentList = async () => {
     try {
-      setLoading(true);
+      // 如果是第一次加载，使用 initialLoading
+      // 否则使用 loading
+      if (isFirstLoadRef.current) {
+        setInitialLoading(true);
+      } else {
+        setLoading(true);
+      }
+
       const { data } = await getCommentListAPI();
       setList(data);
-      setLoading(false);
+      isFirstLoadRef.current = false;
     } catch (error) {
       console.error(error);
+    } finally {
+      setInitialLoading(false);
       setLoading(false);
     }
   };
@@ -200,6 +211,49 @@ export default () => {
       setBtnLoading(false);
     }
   };
+
+  // 初始加载时显示骨架屏
+  if (initialLoading) {
+    return (
+      <div>
+        {/* Title 骨架屏 */}
+        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-4">
+          <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
+        </Card>
+
+        {/* 筛选卡片骨架屏 */}
+        <Card className="border-stroke my-2 overflow-scroll [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
+          <div className="flex flex-wrap items-center gap-3">
+            <Skeleton.Input active size="default" style={{ width: 200, height: 32 }} />
+            <Skeleton.Input active size="default" style={{ width: 200, height: 32 }} />
+            <Skeleton.Input active size="default" style={{ width: 250, height: 32 }} />
+            <Skeleton.Button active size="default" style={{ width: 80, height: 32 }} />
+          </div>
+        </Card>
+
+        {/* 表格卡片骨架屏 */}
+        <Card className={`${titleSty} mt-2 min-h-[calc(100vh-270px)] [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5`}>
+          {/* 表格行骨架屏 - 模拟多行 */}
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+            <div key={item} className="flex items-center gap-4 mb-2 py-2 border-b border-gray-100">
+              <Skeleton.Input active size="small" style={{ width: 60, height: 20 }} />
+              <Skeleton.Input active size="small" style={{ width: 100, height: 20 }} />
+              <Skeleton.Input active size="small" style={{ width: 250, height: 20, flex: 1 }} />
+              <Skeleton.Input active size="small" style={{ width: 120, height: 20 }} />
+              <Skeleton.Input active size="small" style={{ width: 150, height: 20 }} />
+              <Skeleton.Input active size="small" style={{ width: 150, height: 20 }} />
+              <Skeleton.Input active size="small" style={{ width: 150, height: 20 }} />
+              <Skeleton.Input active size="small" style={{ width: 100, height: 20 }} />
+            </div>
+          ))}
+          {/* 分页骨架屏 */}
+          <div className="flex justify-center my-5">
+            <Skeleton.Input active size="default" style={{ width: 300, height: 32 }} />
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div>
