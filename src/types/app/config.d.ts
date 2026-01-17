@@ -1,3 +1,6 @@
+// 网站配置类型
+export type WebConfigType = 'web' | 'theme' | 'other';
+
 export interface Social {
   name: string;
   url: string;
