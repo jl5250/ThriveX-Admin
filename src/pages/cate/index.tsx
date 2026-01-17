@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import { DownOutlined } from '@ant-design/icons';
-import { Form, Input, Button, Tree, Modal, Spin, Dropdown, Card, MenuProps, Popconfirm, message, Radio, Select } from 'antd';
+import { Form, Input, Button, Tree, Modal, Spin, Dropdown, Card, MenuProps, Popconfirm, message, Radio, Select, Skeleton } from 'antd';
 import type { DataNode } from 'antd/es/tree';
 
 import { Cate } from '@/types/app/cate';
@@ -12,8 +12,10 @@ import './index.scss';
 
 export default () => {
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
   const [btnLoading, setBtnLoading] = useState(false);
   const [editLoading, setEditLoading] = useState(false);
+  const isFirstLoadRef = useRef<boolean>(true);
 
   const [isModelOpen, setIsModelOpen] = useState(false);
   const [cate, setCate] = useState<Cate>({} as Cate);
@@ -24,15 +26,21 @@ export default () => {
 
   const getCateList = async () => {
     try {
-      setLoading(true);
+      // 如果是第一次加载，使用 initialLoading
+      if (isFirstLoadRef.current) {
+        setInitialLoading(true);
+      } else {
+        setLoading(true);
+      }
 
       const { data } = await getCateListAPI();
       data.sort((a, b) => a.order - b.order);
       setList(data);
-
-      setLoading(false);
+      isFirstLoadRef.current = false;
     } catch (error) {
       console.error(error);
+    } finally {
+      setInitialLoading(false);
       setLoading(false);
     }
   };
@@ -172,6 +180,44 @@ export default () => {
       children: item.children ? toCascaderOptions(item.children, false) : undefined,
     })),
   ];
+
+  // 初始加载时显示骨架屏
+  if (initialLoading) {
+    return (
+      <div>
+        {/* Title 骨架屏 */}
+        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-4">
+          <div className="flex justify-between items-center">
+            <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
+            <Skeleton.Button active size="large" style={{ width: 120, height: 40 }} />
+          </div>
+        </Card>
+
+        {/* 树形结构骨架屏 */}
+        <Card className={`border-stroke [&>.ant-card-body]:!p-[30px_20px] [&>.ant-card-body]:!pb-6 mt-2 min-h-[calc(100vh-160px)]`}>
+          {[1, 2, 3, 4, 5, 6].map((item) => (
+            <div key={item} className="mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <Skeleton.Input active size="default" style={{ width: 200, height: 24 }} />
+                <Skeleton.Button active size="small" style={{ width: 60, height: 24 }} />
+              </div>
+              {/* 子项骨架屏 */}
+              {item <= 3 && (
+                <div className="ml-6 space-y-2">
+                  {[1, 2, 3].map((child) => (
+                    <div key={child} className="flex items-center justify-between">
+                      <Skeleton.Input active size="small" style={{ width: 150, height: 20 }} />
+                      <Skeleton.Button active size="small" style={{ width: 60, height: 20 }} />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div>

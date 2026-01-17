@@ -240,19 +240,23 @@ export default () => {
 
         {/* 表格卡片骨架屏 */}
         <Card className={`${titleSty} mt-2 min-h-[calc(100vh-270px)] [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5`}>
-          {/* 表格行骨架屏 - 模拟多行 */}
-          {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
-            <div key={item} className="flex items-center gap-4 mb-2 py-2 border-b border-gray-100">
-              <Skeleton.Input active size="small" style={{ width: 60, height: 20 }} />
-              <Skeleton.Input active size="small" style={{ width: 100, height: 20 }} />
-              <Skeleton.Input active size="small" style={{ width: 250, height: 20, flex: 1 }} />
-              <Skeleton.Input active size="small" style={{ width: 120, height: 20 }} />
-              <Skeleton.Input active size="small" style={{ width: 150, height: 20 }} />
-              <Skeleton.Input active size="small" style={{ width: 150, height: 20 }} />
-              <Skeleton.Input active size="small" style={{ width: 150, height: 20 }} />
-              <Skeleton.Input active size="small" style={{ width: 100, height: 20 }} />
-            </div>
-          ))}
+          {/* 表格骨架屏 */}
+          <div className="mb-4">
+            {/* 表格行骨架屏 - 模拟多行 */}
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+              <div key={item} className="flex items-center gap-4 mb-2 py-2 border-b border-gray-100">
+                <Skeleton.Input active size="small" style={{ width: 60, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 150, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 200, height: 40, flex: 1 }} />
+                <Skeleton.Input active size="small" style={{ width: 150, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 200, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 100, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 300, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 200, height: 40 }} />
+              </div>
+            ))}
+          </div>
+
           {/* 分页骨架屏 */}
           <div className="flex justify-center my-5">
             <Skeleton.Input active size="default" style={{ width: 300, height: 32 }} />

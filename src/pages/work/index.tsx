@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
-import { Card, Spin } from 'antd';
+import { Card, Spin, Skeleton } from 'antd';
 
 import { getCommentListAPI } from '@/api/comment';
 import { getLinkListAPI } from '@/api/web';
@@ -22,6 +22,8 @@ type Menu = 'comment' | 'link' | 'wall';
 
 export default () => {
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
+  const isFirstLoadRef = useRef<boolean>(true);
 
   const activeSty = 'bg-[#f9f9ff] dark:bg-[#3c5370] text-primary';
   const [active, setActive] = useState<Menu>('comment');
@@ -32,7 +34,12 @@ export default () => {
   // 重新获取最新数据
   const fetchData = async (type: Menu) => {
     try {
-      setLoading(true);
+      // 如果是第一次加载，使用 initialLoading
+      if (isFirstLoadRef.current) {
+        setInitialLoading(true);
+      } else {
+        setLoading(true);
+      }
 
       if (type === 'comment') {
         const { data } = await getCommentListAPI({ query: { status: 0 }, pattern: 'list' });
@@ -45,9 +52,11 @@ export default () => {
         setWallList(data);
       }
 
-      setLoading(false);
+      isFirstLoadRef.current = false;
     } catch (error) {
       console.error(error);
+    } finally {
+      setInitialLoading(false);
       setLoading(false);
     }
   };
@@ -62,6 +71,43 @@ export default () => {
     }
     return list.map((item) => <List key={item.id} item={item} type={type} fetchData={(type) => fetchData(type)} setLoading={setLoading} />);
   };
+
+  // 初始加载时显示骨架屏
+  if (initialLoading) {
+    return (
+      <div>
+        {/* Title 骨架屏 */}
+        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-4">
+          <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
+        </Card>
+
+        <Card className="border-stroke mt-2 min-h-[calc(100vh-160px)] [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
+          <div className="flex flex-col md:flex-row w-full">
+            {/* 左侧菜单骨架屏 */}
+            <div className="w-full min-w-[200px] md:w-2/12 md:min-h-96 mb-5 md:mb-0 pr-4 md:border-b-transparent md:border-r border-stroke dark:border-strokedark">
+              <ul className="space-y-1">
+                {[1, 2, 3].map((item) => (
+                  <li key={item} className="flex items-center w-full py-3 px-4">
+                    <Skeleton.Avatar active size={32} shape="square" style={{ marginRight: 16 }} />
+                    <Skeleton.Input active size="small" style={{ width: 60, height: 20 }} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* 右侧内容骨架屏 */}
+            <div className="w-full md:w-10/12 md:pl-6 py-4 space-y-10">
+              {[1, 2, 3, 4, 5].map((item) => (
+                <div key={item} className="border-b border-gray-100 pb-4">
+                  <Skeleton active paragraph={{ rows: 2 }} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div>

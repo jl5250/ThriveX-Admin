@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import { Card } from 'antd';
+import { Card, Skeleton } from 'antd';
 import { AiOutlineSetting } from 'react-icons/ai';
 import { BiGlobe, BiLayout, BiShieldQuarter, BiUser } from 'react-icons/bi';
 
@@ -22,12 +22,25 @@ interface Setup {
 export default () => {
   const [params, setParams] = useSearchParams();
   const tabFromUrl = params.get('tab');
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
+  const isFirstLoadRef = useRef<boolean>(true);
 
   // 验证 tab 值是否有效，有效配置项的 key 列表
   const validKeys = ['system', 'web', 'theme', 'my', 'other'];
   const initialActive = tabFromUrl && validKeys.includes(tabFromUrl) ? tabFromUrl : 'system';
 
   const [active, setActive] = useState(initialActive);
+
+  // 模拟加载完成
+  useEffect(() => {
+    if (isFirstLoadRef.current) {
+      const timer = setTimeout(() => {
+        setInitialLoading(false);
+        isFirstLoadRef.current = false;
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   // 监听 URL 参数变化，更新激活的 tab
   useEffect(() => {
@@ -76,6 +89,40 @@ export default () => {
       key: 'other',
     },
   ];
+
+  // 初始加载时显示骨架屏
+  if (initialLoading) {
+    return (
+      <div>
+        {/* Title 骨架屏 */}
+        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-4">
+          <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
+        </Card>
+
+        <Card className="border-stroke mt-2 min-h-[calc(100vh-160px)] [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
+          <div className="flex flex-col md:flex-row">
+            {/* 左侧菜单骨架屏 */}
+            <ul className="w-full md:w-[20%] md:mr-5 mb-10 md:mb-0 border-b-0 md:border-r border-stroke dark:border-strokedark divide-y divide-solid divide-[#F6F6F6] dark:divide-strokedark">
+              {[1, 2, 3, 4, 5].map((item) => (
+                <li key={item} className="p-3 pl-5">
+                  <div className="flex items-center mb-2">
+                    <Skeleton.Avatar active size={20} shape="square" style={{ marginRight: 8 }} />
+                    <Skeleton.Input active size="small" style={{ width: 100, height: 20 }} />
+                  </div>
+                  <Skeleton.Input active size="small" style={{ width: 120, height: 16 }} />
+                </li>
+              ))}
+            </ul>
+
+            {/* 右侧内容骨架屏 */}
+            <div className="w-full md:w-[80%] px-0 md:px-8 mt-4">
+              <Skeleton active paragraph={{ rows: 8 }} />
+            </div>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div>

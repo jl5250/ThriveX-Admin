@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
-import { Button, Card, Empty, Form, Input, Popconfirm, Select, Spin, Tabs, message } from 'antd';
+import { Button, Card, Empty, Form, Input, Popconfirm, Select, Spin, Tabs, message, Skeleton } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 
 import { getLinkListAPI, addLinkDataAPI, editLinkDataAPI, delLinkDataAPI, getWebTypeListAPI } from '@/api/web';
@@ -13,8 +13,10 @@ import './index.scss';
 
 export default () => {
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
   const [btnLoading, setBtnLoading] = useState(false);
   const [editLoading, setEditLoading] = useState(false);
+  const isFirstLoadRef = useRef<boolean>(true);
 
   const [form] = Form.useForm();
 
@@ -31,7 +33,12 @@ export default () => {
   // 获取网站列表
   const getLinkList = async () => {
     try {
-      setLoading(true);
+      // 如果是第一次加载，使用 initialLoading
+      if (isFirstLoadRef.current) {
+        setInitialLoading(true);
+      } else {
+        setLoading(true);
+      }
 
       const { data } = await getLinkListAPI();
       data.sort((a, b) => a.order - b.order);
@@ -51,9 +58,11 @@ export default () => {
 
       setList(grouped);
       setListTemp(data);
-      setLoading(false);
+      isFirstLoadRef.current = false;
     } catch (error) {
       console.error(error);
+    } finally {
+      setInitialLoading(false);
       setLoading(false);
     }
   };
@@ -283,6 +292,56 @@ export default () => {
       ),
     },
   ];
+
+  // 初始加载时显示骨架屏
+  if (initialLoading) {
+    return (
+      <div>
+        {/* Title 骨架屏 */}
+        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-4">
+          <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
+        </Card>
+
+        {/* Tabs 和内容骨架屏 */}
+        <Card className="WebPage border-stroke mt-2 min-h-[calc(100vh-160px)] [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
+          {/* 搜索框骨架屏 */}
+          <div className="flex justify-end w-full">
+            <Skeleton.Input active size="large" style={{ width: 400, height: 40 }} />
+          </div>
+
+          {/* 分组卡片骨架屏 */}
+          <div className="space-y-8">
+            {[1, 2, 3].map((group) => (
+              <div key={group}>
+                {/* 分组标题骨架屏 */}
+                <Card className="[&>.ant-card-body]:flex [&>.ant-card-body]:py-2 [&>.ant-card-body]:px-4 my-2 ml-1.5">
+                  <Skeleton.Avatar active size={24} shape="square" style={{ marginRight: 8 }} />
+                  <Skeleton.Input active size="default" style={{ width: 150, height: 24 }} />
+                </Card>
+
+                {/* 网站项骨架屏 */}
+                <div className="list">
+                  {[1, 2, 3, 4].map((item) => (
+                    <div key={item} className="item">
+                      <Skeleton.Avatar active size={60} shape="square" className="avatar" />
+                      <Skeleton.Input active size="default" style={{ width: 150, height: 24 }} className="name" />
+                      <Skeleton.Input active size="small" style={{ width: 200, height: 20 }} className="description" />
+                      <Skeleton.Input active size="small" style={{ width: 80, height: 20 }} className="type" />
+                      <div className="operate">
+                        <Skeleton.Button active size="small" style={{ width: 50, height: 28 }} />
+                        <Skeleton.Button active size="small" style={{ width: 50, height: 28 }} />
+                      </div>
+                      <Skeleton.Button active size="small" style={{ width: 120, height: 28 }} className="headFor" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div>

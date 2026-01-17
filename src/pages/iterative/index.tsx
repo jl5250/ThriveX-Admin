@@ -1,5 +1,5 @@
-import { Card, Select, Spin, Timeline, TimelineItemProps } from 'antd';
-import { useEffect, useState } from 'react';
+import { Card, Select, Spin, Timeline, TimelineItemProps, Skeleton } from 'antd';
+import { useEffect, useState, useRef } from 'react';
 import GitHubCalendar from 'react-github-calendar';
 import dayjs from 'dayjs';
 
@@ -14,6 +14,8 @@ interface Commit {
 
 export default () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
+  const isFirstLoadRef = useRef<boolean>(true);
 
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [yearList, setYearList] = useState<{ value: number; label: string }[]>([]);
@@ -25,7 +27,12 @@ export default () => {
   // 从github获取最近10次迭代记录
   const getCommitData = async (project: string) => {
     try {
-      setLoading(true);
+      // 如果是第一次加载，使用 initialLoading
+      if (isFirstLoadRef.current) {
+        setInitialLoading(true);
+      } else {
+        setLoading(true);
+      }
 
       const res = await fetch(`https://api.github.com/repos/LiuYuYang01/${project}/commits?per_page=10`);
       const data = await res.json();
@@ -49,16 +56,16 @@ export default () => {
           break;
       }
 
-      setLoading(false);
+      isFirstLoadRef.current = false;
     } catch (error) {
       console.error(error);
+    } finally {
+      setInitialLoading(false);
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    setLoading(true);
-
     // 获取当前年份
     const currentYear = dayjs().year();
     // 生成最近10年的年份数组
@@ -77,9 +84,42 @@ export default () => {
     const server_project_iterative = JSON.parse(sessionStorage.getItem('server_project_iterative') || '[]');
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     server_project_iterative.length ? setServer_IterativeRecording(server_project_iterative) : getCommitData('ThriveX-Server');
-
-    setLoading(false);
   }, []);
+
+  // 初始加载时显示骨架屏
+  if (initialLoading) {
+    return (
+      <div>
+        {/* Title 骨架屏 */}
+        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-4">
+          <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
+        </Card>
+
+        <Card className="border-stroke mt-2 min-h-[calc(100vh-160px)] [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
+          {/* 年份选择器骨架屏 */}
+          <div className="flex flex-col items-center mt-2 mb-6">
+            <div className="ml-5 mb-6">
+              <Skeleton.Input active size="small" style={{ width: 120, height: 24 }} />
+            </div>
+            {/* GitHub Calendar 骨架屏 */}
+            <Skeleton active paragraph={{ rows: 8 }} style={{ width: '100%', maxWidth: 900 }} />
+          </div>
+
+          {/* Timeline 骨架屏 */}
+          <div className="overflow-auto w-full">
+            <div className="flex w-[1350px] mx-auto">
+              {[1, 2, 3].map((item) => (
+                <div key={item} className={`w-[400px] ${item === 2 ? 'mx-[50px]' : ''}`}>
+                  <Skeleton.Input active size="default" style={{ width: 200, height: 28, margin: '0 auto 24px' }} />
+                  <Skeleton active paragraph={{ rows: 10 }} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div>
