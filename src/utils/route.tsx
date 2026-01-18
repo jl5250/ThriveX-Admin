@@ -126,14 +126,13 @@ export const getRouteConfig = (pathname: string): RouteConfig | null => {
   if (routeConfigMap[pathname]) {
     return routeConfigMap[pathname];
   }
-  
+
   // 模糊匹配（用于带参数的路由）
   for (const [path, config] of Object.entries(routeConfigMap)) {
     if (pathname.startsWith(path) && path !== '/') {
       return config;
     }
   }
-  
+
   return null;
 };
-

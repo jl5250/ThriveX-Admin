@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
-import SidebarLinkGroup from './SidebarLinkGroup'
+import React, { useEffect, useRef, useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { Skeleton } from 'antd';
+import SidebarLinkGroup from './SidebarLinkGroup';
 
 import { BiEditAlt, BiFolderOpen, BiHomeSmile, BiSliderAlt, BiCategoryAlt, BiBug } from 'react-icons/bi';
 import { TbBrandAirtable } from 'react-icons/tb';
@@ -32,6 +33,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const location = useLocation();
   const version = useVersionData();
   const { pathname } = location;
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
 
   // 创建 ref 用于触发器和侧边栏元素
   const trigger = useRef<HTMLButtonElement>(null);
@@ -70,7 +72,21 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     } else {
       document.querySelector('body')?.classList.remove('sidebar-expanded')
     }
-  }, [sidebarExpanded])
+  }, [sidebarExpanded]);
+
+  // 版本数据加载完成后，取消初始加载状态
+  useEffect(() => {
+    // 如果版本数据已加载（有 tag_name）或等待一段时间后，取消骨架屏
+    if (version.tag_name) {
+      setInitialLoading(false);
+    } else {
+      // 如果版本数据未加载，等待最多 1 秒后显示内容
+      const timer = setTimeout(() => {
+        setInitialLoading(false);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [version]);
 
   const [isSideBarTheme] = useState<'dark' | 'light'>('light');
 
@@ -232,6 +248,72 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       ],
     },
   ];
+
+  // 初始加载时显示骨架屏
+  if (initialLoading) {
+    return (
+      <aside ref={sidebar} className={`absolute left-0 top-0 z-[999] flex h-screen w-64 flex-col overflow-y-hidden duration-300 ease-linear lg:static lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} ${isSideBarTheme === 'dark' ? 'bg-black dark:bg-boxdark' : 'bg-light-gradient dark:bg-dark-gradient border-r border-stroke dark:border-strokedark transition-all backdrop-blur-2xl'}`}>
+        {/* Logo 和标题骨架屏 */}
+        <div className="flex justify-center items-center gap-2 px-6 py-5 pb-0 lg:pt-6 mb-4">
+          <div className="flex items-center">
+            <Skeleton.Input active size="default" style={{ width: 100, height: 40 }} />
+          </div>
+        </div>
+
+        {/* 导航菜单骨架屏 */}
+        <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
+          <nav className="pt-2 pb-4 px-4 lg:px-6">
+            {/* 第一个路由组 */}
+            <div className="mb-6">
+              <ul className="flex flex-col gap-1.5">
+                {[1, 2, 3].map((item) => (
+                  <li key={item}>
+                    <div className="flex items-center gap-2.5 py-2 px-4">
+                      <Skeleton.Avatar active size={22} shape="square" />
+                      <Skeleton.Input active size="small" style={{ width: 80, height: 20 }} />
+                    </div>
+                  </li>
+                ))}
+
+                {/* 带子菜单的项 */}
+                <li>
+                  <div className="flex items-center gap-2.5 py-2 px-4">
+                    <Skeleton.Avatar active size={22} shape="square" />
+                    <Skeleton.Input active size="small" style={{ width: 60, height: 20, flex: 1 }} />
+                    <Skeleton.Avatar active size={12} shape="circle" />
+                  </div>
+
+                  {/* 子菜单骨架屏 */}
+                  <div className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                    {[1, 2, 3, 4].map((subItem) => (
+                      <div key={subItem} className="ml-6">
+                        <Skeleton.Input active size="small" style={{ width: 80, height: 20 }} />
+                      </div>
+                    ))}
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            {/* 第二个路由组 */}
+            <div>
+              <Skeleton.Input active size="small" style={{ width: 20, height: 16, marginBottom: 16, marginLeft: 16 }} />
+              <ul className="flex flex-col gap-1.5">
+                {[1, 2, 3].map((item) => (
+                  <li key={item}>
+                    <div className="flex items-center gap-2.5 py-2 px-4">
+                      <Skeleton.Avatar active size={22} shape="square" />
+                      <Skeleton.Input active size="small" style={{ width: 80, height: 20 }} />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </nav>
+        </div>
+      </aside>
+    );
+  }
 
   // 渲染侧边栏组件
   return (

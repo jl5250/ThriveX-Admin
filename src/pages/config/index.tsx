@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { Table, Button, Modal, Form, message, Card, Tabs } from 'antd';
+import { Table, Button, Modal, Form, message, Card, Tabs, Skeleton } from 'antd';
 import { FormOutlined } from '@ant-design/icons';
 import type { FormInstance } from 'antd/es/form';
 
@@ -10,6 +10,7 @@ import Title from '@/components/Title';
 import { getEnvConfigListAPI, updateEnvConfigDataAPI, getPageConfigListAPI, updatePageConfigDataAPI } from '@/api/config';
 import { Config } from '@/types/app/config';
 import { titleSty } from '@/styles/sty';
+import { ColumnsType } from 'antd/es/table';
 
 interface Props {
   open: boolean;
@@ -63,6 +64,8 @@ export default () => {
   const [activeTab, setActiveTab] = useState<'env' | 'page'>('env');
   const [data, setData] = useState<{ [key: string]: Config[] }>({ env: [], page: [] });
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({ env: false, page: false });
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
+  const isFirstLoadRef = useRef<boolean>(true);
   const [editItem, setEditItem] = useState<Config | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [jsonError, setJsonError] = useState<string | null>(null);
@@ -72,14 +75,23 @@ export default () => {
 
   // 获取配置列表
   const fetchList = async (type: 'env' | 'page') => {
-    setLoading((l) => ({ ...l, [type]: true }));
+    // 如果是第一次加载，使用 initialLoading
+    if (isFirstLoadRef.current) {
+      setInitialLoading(true);
+    } else {
+      setLoading((l) => ({ ...l, [type]: true }));
+    }
+
     try {
       const { data: list } = await tabConfig[type].getList();
       setData((d) => ({ ...d, [type]: list }));
+      isFirstLoadRef.current = false;
     } catch (e) {
       console.error(e);
+    } finally {
+      setInitialLoading(false);
+      setLoading((l) => ({ ...l, [type]: false }));
     }
-    setLoading((l) => ({ ...l, [type]: false }));
   };
 
   useEffect(() => {
@@ -145,10 +157,26 @@ export default () => {
     }
   };
 
-  const columns = [
-    { title: 'ID', dataIndex: 'id', key: 'id', align: 'center' as const },
-    { title: '名称', dataIndex: 'name', key: 'name' },
-    { title: '备注', dataIndex: 'notes', key: 'notes' },
+  const columns: ColumnsType<Config> = [
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+      align: 'center' as const,
+      width: 120,
+    },
+    {
+      title: '名称',
+      dataIndex: 'name',
+      key: 'name',
+      width: 150,
+    },
+    {
+      title: '备注',
+      dataIndex: 'notes',
+      key: 'notes',
+      width: 150,
+    },
     {
       title: '配置内容',
       dataIndex: 'value',
@@ -158,10 +186,55 @@ export default () => {
     {
       title: '操作',
       key: 'action',
-      align: 'center' as const,
+      align: 'center',
+      width: 100,
+      fixed: 'right',
       render: (_: unknown, record: Config) => <Button type="text" icon={<FormOutlined className="text-primary" />} onClick={() => handleEdit(record)} />,
     },
   ];
+
+  // 初始加载时显示骨架屏
+  if (initialLoading) {
+    return (
+      <div>
+        {/* Title 骨架屏 */}
+        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-4">
+          <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
+        </Card>
+
+        {/* Tabs 和表格骨架屏 */}
+        <Card className={`${titleSty} min-h-[calc(100vh-200px)] [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5`}>
+          {/* Tabs 骨架屏 */}
+          <div className="flex justify-center space-x-4 mb-6">
+            <Skeleton.Button active size="default" style={{ width: 100, height: 40 }} />
+            <Skeleton.Button active size="default" style={{ width: 100, height: 40 }} />
+          </div>
+
+          {/* 表格骨架屏 */}
+          <div className="mb-4">
+            {/* 表格行骨架屏 - 模拟多行 */}
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+              <div key={item} className="flex items-center gap-4 mb-2 py-2 border-b border-gray-100">
+                <Skeleton.Input active size="small" style={{ width: 60, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 150, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 200, height: 40, flex: 1 }} />
+                <Skeleton.Input active size="small" style={{ width: 150, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 200, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 100, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 300, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 200, height: 40 }} />
+              </div>
+            ))}
+          </div>
+
+          {/* 分页骨架屏 */}
+          <div className="flex justify-center my-5">
+            <Skeleton.Input active size="default" style={{ width: 300, height: 32 }} />
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -176,7 +249,7 @@ export default () => {
           items={Object.keys(tabConfig).map((key) => ({
             key,
             label: tabConfig[key as 'env' | 'page'].label,
-            children: <Table rowKey="id" dataSource={data[key]} columns={columns} loading={loading[key]} pagination={false} />,
+            children: <Table rowKey="id" dataSource={data[key]} columns={columns} scroll={{ x: '1000px' }} loading={loading[key]} pagination={false} />,
           }))}
           className="[&_.ant-tabs-nav]:mb-0 [&_.ant-tabs-nav-wrap]:justify-center"
         />

@@ -1,10 +1,73 @@
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Skeleton } from 'antd';
+import { useUserStore } from '@/stores';
 import DropdownUser from './DropdownUser';
 import DarkModeSwitcher from './DarkModeSwitcher';
 import logo from '/logo.png';
 import PageTab from '../PageTab';
 
 const Header = (props: { sidebarOpen: string | boolean | undefined; setSidebarOpen: (arg0: boolean) => void }) => {
+  const user = useUserStore((state) => state.user);
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
+
+  // 等待用户信息加载完成后，取消初始加载状态
+  useEffect(() => {
+    if (user?.name) {
+      setInitialLoading(false);
+    } else {
+      // 如果用户信息未加载，等待最多 500ms 后显示内容
+      const timer = setTimeout(() => {
+        setInitialLoading(false);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [user]);
+
+  // 初始加载时显示骨架屏
+  if (initialLoading) {
+    return (
+      <header className="sticky top-0 z-[99] flex w-full bg-light-gradient dark:bg-dark-gradient">
+        <div className="flex flex-grow items-center justify-between px-4 py-3 shadow-2 md:px-6 2xl:px-11 overflow-scroll">
+          <div className="flex items-center gap-4 flex-1 min-w-0">
+            {/* 移动端菜单按钮和 Logo 骨架屏 */}
+            <div className="flex items-center gap-4 lg:hidden flex-shrink-0">
+              <Skeleton.Button active size="default" style={{ width: 32, height: 32 }} />
+              <Skeleton.Avatar active size={32} shape="square" />
+            </div>
+
+            {/* PageTab 骨架屏 */}
+            <div className="flex-1 min-w-0 w-2/6 overflow-x-auto">
+              <div className="flex items-center gap-2">
+                {[1, 2, 3].map((item) => (
+                  <Skeleton.Button key={item} active size="default" style={{ width: 100, height: 32 }} />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* 右侧操作栏骨架屏 */}
+          <div className="flex items-center gap-3 2xsm:gap-7 flex-shrink-0 ml-4">
+            <ul className="flex items-center gap-2 2xsm:gap-4 sm:mr-4">
+              <Skeleton.Button active size="default" style={{ width: 32, height: 30 }} />
+            </ul>
+
+            <div className="sm:block hidden">
+              <div className="flex items-center gap-2">
+                <div className="hidden text-right lg:block space-x-4">
+                  <Skeleton.Input active size="small" style={{ width: 80, height: 30, marginBottom: 4 }} />
+                  <Skeleton.Input active size="small" style={{ width: 60, height: 30 }} />
+                </div>
+
+                <Skeleton.Avatar active size={32} shape="circle" className="ml-4" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+    );
+  }
+
   return (
     <header className="sticky top-0 z-[99] flex w-full bg-light-gradient dark:bg-dark-gradient">
       <div className="flex flex-grow items-center justify-between px-4 py-3 shadow-2 md:px-6 2xl:px-11 overflow-scroll">

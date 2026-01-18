@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
-import { Button, Card, DatePicker, Form, Input, Modal, Popconfirm, Select, Table, Tag, message } from 'antd';
+import { Button, Card, DatePicker, Form, Input, Modal, Popconfirm, Select, Table, Tag, message, Skeleton } from 'antd';
 import dayjs from 'dayjs';
 import TextArea from 'antd/es/input/TextArea';
 import { DeleteOutlined, SendOutlined, StarFilled, StarOutlined } from '@ant-design/icons';
@@ -17,6 +17,8 @@ export default () => {
   const web = useWebStore((state) => state.web);
 
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
+  const isFirstLoadRef = useRef<boolean>(true);
 
   const [wall, setWall] = useState<Wall>({} as Wall);
   const [list, setList] = useState<Wall[]>([]);
@@ -27,14 +29,20 @@ export default () => {
 
   const getWallList = async () => {
     try {
-      setLoading(true);
+      // 如果是第一次加载，使用 initialLoading
+      if (isFirstLoadRef.current) {
+        setInitialLoading(true);
+      } else {
+        setLoading(true);
+      }
 
       const { data } = await getWallListAPI();
       setList(data);
-
-      setLoading(false);
+      isFirstLoadRef.current = false;
     } catch (error) {
       console.error(error);
+    } finally {
+      setInitialLoading(false);
       setLoading(false);
     }
   };
@@ -72,6 +80,7 @@ export default () => {
       dataIndex: 'id',
       key: 'id',
       align: 'center',
+      width: 120,
     },
     {
       title: '分类',
@@ -87,6 +96,7 @@ export default () => {
       title: '名称',
       dataIndex: 'name',
       key: 'name',
+      width: 150,
     },
     {
       title: '内容',
@@ -109,6 +119,7 @@ export default () => {
       title: '邮箱',
       dataIndex: 'email',
       key: 'email',
+      width: 180,
       render: (text: string) => (text ? text : '暂无邮箱'),
     },
     {
@@ -124,6 +135,7 @@ export default () => {
       key: 'action',
       fixed: 'right',
       align: 'center',
+      width: 130,
       render: (_: string, record: Wall) => (
         <div className="flex justify-center space-x-2">
           <Button
@@ -209,6 +221,53 @@ export default () => {
     }
   };
 
+  // 初始加载时显示骨架屏
+  if (initialLoading) {
+    return (
+      <div>
+        {/* Title 骨架屏 */}
+        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-4">
+          <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
+        </Card>
+
+        {/* 筛选卡片骨架屏 */}
+        <Card className="border-stroke my-2 overflow-scroll [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
+          <div className="flex flex-wrap items-center gap-3">
+            <Skeleton.Input active size="default" style={{ width: 200, height: 32 }} />
+            <Skeleton.Input active size="default" style={{ width: 200, height: 32 }} />
+            <Skeleton.Input active size="default" style={{ width: 250, height: 32 }} />
+            <Skeleton.Button active size="default" style={{ width: 80, height: 32 }} />
+          </div>
+        </Card>
+
+        {/* 表格卡片骨架屏 */}
+        <Card className={`${titleSty} mt-2 min-h-[calc(100vh-160px)] [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5`}>
+          {/* 表格骨架屏 */}
+          <div className="mb-4">
+            {/* 表格行骨架屏 - 模拟多行 */}
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+              <div key={item} className="flex items-center gap-4 mb-2 py-2 border-b border-gray-100">
+                <Skeleton.Input active size="small" style={{ width: 60, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 150, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 200, height: 40, flex: 1 }} />
+                <Skeleton.Input active size="small" style={{ width: 150, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 200, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 100, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 300, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 200, height: 40 }} />
+              </div>
+            ))}
+          </div>
+
+          {/* 分页骨架屏 */}
+          <div className="flex justify-center my-5">
+            <Skeleton.Input active size="default" style={{ width: 300, height: 32 }} />
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div>
       <Title value="留言管理" />
@@ -242,7 +301,7 @@ export default () => {
           columns={columns}
           loading={loading}
           expandable={{ defaultExpandAllRows: true }}
-          scroll={{ x: 'max-content' }}
+          scroll={{ x: '1400px' }}
           pagination={{
             position: ['bottomCenter'],
             defaultPageSize: 8,

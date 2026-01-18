@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Table, Button, Image, notification, Card, Popconfirm, Form, Input, DatePicker } from 'antd';
+import { useState, useEffect, useRef } from 'react';
+import { Table, Button, Image, notification, Card, Popconfirm, Form, Input, DatePicker, Skeleton } from 'antd';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { DeleteOutlined, FormOutlined } from '@ant-design/icons';
@@ -17,7 +17,9 @@ export interface FilterForm {
 
 export default () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
   const [btnLoading, setBtnLoading] = useState<boolean>(false);
+  const isFirstLoadRef = useRef<boolean>(true);
 
   const [recordList, setRecordList] = useState<Record[]>([]);
   const [form] = Form.useForm();
@@ -25,14 +27,20 @@ export default () => {
 
   const getRecordList = async () => {
     try {
-      setLoading(true);
+      // 如果是第一次加载，使用 initialLoading
+      if (isFirstLoadRef.current) {
+        setInitialLoading(true);
+      } else {
+        setLoading(true);
+      }
 
       const { data } = await getRecordListAPI();
       setRecordList(data as Record[]);
-
-      setLoading(false);
+      isFirstLoadRef.current = false;
     } catch (error) {
       console.error(error);
+    } finally {
+      setInitialLoading(false);
       setLoading(false);
     }
   };
@@ -78,7 +86,7 @@ export default () => {
       dataIndex: 'images',
       key: 'images',
       align: 'center',
-      width: 250,
+      width: 200,
       render: (text: string) => {
         const list: string[] = JSON.parse(text || '[]');
 
@@ -95,8 +103,6 @@ export default () => {
       title: '发布时间',
       dataIndex: 'createTime',
       key: 'createTime',
-      align: 'center',
-      width: 200,
       render: (text: string) => dayjs(+text).format('YYYY-MM-DD HH:mm:ss'),
       sorter: (a: Record, b: Record) => +a.createTime! - +b.createTime!,
       showSorterTooltip: false,
@@ -106,6 +112,7 @@ export default () => {
       key: 'action',
       fixed: 'right',
       align: 'center',
+      width: 130,
       render: (_: string, record: Record) => (
         <div className="flex justify-center space-x-2">
           <Link to={`/create_record?id=${record.id}`}>
@@ -140,6 +147,52 @@ export default () => {
     }
   };
 
+  // 初始加载时显示骨架屏
+  if (initialLoading) {
+    return (
+      <div>
+        {/* Title 骨架屏 */}
+        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-4">
+          <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
+        </Card>
+
+        {/* 筛选卡片骨架屏 */}
+        <Card className="border-stroke my-2 overflow-scroll [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
+          <div className="flex flex-wrap items-center gap-3">
+            <Skeleton.Input active size="default" style={{ width: 200, height: 32 }} />
+            <Skeleton.Input active size="default" style={{ width: 250, height: 32 }} />
+            <Skeleton.Button active size="default" style={{ width: 80, height: 32 }} />
+          </div>
+        </Card>
+
+        {/* 表格卡片骨架屏 */}
+        <Card className={`${titleSty} min-h-[calc(100vh-270px)] [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5`}>
+          {/* 表格骨架屏 */}
+          <div className="mb-4">
+            {/* 表格行骨架屏 - 模拟多行 */}
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+              <div key={item} className="flex items-center gap-4 mb-2 py-2 border-b border-gray-100">
+                <Skeleton.Input active size="small" style={{ width: 60, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 150, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 200, height: 40, flex: 1 }} />
+                <Skeleton.Input active size="small" style={{ width: 150, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 200, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 100, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 300, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 200, height: 40 }} />
+              </div>
+            ))}
+          </div>
+
+          {/* 分页骨架屏 */}
+          <div className="flex justify-center my-5">
+            <Skeleton.Input active size="default" style={{ width: 300, height: 32 }} />
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div>
       <Title value="说说管理" />
@@ -168,7 +221,7 @@ export default () => {
           dataSource={recordList}
           columns={columns}
           loading={loading}
-          scroll={{ x: 'max-content' }}
+          // scroll={{ x: 'max-content' }}
           pagination={{
             position: ['bottomCenter'],
             defaultPageSize: 8,

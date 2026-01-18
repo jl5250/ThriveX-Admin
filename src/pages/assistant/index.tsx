@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Button, Card, Form, Input, List, Modal, Popconfirm, Select, Tooltip, Space } from 'antd';
+import { useState, useEffect, useRef } from 'react';
+import { Button, Card, Form, Input, List, Modal, Popconfirm, Select, Tooltip, Space, Skeleton } from 'antd';
 import { DeleteOutlined, FormOutlined, PlusOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
 import Title from '@/components/Title';
@@ -52,8 +52,20 @@ export default () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [assistant, setAssistant] = useState<Assistant>({} as Assistant);
   const [inputModelValue, setInputModelValue] = useState('');
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
+  const isFirstLoadRef = useRef<boolean>(true);
 
   const { list, testingMap, saveAssistant, delAssistantData, setDefaultAssistant, testConnection } = useAssistant();
+
+  // 监听 list 变化，设置初始加载状态
+  useEffect(() => {
+    if (list.length > 0 || isFirstLoadRef.current) {
+      if (isFirstLoadRef.current && list.length > 0) {
+        setInitialLoading(false);
+        isFirstLoadRef.current = false;
+      }
+    }
+  }, [list]);
 
   const handleSubmit = () => {
     form.validateFields().then((values) => {
@@ -81,6 +93,42 @@ export default () => {
   // 如果输入值是新模型，且不在选项里，加入它
   if (inputModelValue && !selectOptions.find((opt) => opt.value === inputModelValue)) {
     selectOptions.push({ label: inputModelValue, value: inputModelValue });
+  }
+
+  // 初始加载时显示骨架屏
+  if (initialLoading) {
+    return (
+      <div>
+        {/* Title 骨架屏 */}
+        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-4">
+          <div className="flex justify-between items-center">
+            <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
+            <Skeleton.Button active size="default" style={{ width: 100, height: 32 }} />
+          </div>
+        </Card>
+
+        {/* 列表卡片骨架屏 */}
+        <Card className="border-stroke">
+          {[1, 2, 3, 4, 5].map((item) => (
+            <div key={item} className="py-4 border-b border-gray-100 last:border-b-0">
+              <div className="flex items-center justify-between">
+                <div className="flex-1 space-x-4">
+                  <Skeleton.Input active size="default" style={{ width: 200, height: 24, marginBottom: 8 }} />
+                  <Skeleton.Input active size="small" style={{ width: 150, height: 24 }} />
+                </div>
+
+                <div className="flex space-x-2">
+                  <Skeleton.Button active size="small" style={{ width: 80, height: 28 }} />
+                  <Skeleton.Button active size="small" style={{ width: 28, height: 28 }} />
+                  <Skeleton.Button active size="small" style={{ width: 28, height: 28 }} />
+                  <Skeleton.Button active size="small" style={{ width: 80, height: 28 }} />
+                </div>
+              </div>
+            </div>
+          ))}
+        </Card>
+      </div>
+    );
   }
 
   return (

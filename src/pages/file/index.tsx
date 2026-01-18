@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { Image, Card, Space, Spin, message, Popconfirm, Button, Drawer, Divider } from 'antd';
+import { Image, Card, Space, Spin, message, Popconfirm, Button, Drawer, Divider, Skeleton } from 'antd';
 import { PiKeyReturnFill } from 'react-icons/pi';
 import { DeleteOutlined, DownloadOutlined, RotateLeftOutlined, RotateRightOutlined, SwapOutlined, UndoOutlined, ZoomInOutlined, ZoomOutOutlined } from '@ant-design/icons';
 import Masonry from 'react-masonry-css';
@@ -23,6 +23,8 @@ const breakpointColumnsObj = {
 export default () => {
   // 加载状态
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
+  const isFirstLoadRef = useRef<boolean>(true);
   // 按钮加载状态
   const [btnLoading, setBtnLoading] = useState(false);
   // 下载加载状态
@@ -52,7 +54,13 @@ export default () => {
    */
   const getDirList = async () => {
     try {
-      setLoading(true);
+      // 如果是第一次加载，使用 initialLoading
+      if (isFirstLoadRef.current) {
+        setInitialLoading(true);
+      } else {
+        setLoading(true);
+      }
+
       const { data } = await getDirListAPI();
 
       const dirList = ['default', 'equipment', 'record', 'article', 'footprint', 'swiper', 'album'];
@@ -63,10 +71,11 @@ export default () => {
       });
 
       setDirList(data);
-
-      setLoading(false);
+      isFirstLoadRef.current = false;
     } catch (error) {
       console.error(error);
+    } finally {
+      setInitialLoading(false);
       setLoading(false);
     }
   };
@@ -187,6 +196,35 @@ export default () => {
     setOpenFileInfoDrawer(true);
     setFile(record);
   };
+
+  // 初始加载时显示骨架屏
+  if (initialLoading) {
+    return (
+      <div>
+        {/* Title 骨架屏 */}
+        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-4">
+          <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
+        </Card>
+
+        <Card className="FilePage border-stroke mt-2 min-h-[calc(100vh-160px)] [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
+          {/* 操作栏骨架屏 */}
+          <div className="flex justify-between my-4 px-4">
+            <Skeleton.Button active size="default" style={{ width: 100, height: 32 }} />
+          </div>
+
+          {/* 目录/文件列表骨架屏 */}
+          <div className="flex flex-wrap justify-start md:justify-normal">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+              <div key={item} className="w-20 flex flex-col items-center mx-8 my-2">
+                <Skeleton.Avatar active size={80} shape="square" />
+                <Skeleton.Input active size="small" style={{ width: 50, height: 25, marginTop: 8 }} />
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div>

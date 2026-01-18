@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Table, Button, Tag, notification, Card, Popconfirm, Form, Input, DatePicker, Modal, Spin, message } from 'antd';
+import { useState, useEffect, useRef } from 'react';
+import { Table, Button, Tag, notification, Card, Popconfirm, Form, Input, DatePicker, Modal, Spin, message, Skeleton } from 'antd';
 import { GiPositionMarker } from 'react-icons/gi';
 import { IoSearch } from 'react-icons/io5';
 import dayjs from 'dayjs';
@@ -16,9 +16,11 @@ import { ColumnType } from 'antd/es/table';
 
 export default () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
   const [searchLoading, setSearchLoading] = useState<boolean>(false);
   const [btnLoading, setBtnLoading] = useState(false);
   const [editLoading, setEditLoading] = useState(false);
+  const isFirstLoadRef = useRef<boolean>(true);
 
   const [gaodeApKey, setGaodeApKey] = useState<string>('');
   const [footprintList, setFootprintList] = useState<Footprint[]>([]);
@@ -34,36 +36,33 @@ export default () => {
       dataIndex: 'id',
       key: 'id',
       align: 'center',
-      width: 100,
+      width: 120,
     },
     {
       title: '标题',
       dataIndex: 'title',
       key: 'title',
-      align: 'center',
       width: 200,
     },
     {
       title: '地址',
       dataIndex: 'address',
       key: 'address',
-      align: 'center',
       width: 250,
     },
     {
       title: '内容',
       dataIndex: 'content',
       key: 'content',
-      align: 'center',
       width: 400,
-      render: (value: string) => <div className="line-clamp-3">{value}</div>,
+      render: (value: string) => <div className="line-clamp-3">{value || '---'}</div>,
     },
     {
       title: '坐标纬度',
       dataIndex: 'position',
       key: 'position',
       align: 'center',
-      width: 250,
+      width: 170,
       render: (value: string) => <Tag>{value}</Tag>,
     },
     {
@@ -71,7 +70,6 @@ export default () => {
       dataIndex: 'createTime',
       key: 'createTime',
       align: 'center',
-      width: 230,
       render: (time: string) => dayjs(+time).format('YYYY-MM-DD HH:mm:ss'),
       sorter: (a: Footprint, b: Footprint) => +a.createTime! - +b.createTime!,
       showSorterTooltip: false,
@@ -81,7 +79,7 @@ export default () => {
       key: 'action',
       fixed: 'right',
       align: 'center',
-      width: 120,
+      width: 130,
       render: (_: string, record: Footprint) => (
         <div className="flex justify-center space-x-2">
           <Button type="text" onClick={() => editFootprintData(record.id!)} icon={<FormOutlined className="text-primary" />} />
@@ -103,18 +101,25 @@ export default () => {
 
   const getFootprintList = async () => {
     try {
+      // 如果是第一次加载，使用 initialLoading
+      if (isFirstLoadRef.current) {
+        setInitialLoading(true);
+      } else {
+        setLoading(true);
+      }
+
       const { data } = await getFootprintListAPI();
       setFootprintList(data as Footprint[]);
+      // isFirstLoadRef.current = false;
     } catch (error) {
       console.error(error);
+    } finally {
+      // setInitialLoading(false);
       setLoading(false);
     }
-
-    setLoading(false);
   };
 
   useEffect(() => {
-    setLoading(true);
     getEnvConfigData();
     getFootprintList();
   }, []);
@@ -250,6 +255,55 @@ export default () => {
       setSearchLoading(false);
     }
   };
+
+  // 初始加载时显示骨架屏
+  if (initialLoading) {
+    return (
+      <div>
+        {/* Title 骨架屏 */}
+        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-4">
+          <div className="flex justify-between items-center">
+            <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
+            <Skeleton.Button active size="large" style={{ width: 120, height: 40 }} />
+          </div>
+        </Card>
+
+        {/* 筛选卡片骨架屏 */}
+        <Card className="border-stroke my-2 overflow-scroll [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
+          <div className="flex flex-wrap items-center gap-3">
+            <Skeleton.Input active size="default" style={{ width: 200, height: 32 }} />
+            <Skeleton.Input active size="default" style={{ width: 250, height: 32 }} />
+            <Skeleton.Button active size="default" style={{ width: 80, height: 32 }} />
+          </div>
+        </Card>
+
+        {/* 表格卡片骨架屏 */}
+        <Card className={`${titleSty} min-h-[calc(100vh-270px)] [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5`}>
+          {/* 表格骨架屏 */}
+          <div className="mb-4">
+            {/* 表格行骨架屏 - 模拟多行 */}
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+              <div key={item} className="flex items-center gap-4 mb-2 py-2 border-b border-gray-100">
+                <Skeleton.Input active size="small" style={{ width: 60, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 150, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 200, height: 40, flex: 1 }} />
+                <Skeleton.Input active size="small" style={{ width: 150, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 200, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 100, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 300, height: 40 }} />
+                <Skeleton.Input active size="small" style={{ width: 200, height: 40 }} />
+              </div>
+            ))}
+          </div>
+
+          {/* 分页骨架屏 */}
+          <div className="flex justify-center my-5">
+            <Skeleton.Input active size="default" style={{ width: 300, height: 32 }} />
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div>
