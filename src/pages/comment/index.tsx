@@ -270,7 +270,7 @@ export default () => {
     <div>
       <Title value="评论管理" />
 
-      <Card className="border-stroke my-2 overflow-scroll">
+      <Card className="[&>.ant-card-body]:!p-3 border-stroke my-2 overflow-scroll">
         <Form layout="inline" onFinish={onSubmit} autoComplete="off" className="flex-nowrap">
           <Form.Item name="title" className="min-w-[200px]">
             <Input placeholder="请输入标题关键词" />
@@ -297,7 +297,7 @@ export default () => {
           rowKey="id"
           dataSource={list}
           columns={columns}
-          expandable={{ defaultExpandAllRows: true }}
+          expandable={{ defaultExpandAllRows: false }}
           scroll={{ x: '1550px' }}
           pagination={{
             position: ['bottomCenter'],

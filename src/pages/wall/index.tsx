@@ -272,7 +272,7 @@ export default () => {
     <div>
       <Title value="留言管理" />
 
-      <Card className="border-stroke my-2 overflow-scroll">
+      <Card className="[&>.ant-card-body]:!p-3 border-stroke my-2 overflow-scroll">
         <Form layout="inline" onFinish={onFilterSubmit} autoComplete="off" className="flex-nowrap">
           <Form.Item name="content" className="min-w-[200px]">
             <Input placeholder="请输入关键词" />

@@ -110,11 +110,11 @@ export default () => {
 
       const { data } = await getFootprintListAPI();
       setFootprintList(data as Footprint[]);
-      // isFirstLoadRef.current = false;
+      isFirstLoadRef.current = false;
     } catch (error) {
       console.error(error);
     } finally {
-      // setInitialLoading(false);
+      setInitialLoading(false);
       setLoading(false);
     }
   };
@@ -313,7 +313,7 @@ export default () => {
         </Button>
       </Title>
 
-      <Card className="border-stroke my-2 overflow-scroll">
+      <Card className="[&>.ant-card-body]:!p-3 border-stroke my-2 overflow-scroll">
         <div className="flex">
           <Form layout="inline" onFinish={onFilterSubmit} autoComplete="off" className="flex-nowrap w-full">
             <Form.Item name="address" className="min-w-[200px]">

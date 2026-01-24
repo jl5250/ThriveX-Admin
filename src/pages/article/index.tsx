@@ -699,7 +699,7 @@ export default () => {
     <div>
       <Title value="文章管理" />
 
-      <Card className="border-stroke my-2 overflow-scroll">
+      <Card className="[&>.ant-card-body]:!p-3 border-stroke my-2 overflow-scroll">
         <div className="w-full flex justify-between">
           <Form form={form} layout="inline" onFinish={onFilterSubmit} autoComplete="off" className="flex-nowrap">
             <Form.Item name="title" className="min-w-[200px]">
