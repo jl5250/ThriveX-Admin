@@ -4,13 +4,13 @@ import {
   DeleteOutlined,
   EditOutlined,
   LinkOutlined,
-  FolderOutlined,
   GlobalOutlined,
   CloudOutlined,
   PlusOutlined,
-  DatabaseOutlined,
   CloudServerOutlined,
+  HddOutlined,
 } from '@ant-design/icons';
+import { BsDatabase } from 'react-icons/bs';
 
 import Title from '@/components/Title';
 import type { Oss } from '@/types/app/oss';
@@ -35,15 +35,15 @@ export default () => {
   const getPlatformIcon = (platform: string) => {
     switch (platform.toLowerCase()) {
       case 'local':
-        return <FolderOutlined className="text-4xl text-yellow-500" />;
+        return <BsDatabase className="text-4xl text-yellow-500" />;
       case 'webdav':
-        return <GlobalOutlined className="text-4xl text-blue-500" />;
+        return <GlobalOutlined className="text-4xl text-red-500" />;
       case 'minio':
-        return <DatabaseOutlined className="text-4xl text-blue-600" />;
+        return <HddOutlined className="text-4xl text-red-600" />;
       case 'qiniu':
         return <CloudServerOutlined className="text-4xl text-blue-500" />;
       case 'tencent':
-        return <CloudOutlined className="text-4xl text-blue-400" />;
+        return <CloudOutlined className="text-4xl text-blue-700" />;
       case 'aliyun':
         return <CloudOutlined className="text-4xl text-orange-500" />;
       default:
