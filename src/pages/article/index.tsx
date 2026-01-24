@@ -645,7 +645,7 @@ export default () => {
     return (
       <div>
         {/* Title 骨架屏 */}
-        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-4">
+        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-2">
           <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
         </Card>
 
@@ -659,11 +659,8 @@ export default () => {
               <Skeleton.Input active size="default" style={{ width: 250, height: 32 }} />
               <Skeleton.Button active size="default" style={{ width: 80, height: 32 }} />
             </div>
-            <div className="flex space-x-3 sm:pl-32 pr-10">
-              <Skeleton.Button active size="default" style={{ width: 120, height: 32 }} />
-              <Skeleton.Button active size="default" style={{ width: 100, height: 32 }} />
-              <Skeleton.Button active size="default" style={{ width: 100, height: 32 }} />
-            </div>
+
+            <Skeleton.Button active size="default" style={{ width: 120, height: 32 }} />
           </div>
         </Card>
 
