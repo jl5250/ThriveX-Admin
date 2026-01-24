@@ -235,95 +235,115 @@ export default () => {
         {ossList.map((record) => (
           <div
             key={record.id}
-            className={`bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow ${record.isEnable ? 'border-2 border-green-500' : 'border border-gray-200'
+            className={`relative p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden ${record.isEnable
+              ? 'border-2 border-green-500 bg-gradient-to-br from-green-50 via-white to-blue-50'
+              : 'border border-gray-200 bg-gradient-to-br from-gray-50 via-white to-slate-50'
               }`}
           >
-            {/* 标题区域 */}
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center gap-3">
-                {getPlatformIcon(record.platform)}
-                <div>
-                  <div className="font-semibold text-lg">
-                    {record.platform === 'local'
-                      ? '本地存储'
-                      : (record.platformName || record.platform)}
-                  </div>
-                  <div className="text-sm text-gray-500 mt-1">
-                    {record.platform === 'local'
-                      ? '本地存储'
-                      : (record.platform === 'webdav' ? 'WebDAV' : record.platformName || '云存储')}
+            {/* 背景装饰元素 */}
+            <div className="absolute top-0 right-0 w-32 h-32 opacity-20">
+              <div className="absolute top-4 right-4 w-16 h-16 rounded-full bg-gradient-to-br from-blue-200 to-purple-200 blur-xl"></div>
+              <div className="absolute top-8 right-8 w-8 h-8 rounded-full bg-gradient-to-br from-pink-200 to-orange-200 blur-lg"></div>
+            </div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 opacity-15">
+              <div className="absolute bottom-4 left-4 w-12 h-12 rounded-full bg-gradient-to-br from-cyan-200 to-blue-200 blur-xl"></div>
+            </div>
+
+            {/* 小装饰点 */}
+            <div className="absolute top-6 right-6 w-2 h-2 rounded-full bg-blue-300 opacity-40"></div>
+            <div className="absolute top-12 right-12 w-1.5 h-1.5 rounded-full bg-purple-300 opacity-40"></div>
+            <div className="absolute bottom-8 left-8 w-1.5 h-1.5 rounded-full bg-cyan-300 opacity-40"></div>
+
+            {/* 内容区域 - 添加相对定位以确保内容在装饰元素之上 */}
+            <div className="relative z-10">
+              {/* 标题区域 */}
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  {getPlatformIcon(record.platform)}
+                  <div>
+                    <div className="font-semibold text-lg">
+                      {record.platform === 'local'
+                        ? '本地存储'
+                        : (record.platformName || record.platform)}
+                    </div>
+                    <div className="text-sm text-gray-500 mt-1">
+                      {record.platform === 'local'
+                        ? '本地存储'
+                        : (record.platform === 'webdav' ? 'WebDAV' : record.platformName || '云存储')}
+                    </div>
                   </div>
                 </div>
+
+                <div className="flex items-center gap-1">
+                  <StatusTag status={record.isEnable} flash={record.isEnable ? true : false} />
+                </div>
               </div>
-              <div className="flex items-center gap-1">
-                <StatusTag status={record.isEnable} />
+
+              {/* 内容区域 */}
+              <div className="mb-4 space-y-2">
+                <div>
+                  <div className="text-xs text-gray-600 mb-2">存储路径</div>
+                  <div className="text-sm font-mono bg-white/60 backdrop-blur-sm p-2 rounded break-all border border-gray-100">{record.basePath || '/uploads'}</div>
+                </div>
               </div>
-            </div>
 
-            {/* 内容区域 */}
-            <div className="mb-4 space-y-2">
-              <div>
-                <div className="text-xs text-gray-600 mb-2">存储路径</div>
-                <div className="text-sm font-mono bg-gray-50 p-2 rounded break-all">{record.basePath || '/uploads'}</div>
-              </div>
-            </div>
-
-            {/* 操作按钮区域 */}
-            <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-              <div className="flex items-center gap-2">
-                <Tooltip title="测试连接">
-                  <Button
-                    icon={<LinkOutlined />}
-                    loading={testingMap[record.id!]}
-                    onClick={() => testConnection(record)}
-                    className="flex items-center"
-                  >
-                    测试
-                  </Button>
-                </Tooltip>
-
-                <Tooltip title="编辑配置">
-                  <Button
-                    color="primary"
-                    icon={<EditOutlined />}
-                    onClick={() => editOssData(record)}
-                    className="flex items-center"
-                  >
-                    编辑
-                  </Button>
-                </Tooltip>
-
-                <Popconfirm
-                  title="警告"
-                  description="你确定要删除吗"
-                  okText="确定"
-                  cancelText="取消"
-                  onConfirm={() => delOssData(record.id!)}
-                >
-                  <Tooltip title="编辑配置">
+              {/* 操作按钮区域 */}
+              <div className="flex items-center justify-between pt-4 border-t border-gray-200/50">
+                <div className="flex items-center gap-2">
+                  <Tooltip title="测试连接">
                     <Button
-                      danger
-                      icon={<DeleteOutlined />}
+                      icon={<LinkOutlined />}
+                      loading={testingMap[record.id!]}
+                      onClick={() => testConnection(record)}
                       className="flex items-center"
                     >
-                      删除
+                      测试
                     </Button>
                   </Tooltip>
-                </Popconfirm>
-              </div>
 
-              <div className="flex items-center gap-2">
-                <Switch
-                  checked={!!record.isEnable}
-                  loading={switchLoadingMap[record.id!]}
-                  onChange={(checked) => {
-                    if (checked) {
-                      enableOssData(record.id!);
-                    } else {
-                      disableOssData(record.id!);
-                    }
-                  }}
-                />
+                  <Tooltip title="编辑配置">
+                    <Button
+                      color="primary"
+                      icon={<EditOutlined />}
+                      onClick={() => editOssData(record)}
+                      className="flex items-center"
+                    >
+                      编辑
+                    </Button>
+                  </Tooltip>
+
+                  <Popconfirm
+                    title="警告"
+                    description="你确定要删除吗"
+                    okText="确定"
+                    cancelText="取消"
+                    onConfirm={() => delOssData(record.id!)}
+                  >
+                    <Tooltip title="编辑配置">
+                      <Button
+                        danger
+                        icon={<DeleteOutlined />}
+                        className="flex items-center"
+                      >
+                        删除
+                      </Button>
+                    </Tooltip>
+                  </Popconfirm>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={!!record.isEnable}
+                    loading={switchLoadingMap[record.id!]}
+                    onChange={(checked) => {
+                      if (checked) {
+                        enableOssData(record.id!);
+                      } else {
+                        disableOssData(record.id!);
+                      }
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
