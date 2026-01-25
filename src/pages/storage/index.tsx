@@ -217,7 +217,7 @@ export default () => {
         <Title value="存储管理" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-2">
           {[1, 2, 3].map((item) => (
-            <Card key={item} className="shadow-md">
+            <Card key={item} className="shadow-md dark:bg-boxdark dark:border-strokedark">
               <Skeleton active paragraph={{ rows: 4 }} />
             </Card>
           ))}
@@ -236,23 +236,23 @@ export default () => {
           <div
             key={record.id}
             className={`relative p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden ${record.isEnable
-              ? 'border-2 border-blue-500 bg-gradient-to-br from-blue-50 via-white to-blue-50'
-              : 'border border-gray-200 bg-gradient-to-br from-gray-50 via-white to-slate-50'
+              ? 'border-2 border-blue-500 bg-gradient-to-br from-blue-50 via-white to-blue-50 dark:from-blue-900/30 dark:via-boxdark dark:to-blue-900/30 dark:border-blue-500'
+              : 'border border-gray-200 bg-gradient-to-br from-gray-50 via-white to-slate-50 dark:from-boxdark/80 dark:via-boxdark dark:to-boxdark-2/80 dark:border-strokedark'
               }`}
           >
             {/* 背景装饰元素 */}
-            <div className="absolute top-0 right-0 w-32 h-32 opacity-20">
-              <div className="absolute top-4 right-4 w-16 h-16 rounded-full bg-gradient-to-br from-blue-200 to-purple-200 blur-xl"></div>
-              <div className="absolute top-8 right-8 w-8 h-8 rounded-full bg-gradient-to-br from-pink-200 to-orange-200 blur-lg"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 opacity-20 dark:opacity-10">
+              <div className="absolute top-4 right-4 w-16 h-16 rounded-full bg-gradient-to-br from-blue-200 to-purple-200 dark:from-blue-500/30 dark:to-purple-500/30 blur-xl"></div>
+              <div className="absolute top-8 right-8 w-8 h-8 rounded-full bg-gradient-to-br from-pink-200 to-orange-200 dark:from-pink-500/30 dark:to-orange-500/30 blur-lg"></div>
             </div>
-            <div className="absolute bottom-0 left-0 w-24 h-24 opacity-15">
-              <div className="absolute bottom-4 left-4 w-12 h-12 rounded-full bg-gradient-to-br from-cyan-200 to-blue-200 blur-xl"></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 opacity-15 dark:opacity-10">
+              <div className="absolute bottom-4 left-4 w-12 h-12 rounded-full bg-gradient-to-br from-cyan-200 to-blue-200 dark:from-cyan-500/30 dark:to-blue-500/30 blur-xl"></div>
             </div>
 
             {/* 小装饰点 */}
-            <div className="absolute top-6 right-6 w-2 h-2 rounded-full bg-blue-300 opacity-40"></div>
-            <div className="absolute top-12 right-12 w-1.5 h-1.5 rounded-full bg-purple-300 opacity-40"></div>
-            <div className="absolute bottom-8 left-8 w-1.5 h-1.5 rounded-full bg-cyan-300 opacity-40"></div>
+            <div className="absolute top-6 right-6 w-2 h-2 rounded-full bg-blue-300 dark:bg-blue-500/40 opacity-40"></div>
+            <div className="absolute top-12 right-12 w-1.5 h-1.5 rounded-full bg-purple-300 dark:bg-purple-500/40 opacity-40"></div>
+            <div className="absolute bottom-8 left-8 w-1.5 h-1.5 rounded-full bg-cyan-300 dark:bg-cyan-500/40 opacity-40"></div>
 
             {/* 内容区域 - 添加相对定位以确保内容在装饰元素之上 */}
             <div className="relative z-10">
@@ -261,12 +261,12 @@ export default () => {
                 <div className="flex items-center gap-3">
                   {getPlatformIcon(record.platform)}
                   <div>
-                    <div className="font-semibold text-lg">
+                    <div className="font-semibold text-lg dark:text-white">
                       {record.platform === 'local'
                         ? '本地存储'
                         : (record.platformName || record.platform)}
                     </div>
-                    <div className="text-sm text-gray-500 mt-1">
+                    <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                       {record.platform === 'local'
                         ? '本地存储'
                         : (record.platform === 'webdav' ? 'WebDAV' : record.platformName || '云存储')}
@@ -282,13 +282,13 @@ export default () => {
               {/* 内容区域 */}
               <div className="mb-4 space-y-2">
                 <div>
-                  <div className="text-xs text-gray-600 mb-2">存储路径</div>
-                  <div className="text-sm font-mono bg-white/60 backdrop-blur-sm p-2 rounded break-all border border-gray-100">{record.basePath || '/uploads'}</div>
+                  <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">存储路径</div>
+                  <div className="text-sm font-mono bg-white/60 dark:bg-boxdark-2/60 backdrop-blur-sm p-2 rounded break-all border border-gray-100 dark:border-strokedark dark:text-gray-300">{record.basePath || '/uploads'}</div>
                 </div>
               </div>
 
               {/* 操作按钮区域 */}
-              <div className="flex items-center justify-between pt-4 border-t border-gray-200/50">
+              <div className="flex items-center justify-between pt-4 border-t border-gray-200/50 dark:border-strokedark/50">
                 <div className="flex items-center gap-2">
                   <Tooltip title="测试连接">
                     <Button
@@ -351,11 +351,11 @@ export default () => {
 
         {/* 添加存储配置卡片 */}
         <div
-          className="group flex flex-col justify-center items-center text-gray-400 bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow border-2 border-dashed border-gray-300 cursor-pointer hover:border-primary"
+          className="group flex flex-col justify-center items-center text-gray-400 dark:text-gray-500 bg-white dark:bg-boxdark p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow border-2 border-dashed border-gray-300 dark:border-strokedark cursor-pointer hover:border-primary dark:hover:border-primary"
           onClick={addOssData}
         >
-          <PlusOutlined className="text-2xl text-gray-400 mb-2 group-hover:text-primary" />
-          <div className="text-sm font-medium mb-2 group-hover:text-primary">添加新存储</div>
+          <PlusOutlined className="text-2xl text-gray-400 dark:text-gray-500 mb-2 group-hover:text-primary dark:group-hover:text-primary" />
+          <div className="text-sm font-medium mb-2 group-hover:text-primary dark:group-hover:text-primary">添加新存储</div>
         </div>
       </div>
 
