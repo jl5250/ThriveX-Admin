@@ -132,7 +132,7 @@ export default () => {
       key: 'action',
       fixed: 'right',
       align: 'center',
-      width: 130,
+      width: 110,
       render: (_: string, record: Comment) => (
         <div className="flex justify-center space-x-2">
           <Button

@@ -154,7 +154,7 @@ export default () => {
   return (
     <div>
       <Title value="助手管理">
-        <Button type="primary" onClick={() => setIsModalOpen(true)}>
+        <Button type="primary" size="large" onClick={() => setIsModalOpen(true)}>
           添加助手
         </Button>
       </Title>
