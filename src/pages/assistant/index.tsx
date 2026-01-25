@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Button, Card, Form, Input, List, Modal, Popconfirm, Select, Tooltip, Space, Skeleton } from 'antd';
-import { DeleteOutlined, FormOutlined, PlusOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { Button, Card, Form, Input, Modal, Select, Tooltip, Space, Skeleton, Avatar, Tag, Dropdown, MenuProps } from 'antd';
+import { DeleteOutlined, FormOutlined, PlusOutlined, InfoCircleOutlined, MoreOutlined, ApiOutlined, ThunderboltFilled } from '@ant-design/icons';
+import { ImSwitch } from 'react-icons/im';
 
 import Title from '@/components/Title';
 import useAssistant from '@/hooks/useAssistant';
@@ -45,6 +46,23 @@ const modelInfoMap: Record<string, { desc: string; label: string }> = {
     label: '豆包 Chat',
   },
   // 你可以继续添加更多模型
+};
+
+// 获取模型主题（颜色和图标）
+const getModelTheme = (model: string): { color: string; icon: string } => {
+  const themeMap: Record<string, { color: string; icon: string }> = {
+    'deepseek-chat': { color: '#1890ff', icon: 'DS' },
+    'deepseek-reasoner': { color: '#722ed1', icon: 'DR' },
+    'moonshot-v1-128k': { color: '#13c2c2', icon: 'M' },
+    'gpt-4o': { color: '#52c41a', icon: 'GPT4' },
+    'gpt-3.5-turbo': { color: '#faad14', icon: 'GPT3' },
+    'glm-4': { color: '#eb2f96', icon: 'GLM' },
+    'qwen-turbo': { color: '#f5222d', icon: 'QW' },
+    'ernie-bot': { color: '#fa8c16', icon: 'EB' },
+    'doubao-chat': { color: '#2f54eb', icon: 'DB' },
+  };
+
+  return themeMap[model] || { color: '#8c8c8c', icon: 'AI' };
 };
 
 export default () => {
@@ -107,26 +125,28 @@ export default () => {
           </div>
         </Card>
 
-        {/* 列表卡片骨架屏 */}
-        <Card className="border-stroke">
-          {[1, 2, 3, 4, 5].map((item) => (
-            <div key={item} className="py-4 border-b border-gray-100 last:border-b-0">
-              <div className="flex items-center justify-between">
-                <div className="flex-1 space-x-4">
-                  <Skeleton.Input active size="default" style={{ width: 200, height: 24, marginBottom: 8 }} />
-                  <Skeleton.Input active size="small" style={{ width: 150, height: 24 }} />
+        {/* 卡片网格骨架屏 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 mt-3">
+          {[1, 2, 3, 4, 5, 6].map((item) => (
+            <Card key={item} className="border-stroke">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <Skeleton.Avatar active size={48} shape="square" />
+                  <div>
+                    <Skeleton.Input active size="small" style={{ width: 80, height: 16 }} />
+                  </div>
                 </div>
-
-                <div className="flex space-x-2">
-                  <Skeleton.Button active size="small" style={{ width: 80, height: 28 }} />
-                  <Skeleton.Button active size="small" style={{ width: 28, height: 28 }} />
-                  <Skeleton.Button active size="small" style={{ width: 28, height: 28 }} />
-                  <Skeleton.Button active size="small" style={{ width: 80, height: 28 }} />
-                </div>
+                <Skeleton.Button active size="small" style={{ width: 32, height: 32 }} />
               </div>
-            </div>
+              <div className="bg-gray-100 rounded-md p-3 py-4 mb-4">
+
+              </div>
+              <div className="pt-2 border-t border-gray-100">
+                <Skeleton.Button active size="default" style={{ width: '100%', height: 32 }} />
+              </div>
+            </Card>
           ))}
-        </Card>
+        </div>
       </div>
     );
   }
@@ -134,63 +154,144 @@ export default () => {
   return (
     <div>
       <Title value="助手管理">
-        <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsModalOpen(true)}>
+        <Button type="primary" onClick={() => setIsModalOpen(true)}>
           添加助手
         </Button>
       </Title>
 
-      <Card className="border-stroke">
-        <List
-          dataSource={list}
-          renderItem={(item) => {
-            const info = modelInfoMap[item.model];
-            return (
-              <List.Item
-                actions={[
-                  <Button key="test" type="link" onClick={() => testConnection(item)} loading={testingMap[item.id]}>
-                    {testingMap[item.id] ? '测试中...' : '测试连接'}
-                  </Button>,
-                  <Button
-                    key="edit"
-                    type="text"
-                    onClick={() => {
-                      form.setFieldsValue(item);
-                      setInputModelValue(item.model);
-                      setAssistant(item);
-                      setIsModalOpen(true);
-                    }}
-                    icon={<FormOutlined className="text-primary" />}
-                  />,
-                  <Popconfirm key="del" title="您确定要删除这个助手吗？" onConfirm={() => delAssistantData(+item.id)} okText="确定" cancelText="取消">
-                    <Button type="text" danger icon={<DeleteOutlined />} />
-                  </Popconfirm>,
-                  <Button key="default" type="text" onClick={() => setDefaultAssistant(+item.id)}>
-                    {item.isDefault ? '默认助手' : '设为默认'}
-                  </Button>,
-                ]}
-              >
-                <List.Item.Meta
-                  title={
-                    <Space>
-                      <span>{item.name}</span>
-                    </Space>
-                  }
-                  description={
-                    <span>
-                      模型: {info ? info.label : item.model}
+      {/* 卡片网格区域 */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 mt-3">
+        {list.map((item) => {
+          const info = modelInfoMap[item.model];
+          const theme = getModelTheme(item.model);
+          const isTesting = testingMap[item.id];
+          const isDefault = !!item.isDefault;
+
+          // 下拉菜单项
+          const menuItems: MenuProps['items'] = [
+            {
+              key: 'edit',
+              label: '编辑配置',
+              icon: <FormOutlined />,
+              onClick: () => {
+                form.setFieldsValue(item);
+                setInputModelValue(item.model);
+                setAssistant(item);
+                setIsModalOpen(true);
+              }
+            },
+            {
+              key: 'default',
+              label: isDefault ? '已开启' : '开启助手',
+              icon: <ImSwitch />,
+              disabled: isDefault,
+              onClick: () => setDefaultAssistant(+item.id)
+            },
+            {
+              type: 'divider',
+            },
+            {
+              key: 'delete',
+              label: '删除助手',
+              danger: true,
+              icon: <DeleteOutlined />,
+              onClick: () => {
+                Modal.confirm({
+                  title: '确认删除',
+                  content: `您确定要删除助手 "${item.name}" 吗？此操作无法撤销。`,
+                  okText: '删除',
+                  okType: 'danger',
+                  cancelText: '取消',
+                  onOk: () => delAssistantData(+item.id),
+                });
+              }
+            }
+          ];
+
+          return (
+            <Card
+              key={item.id}
+              className={`relative p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden ${item.isDefault
+                ? 'border-2 border-blue-500 bg-gradient-to-br from-blue-50 via-white to-blue-50'
+                : 'border border-gray-200 bg-gradient-to-br from-gray-50 via-white to-slate-50'
+                }`}
+              styles={{ body: { padding: '10px', flex: 1, display: 'flex', flexDirection: 'column' } }}
+            >
+              {/* 卡片头部：图标与名称 */}
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <Avatar
+                    shape="square"
+                    size={48}
+                    style={{ backgroundColor: theme.color, verticalAlign: 'middle' }}
+                    className="shadow-md text-lg font-bold"
+                  >
+                    {theme.icon}
+                  </Avatar>
+
+                  <div>
+                    <div className="font-bold text-lg text-gray-800 leading-tight mb-1 truncate max-w-[160px] ml-[5px]">
+                      {item.name}
+                    </div>
+
+                    <Space size={4}>
+                      <Tag bordered={false} className="text-xs bg-gray-100 text-gray-500 mr-0">
+                        {info ? info.label : item.model}
+                      </Tag>
+
                       {info && (
                         <Tooltip title={info.desc}>
-                          <InfoCircleOutlined style={{ marginLeft: 8 }} />
+                          <InfoCircleOutlined className="text-gray-400 cursor-pointer hover:text-primary" />
                         </Tooltip>
                       )}
-                    </span>
-                  }
-                />
-              </List.Item>
-            );
-          }}
-        />
-      </Card>
+                    </Space>
+                  </div>
+                </div>
+
+                {/* 更多操作菜单 */}
+                <Dropdown menu={{ items: menuItems }} placement="bottomRight" arrow className="bg-gray-50">
+                  <Button type="text" icon={<MoreOutlined className="text-xl text-gray-400" />} />
+                </Dropdown>
+              </div>
+
+              {/* 卡片内容：URL显示 */}
+              <div className="bg-gray-50 rounded-md px-3 py-2 mb-2 flex-1 border border-gray-100">
+                <div className="flex items-center text-gray-400 text-xs uppercase font-bold mb-1">
+                  <ApiOutlined className="mr-1" /> API Endpoint
+                </div>
+                <div
+                  className="text-gray-600 font-mono text-sm m-0 break-all"
+                >
+                  {item.url}
+                </div>
+              </div>
+
+              {/* 卡片底部：主要操作 */}
+              <div className="mt-auto pt-2 border-t border-gray-100 flex justify-end">
+                <Button
+                  type={isTesting ? 'default' : 'dashed'}
+                  className={`${isTesting ? '' : 'text-primary border-primary bg-blue-50/50'} w-full`}
+                  icon={isTesting ? <ThunderboltFilled spin /> : <ThunderboltFilled />}
+                  loading={isTesting}
+                  onClick={() => testConnection(item)}
+                >
+                  {isTesting ? '连接测试中...' : '测试连接'}
+                </Button>
+              </div>
+            </Card>
+          );
+        })}
+
+        {/* 空状态下的添加按钮（如果没有数据或者作为最后一个Card） */}
+        <Button
+          type="dashed"
+          className="h-auto min-h-[200px] border-2 flex flex-col items-center justify-center gap-2 !bg-white text-gray-400 hover:text-primary hover:border-primary transition-colors rounded-lg bg-transparent"
+          onClick={() => setIsModalOpen(true)}
+        >
+          <PlusOutlined style={{ fontSize: '24px' }} />
+          <span className="font-medium">添加新助手</span>
+        </Button>
+      </div>
 
       <Modal
         title={assistant.id ? '编辑助手' : '添加助手'}
@@ -204,16 +305,27 @@ export default () => {
         }}
       >
         <Form form={form} layout="vertical" size="large">
-          <Form.Item name="name" label="助手名称" rules={[{ required: true, message: '请输入助手名称' }]}>
+          <Form.Item name="name" label="名称" rules={[{ required: true, message: '请输入助手名称' }]}>
             <Input placeholder="例如：DeepSeek、OpenAI 等" />
           </Form.Item>
 
-          <Form.Item name="url" label="API 地址" tooltip="填写完整的 API 接口地址，如 https://api.deepseek.com/v1" rules={[{ required: true, message: '请输入 API 地址' }]}>
-            <Input placeholder="https://api.deepseek.com/v1" />
+          <Form.Item
+            name="url"
+            label="API 地址"
+            tooltip="填写完整的 API 接口地址，如 https://api.deepseek.com/v1"
+            rules={[
+              { required: true, message: '请输入 API 地址' },
+              {
+                pattern: /^https?:\/\//,
+                message: '请输入正确的 API 地址'
+              }
+            ]}
+          >
+            <Input placeholder="https://api.deepseek.com/v1" autoComplete="off" />
           </Form.Item>
 
           <Form.Item name="key" label="API 密钥" rules={[{ required: true, message: '请输入 API 密钥' }]}>
-            <Input.Password placeholder="请输入 API 密钥" />
+            <Input.Password placeholder="请输入 API 密钥" autoComplete="new-password" />
           </Form.Item>
 
           <Form.Item name="model" label="模型" rules={[{ required: true, message: '请选择或输入模型' }]}>

@@ -236,7 +236,7 @@ export default () => {
           <div
             key={record.id}
             className={`relative p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden ${record.isEnable
-              ? 'border-2 border-green-500 bg-gradient-to-br from-green-50 via-white to-blue-50'
+              ? 'border-2 border-blue-500 bg-gradient-to-br from-blue-50 via-white to-blue-50'
               : 'border border-gray-200 bg-gradient-to-br from-gray-50 via-white to-slate-50'
               }`}
           >
@@ -351,12 +351,11 @@ export default () => {
 
         {/* 添加存储配置卡片 */}
         <div
-          className="group flex flex-col justify-center items-center bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow border-2 border-dashed border-gray-300 cursor-pointer hover:border-primary"
+          className="group flex flex-col justify-center items-center text-gray-400 bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow border-2 border-dashed border-gray-300 cursor-pointer hover:border-primary"
           onClick={addOssData}
         >
-          <PlusOutlined className="text-4xl text-gray-400 mb-4 group-hover:text-primary" />
-          <div className="text-lg font-semibold text-gray-600 mb-2 group-hover:text-primary">添加存储配置</div>
-          <div className="text-sm text-gray-400 group-hover:text-primary">支持多种云存储服务</div>
+          <PlusOutlined className="text-2xl text-gray-400 mb-2 group-hover:text-primary" />
+          <div className="text-sm font-medium mb-2 group-hover:text-primary">添加新存储</div>
         </div>
       </div>
 
