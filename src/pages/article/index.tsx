@@ -645,7 +645,7 @@ export default () => {
     return (
       <div>
         {/* Title 骨架屏 */}
-        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-4">
+        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-2">
           <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
         </Card>
 
@@ -659,11 +659,8 @@ export default () => {
               <Skeleton.Input active size="default" style={{ width: 250, height: 32 }} />
               <Skeleton.Button active size="default" style={{ width: 80, height: 32 }} />
             </div>
-            <div className="flex space-x-3 sm:pl-32 pr-10">
-              <Skeleton.Button active size="default" style={{ width: 120, height: 32 }} />
-              <Skeleton.Button active size="default" style={{ width: 100, height: 32 }} />
-              <Skeleton.Button active size="default" style={{ width: 100, height: 32 }} />
-            </div>
+
+            <Skeleton.Button active size="default" style={{ width: 120, height: 32 }} />
           </div>
         </Card>
 
@@ -699,7 +696,7 @@ export default () => {
     <div>
       <Title value="文章管理" />
 
-      <Card className="border-stroke my-2 overflow-scroll">
+      <Card className="[&>.ant-card-body]:!p-3 border-stroke my-2 overflow-scroll">
         <div className="w-full flex justify-between">
           <Form form={form} layout="inline" onFinish={onFilterSubmit} autoComplete="off" className="flex-nowrap">
             <Form.Item name="title" className="min-w-[200px]">

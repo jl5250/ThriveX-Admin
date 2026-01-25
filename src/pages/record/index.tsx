@@ -152,7 +152,7 @@ export default () => {
     return (
       <div>
         {/* Title 骨架屏 */}
-        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-4">
+        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-2">
           <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
         </Card>
 
@@ -197,7 +197,7 @@ export default () => {
     <div>
       <Title value="说说管理" />
 
-      <Card className="border-stroke my-2 overflow-scroll">
+      <Card className="[&>.ant-card-body]:!p-3 border-stroke my-2 overflow-scroll">
         <Form form={form} layout="inline" onFinish={onFilterSubmit} autoComplete="off" className="flex-nowrap">
           <Form.Item name="content" className="min-w-[200px]">
             <Input placeholder="请输入关键词" />
