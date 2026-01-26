@@ -1,5 +1,3 @@
-import { Card } from 'antd'
-import { titleSty } from '@/styles/sty'
 import { ReactNode } from 'react'
 
 interface Props {
@@ -8,16 +6,14 @@ interface Props {
     className?: string
 }
 
-export default ({ value, children, className }: Props) => {
+export default ({ value, children }: Props) => {
     return (
-        <>
-            <Card className={`${titleSty} px-4 mb-2 ${className}`}>
-                <div className="overflow-auto flex justify-between items-center h-14">
-                    <h2 className="font-semibold text-black dark:text-white text-xl min-w-24">{value}</h2>
+        <div className="px-6 py-3 bg-white rounded-xl shadow-sm border border-gray-100 mb-2">
+            <div className="overflow-auto flex justify-between items-center">
+                <h2 className="font-semibold text-black dark:text-white text-xl min-w-24">{value}</h2>
 
-                    {children}
-                </div>
-            </Card>
-        </>
+                {children}
+            </div>
+        </div>
     )
 }
