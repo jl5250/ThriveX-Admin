@@ -1,40 +1,42 @@
 import { useState, useEffect, useRef } from 'react';
-import { Table, Button, Image, notification, Card, Popconfirm, Form, Input, DatePicker, Skeleton } from 'antd';
 import { Link } from 'react-router-dom';
+import {
+  Table, Button, Image, notification, Popconfirm,
+  Form, Input, DatePicker, Skeleton, Tooltip, Space, Divider,
+} from 'antd';
+import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { DeleteOutlined, FormOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  FormOutlined,
+  SearchOutlined,
+  ClearOutlined
+} from '@ant-design/icons';
 
-import { titleSty } from '@/styles/sty';
 import Title from '@/components/Title';
 import { delRecordDataAPI, getRecordListAPI } from '@/api/record';
 import type { Record } from '@/types/app/record';
-import { ColumnsType } from 'antd/es/table';
+import { FilterForm } from '@/types/app/comment';
 
-export interface FilterForm {
-  content: string;
-  createTime: Date[];
-}
+const { RangePicker } = DatePicker;
 
 export default () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [initialLoading, setInitialLoading] = useState<boolean>(true);
-  const [btnLoading, setBtnLoading] = useState<boolean>(false);
+  const [btnLoading, setBtnLoading] = useState<number | null>(null); // 存储当前正在删除的ID
   const isFirstLoadRef = useRef<boolean>(true);
 
   const [recordList, setRecordList] = useState<Record[]>([]);
   const [form] = Form.useForm();
-  const { RangePicker } = DatePicker;
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
 
-  const getRecordList = async () => {
+  // 获取数据
+  const fetchData = async (queryParams = {}) => {
     try {
-      // 如果是第一次加载，使用 initialLoading
-      if (isFirstLoadRef.current) {
-        setInitialLoading(true);
-      } else {
-        setLoading(true);
-      }
-
-      const { data } = await getRecordListAPI();
+      if (isFirstLoadRef.current) setInitialLoading(true);
+      else setLoading(true);
+      const { data } = await getRecordListAPI(queryParams);
       setRecordList(data as Record[]);
       isFirstLoadRef.current = false;
     } catch (error) {
@@ -46,188 +48,254 @@ export default () => {
   };
 
   useEffect(() => {
-    getRecordList();
+    fetchData();
   }, []);
 
-  const delRecordData = async (id: number) => {
+  // 删除逻辑
+  const handleDelete = async (id: number) => {
     try {
-      setBtnLoading(true);
-
+      setBtnLoading(id);
       await delRecordDataAPI(id);
-      getRecordList();
-      form.resetFields();
-      notification.success({ message: '🎉 删除说说成功' });
-
-      setBtnLoading(false);
+      await fetchData(); // 重新获取数据
+      notification.success({ message: '删除成功' });
     } catch (error) {
       console.error(error);
-      setBtnLoading(false);
+    } finally {
+      setBtnLoading(null);
     }
   };
 
+  // 筛选提交
+  const onFilterSubmit = (values: FilterForm) => {
+    const query = {
+      key: values.content,
+      startDate: values.createTime?.[0]?.valueOf(),
+      endDate: values.createTime?.[1]?.valueOf(),
+    };
+    fetchData({ query });
+  };
+
+  // 重置筛选
+  const handleReset = () => {
+    form.resetFields();
+    fetchData();
+  };
+
+  // 表格列定义
   const columns: ColumnsType<Record> = [
     {
       title: 'ID',
       dataIndex: 'id',
-      key: 'id',
+      width: 80,
       align: 'center',
-      width: 100,
+      render: (text) => <span className="text-gray-400 dark:text-gray-500 font-mono">#{text}</span>,
     },
     {
       title: '内容',
       dataIndex: 'content',
-      key: 'content',
-      align: 'center',
-      width: 300,
-      render: (text: string) => <div className="line-clamp-2">{text}</div>,
+      width: 400,
+      render: (text) => (
+        <Tooltip title={text} placement="topLeft">
+          <div className="max-w-[400px] truncate text-gray-700 dark:text-gray-200 font-medium cursor-pointer">
+            {text || <span className="text-gray-300 dark:text-gray-500 italic">暂无文字内容</span>}
+          </div>
+        </Tooltip>
+      ),
     },
     {
       title: '图片',
       dataIndex: 'images',
-      key: 'images',
-      align: 'center',
-      width: 200,
-      render: (text: string) => {
+      width: 300,
+      render: (text) => {
         const list: string[] = JSON.parse(text || '[]');
+        if (list.length === 0) return <span className="text-gray-300 dark:text-gray-500 text-xs">无图片</span>;
 
         return (
-          <div className="flex space-x-2">
-            {list.map((item, index) => (
-              <Image key={index} src={item} width={70} height={70} className="rounded-lg" />
-            ))}
-          </div>
+          <Image.PreviewGroup>
+            <div className="flex items-center gap-2 flex-wrap">
+              {list.map((src, idx) => (
+                <div
+                  key={idx}
+                  className="relative group overflow-hidden rounded-lg border border-gray-100 dark:border-strokedark shadow-sm record-image-container"
+                  style={{ width: 60, height: 60 }}
+                >
+                  <Image
+                    src={src}
+                    width={60}
+                    height={60}
+                    className="object-cover transition-transform duration-300 group-hover:scale-110"
+                    style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }}
+                    preview={{
+                      mask: '预览',
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </Image.PreviewGroup>
         );
       },
     },
     {
       title: '发布时间',
       dataIndex: 'createTime',
-      key: 'createTime',
-      render: (text: string) => dayjs(+text).format('YYYY-MM-DD HH:mm:ss'),
-      sorter: (a: Record, b: Record) => +a.createTime! - +b.createTime!,
-      showSorterTooltip: false,
+      render: (text) => (
+        <div className="flex flex-col">
+          <span className="text-gray-700 dark:text-gray-200 font-medium">{dayjs(+text).format('YYYY-MM-DD')}</span>
+          <span className="text-gray-400 dark:text-gray-500 text-xs">{dayjs(+text).format('HH:mm:ss')}</span>
+        </div>
+      ),
     },
     {
       title: '操作',
       key: 'action',
       fixed: 'right',
+      width: 120,
       align: 'center',
-      width: 130,
-      render: (_: string, record: Record) => (
-        <div className="flex justify-center space-x-2">
-          <Link to={`/create_record?id=${record.id}`}>
-            <Button type="text" icon={<FormOutlined className="text-primary" />} />
-          </Link>
+      render: (_, record) => (
+        <Space split={<Divider type="vertical" />}>
+          <Tooltip title="编辑">
+            <Link to={`/create_record?id=${record.id}`}>
+              <Button
+                type="text"
+                size="small"
+                icon={<FormOutlined />}
+                className="text-blue-500 hover:text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:text-blue-300 dark:hover:bg-blue-900/20"
+              />
+            </Link>
+          </Tooltip>
 
-          <Popconfirm title="警告" description="你确定要删除吗" okText="确定" cancelText="取消" onConfirm={() => delRecordData(record.id!)}>
-            <Button type="text" danger loading={btnLoading} icon={<DeleteOutlined />} />
-          </Popconfirm>
-        </div>
+          <Tooltip title="删除">
+            <Popconfirm
+              title="删除确认"
+              description="该操作无法撤销，确定删除吗？"
+              okText="删除"
+              okButtonProps={{ danger: true }}
+              cancelText="取消"
+              onConfirm={() => handleDelete(record.id!)}
+            >
+              <Button
+                type="text"
+                size="small"
+                danger
+                loading={btnLoading === record.id}
+                icon={<DeleteOutlined />}
+                className="hover:bg-red-50 dark:hover:bg-red-900/20"
+              />
+            </Popconfirm>
+          </Tooltip>
+        </Space>
       ),
     },
   ];
 
-  const onFilterSubmit = async (values: FilterForm) => {
-    try {
-      setLoading(true);
-
-      const query = {
-        key: values.content,
-        startDate: values.createTime && values.createTime[0].valueOf() + '',
-        endDate: values.createTime && values.createTime[1].valueOf() + '',
-      };
-
-      const { data } = await getRecordListAPI({ query });
-      setRecordList(data);
-
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-    }
-  };
-
-  // 初始加载时显示骨架屏
-  if (initialLoading) {
-    return (
-      <div>
-        {/* Title 骨架屏 */}
-        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-2">
-          <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
-        </Card>
-
-        {/* 筛选卡片骨架屏 */}
-        <Card className="border-stroke my-2 overflow-scroll [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
-          <div className="flex flex-wrap items-center gap-3">
-            <Skeleton.Input active size="default" style={{ width: 200, height: 32 }} />
-            <Skeleton.Input active size="default" style={{ width: 250, height: 32 }} />
-            <Skeleton.Button active size="default" style={{ width: 80, height: 32 }} />
-          </div>
-        </Card>
-
-        {/* 表格卡片骨架屏 */}
-        <Card className={`${titleSty} min-h-[calc(100vh-270px)] [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5`}>
-          {/* 表格骨架屏 */}
-          <div className="mb-4">
-            {/* 表格行骨架屏 - 模拟多行 */}
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
-              <div key={item} className="flex items-center gap-4 mb-2 py-2 border-b border-gray-100">
-                <Skeleton.Input active size="small" style={{ width: 60, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 150, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 200, height: 40, flex: 1 }} />
-                <Skeleton.Input active size="small" style={{ width: 150, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 200, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 100, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 300, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 200, height: 40 }} />
-              </div>
-            ))}
-          </div>
-
-          {/* 分页骨架屏 */}
-          <div className="flex justify-center my-5">
-            <Skeleton.Input active size="default" style={{ width: 300, height: 32 }} />
-          </div>
-        </Card>
+  // 骨架屏
+  if (initialLoading) return (
+    <div className="space-y-2">
+      <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
+        <Skeleton.Input active size="large" style={{ width: 200 }} />
       </div>
-    );
-  }
+
+      <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
+        <div className="flex justify-between mb-6">
+          <div className="flex gap-4">
+            <Skeleton.Input active size="large" style={{ width: 200 }} />
+            <Skeleton.Input active size="large" style={{ width: 300 }} />
+          </div>
+          <Skeleton.Button active />
+        </div>
+
+        {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+          <div key={i} className="flex gap-4 mb-4 items-center">
+            <Skeleton.Avatar active shape="square" size="large" />
+            <div className="flex-1 space-y-2">
+              <Skeleton.Input active size="small" block />
+              <Skeleton.Input active size="small" style={{ width: '60%' }} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
-    <div>
-      <Title value="说说管理" />
+    <>
+      <style>{`
+        .record-image-container .ant-image,
+        .record-image-container .ant-image-img,
+        .record-image-container .ant-image-mask {
+          width: 100% !important;
+          height: 100% !important;
+        }
+        .record-image-container .ant-image {
+          display: block !important;
+        }
+        .record-image-container .ant-image-img {
+          object-fit: cover !important;
+        }
+      `}</style>
 
-      <Card className="[&>.ant-card-body]:!p-3 border-stroke my-2 overflow-scroll">
-        <Form form={form} layout="inline" onFinish={onFilterSubmit} autoComplete="off" className="flex-nowrap">
-          <Form.Item name="content" className="min-w-[200px]">
-            <Input placeholder="请输入关键词" />
-          </Form.Item>
+      <div className="mx-auto">
+        <Title value="说说管理" />
 
-          <Form.Item name="createTime" className="min-w-[250px]">
-            <RangePicker placeholder={['选择起始时间', '选择结束时间']} disabledDate={(current) => current && current > dayjs().endOf('day')} />
-          </Form.Item>
+        <div className="bg-white dark:bg-boxdark rounded-2xl shadow-sm border border-gray-100 dark:border-strokedark overflow-hidden">
+          <div className="p-5 border-b border-gray-100 dark:border-strokedark bg-gray-50/30 dark:bg-boxdark-2/50">
+            <Form form={form} layout="inline" onFinish={onFilterSubmit} className="gap-y-3">
+              <Form.Item name="content" className="!mb-0 w-full sm:w-auto">
+                <Input
+                  prefix={<SearchOutlined className="text-gray-400 dark:text-gray-500" />}
+                  placeholder="搜索说说内容..."
+                  className="w-full sm:w-[240px]"
+                  allowClear
+                />
+              </Form.Item>
 
-          <Form.Item className="pr-6">
-            <Button type="primary" htmlType="submit">
-              筛选
-            </Button>
-          </Form.Item>
-        </Form>
-      </Card>
+              <Form.Item name="createTime" className="!mb-0 w-full sm:w-auto">
+                <RangePicker
+                  className="w-full sm:w-[280px]"
+                  placeholder={['开始日期', '结束日期']}
+                  disabledDate={(current) => current && current > dayjs().endOf('day')}
+                />
+              </Form.Item>
 
-      <Card className={`${titleSty} min-h-[calc(100vh-270px)]`}>
-        <Table
-          rowKey="id"
-          dataSource={recordList}
-          columns={columns}
-          loading={loading}
-          // scroll={{ x: 'max-content' }}
-          pagination={{
-            position: ['bottomCenter'],
-            defaultPageSize: 8,
-          }}
-        />
-      </Card>
-    </div>
+              <div className="flex gap-2">
+                <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+                  查询
+                </Button>
+                <Button icon={<ClearOutlined />} onClick={handleReset}>
+                  重置
+                </Button>
+              </div>
+            </Form>
+          </div>
+
+          <Table
+            rowKey="id"
+            dataSource={recordList}
+            columns={columns}
+            loading={loading}
+            pagination={{
+              position: ['bottomRight'],
+              current: currentPage,
+              pageSize: pageSize,
+              showTotal: (total) => <div className="mt-[7px] text-sm text-gray-500 dark:text-gray-400">当前第 {currentPage} 页 <i className="mx-1 text-gray-300 dark:text-gray-500">|</i> 每页 {pageSize} 条 <i className="mx-1 text-gray-300 dark:text-gray-500">|</i> 共 {total} 条数据</div>,
+              onChange: (page, size) => {
+                setCurrentPage(page);
+                if (size !== pageSize) {
+                  setPageSize(size);
+                }
+              },
+              onShowSizeChange: (_current, size) => {
+                setCurrentPage(1);
+                setPageSize(size);
+              },
+              className: '!px-6 !py-4'
+            }}
+            className="[&_.ant-table-thead>tr>th]:!bg-gray-50 dark:[&_.ant-table-thead>tr>th]:!bg-boxdark-2 [&_.ant-table-thead>tr>th]:!font-medium [&_.ant-table-thead>tr>th]:!text-gray-500 dark:[&_.ant-table-thead>tr>th]:!text-gray-400 [&_.ant-table-tbody>tr:hover>td]:!bg-blue-50/30 dark:[&_.ant-table-tbody>tr:hover>td]:!bg-blue-900/20"
+            scroll={{ x: 1000 }}
+          />
+        </div>
+      </div>
+    </>
   );
 };

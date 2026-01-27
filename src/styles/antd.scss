@@ -1,11 +1,3 @@
-/* ------------------ 自定义表单样式开始 ------------------ */
-.ant-input-outlined,
-.ant-input-number,
-.ant-select-selector,
-.ant-picker {
-    border-width: 1.5px !important;
-}
-
 /* 表单获取焦点时的阴影效果 */
 .ant-input:focus,
 .ant-input-focused,
@@ -81,20 +73,3 @@
     @apply dark:border-strokedark;
 }
 // ------------------> Antd组件库暗色适配 结束 <------------------
-
-#root {
-    // .ant-table,
-    // .ant-form,
-    // .ant-card,
-    // .ant-modal,
-    // .ant-drawer,
-    // .ant-notification,
-    // .ant-message,
-    // .ant-tooltip {
-    //     transition-duration: 0s !important;
-
-    //     * {
-    //         transition-duration: 0s !important;
-    //     }
-    // }
-}
