@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
-import { DownOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Form, Input, Button, Tree, Modal, Spin, Dropdown, Card, MenuProps, Popconfirm, message, Radio, Select, Skeleton } from 'antd';
 import type { DataNode } from 'antd/es/tree';
 
@@ -26,7 +26,6 @@ export default () => {
 
   const getCateList = async () => {
     try {
-      // 如果是第一次加载，使用 initialLoading
       if (isFirstLoadRef.current) {
         setInitialLoading(true);
       } else {
@@ -107,7 +106,6 @@ export default () => {
 
         await getCateList();
 
-        // 初始化表单状态
         form.resetFields();
         setCate({} as Cate);
 
@@ -130,23 +128,43 @@ export default () => {
     setCate({} as Cate);
   };
 
-  // 将数据转换为树形结构
   const toTreeData = (data: Cate[]): DataNode[] =>
     data.map((item) => {
       const items: MenuProps['items'] = [
         {
           key: '1',
-          label: <span onClick={() => addCateData(item.id!)}>新增</span>,
+          label: (
+            <span className="flex items-center gap-2 py-1">
+              <PlusOutlined className="text-md" />
+              新增
+            </span>
+          ),
+          onClick: () => addCateData(item.id!),
         },
         {
           key: '2',
-          label: <span onClick={() => editCateData(item.id!)}>编辑</span>,
+          label: (
+            <span className="flex items-center gap-2 py-1">
+              <EditOutlined className="text-md" />
+              编辑
+            </span>
+          ),
+          onClick: () => editCateData(item.id!),
         },
         {
           key: '3',
           label: (
-            <Popconfirm title="警告" description="你确定要删除吗" okText="确定" cancelText="取消" onConfirm={() => delCateData(item.id!)}>
-              <span>删除</span>
+            <Popconfirm
+              title="删除确认"
+              description="确定要删除该分类吗？"
+              okText="确定"
+              cancelText="取消"
+              onConfirm={() => delCateData(item.id!)}
+            >
+              <span className="flex items-center gap-2 py-1 text-red-500 hover:text-red-600">
+                <DeleteOutlined className="text-md" />
+                删除
+              </span>
             </Popconfirm>
           ),
         },
@@ -154,14 +172,19 @@ export default () => {
 
       return {
         title: (
-          <div className="group w-full flex justify-between items-center">
-            <h3>
-              {item.icon} <span className="ml-2">{item.name}</span>
-            </h3>
+          <div className="group flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2 -ml-2.5 transition-colors hover:bg-slate-50 dark:hover:bg-white/5">
+            <div className="flex min-w-0 flex-1 items-center gap-2">
+              <span className="text-lg leading-none opacity-80">{item.icon}</span>
+              <span className="truncate text-slate-600 dark:text-slate-200">{item.name}</span>
+            </div>
 
-            <Dropdown menu={{ items }} arrow>
-              <Button type="link" size="small">
-                操作 <DownOutlined />
+            <Dropdown menu={{ items }} trigger={['click']} placement="bottomRight">
+              <Button
+                type="text"
+                size="small"
+                className="flex shrink-0 items-center gap-1 text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-slate-200"
+              >
+                操作
               </Button>
             </Dropdown>
           </div>
@@ -181,110 +204,142 @@ export default () => {
     })),
   ];
 
-  // 初始加载时显示骨架屏
   if (initialLoading) {
     return (
-      <div>
-        {/* Title 骨架屏 */}
-        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-2">
-          <div className="flex justify-between items-center">
-            <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
-            <Skeleton.Button active size="large" style={{ width: 120, height: 40 }} />
+      <div className="space-y-2">
+        <Card className="!rounded-xl !border-stroke !shadow-sm [&>.ant-card-body]:!p-4 dark:!border-strokedark">
+          <div className="flex items-center justify-between">
+            <Skeleton.Input active size="large" className="!h-9 !w-40" />
+            <Skeleton.Button active size="large" className="!h-10 !w-28" />
           </div>
         </Card>
 
-        {/* 树形结构骨架屏 */}
-        <Card className={`border-stroke [&>.ant-card-body]:!p-[30px_20px] [&>.ant-card-body]:!pb-6 mt-2 min-h-[calc(100vh-160px)]`}>
-          {[1, 2, 3, 4, 5, 6].map((item) => (
-            <div key={item} className="mb-4">
-              <div className="flex items-center justify-between mb-2">
-                <Skeleton.Input active size="default" style={{ width: 200, height: 24 }} />
-                <Skeleton.Button active size="small" style={{ width: 60, height: 24 }} />
-              </div>
-              {/* 子项骨架屏 */}
-              {item <= 3 && (
-                <div className="ml-6 space-y-2">
-                  {[1, 2, 3].map((child) => (
-                    <div key={child} className="flex items-center justify-between">
-                      <Skeleton.Input active size="small" style={{ width: 150, height: 20 }} />
-                      <Skeleton.Button active size="small" style={{ width: 60, height: 20 }} />
-                    </div>
-                  ))}
+        <Card className="!min-h-[calc(100vh-160px)] !rounded-xl !border-stroke !shadow-sm [&>.ant-card-body]:!p-6 dark:!border-strokedark">
+          <div className="space-y-5">
+            {[1, 2, 3, 4, 5, 6].map((item) => (
+              <div key={item} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Skeleton.Input active className="!h-6 !w-48" />
+                  <Skeleton.Button active size="small" className="!h-6 !w-14" />
                 </div>
-              )}
-            </div>
-          ))}
+                {item <= 3 && (
+                  <div className="ml-6 space-y-2">
+                    {[1, 2, 3].map((child) => (
+                      <div key={child} className="flex items-center justify-between">
+                        <Skeleton.Input active size="small" className="!h-5 !w-36" />
+                        <Skeleton.Button active size="small" className="!h-5 !w-12" />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </Card>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="space-y-2">
       <Title value="分类管理">
-        <Button type="primary" size="large" onClick={() => addCateData(0)}>
+        <Button
+          type="primary"
+          size="large"
+          onClick={() => addCateData(0)}
+        >
           新增分类
         </Button>
       </Title>
 
-      <Card className={`border-stroke [&>.ant-card-body]:!p-[30px_20px] [&>.ant-card-body]:!pb-6 mt-2 min-h-[calc(100vh-160px)]`}>
-        <Spin spinning={loading}>
-          <Tree className="CatePage" defaultExpandAll={true} treeData={toTreeData(list)} />
+      <Card
+        className={`CatePage !min-h-[calc(100vh-160px)] !rounded-xl !border !border-stroke !bg-white !shadow-sm [&>.ant-card-body]:!p-6 dark:!border-strokedark dark:!bg-boxdark`}
+      >
+        <Spin spinning={loading} className="min-h-[280px]">
+          <Tree
+            className="!bg-transparent [&_.ant-tree-treenode]:!py-0.5 [&_.ant-tree-indent-unit]:!w-4"
+            defaultExpandAll
+            treeData={toTreeData(list)}
+            showLine={{ showLeafIcon: false }}
+            blockNode
+          />
         </Spin>
+      </Card>
 
-        <Modal loading={editLoading} title={isMethod === 'edit' ? '编辑分类' : '新增分类'} open={isModelOpen} onCancel={closeModel} destroyOnClose footer={null}>
-          <Form form={form} layout="vertical" initialValues={cate} size="large" preserve={false} className="mt-6">
+      <Modal
+        open={isModelOpen}
+        onCancel={closeModel}
+        footer={null}
+        title={isMethod === 'edit' ? '编辑分类' : '新增分类'}
+        loading={editLoading}
+        className="[&_.ant-modal-content]:!rounded-2xl"
+      >
+        <Form
+          form={form}
+          layout="vertical"
+          initialValues={cate}
+          size="large"
+          preserve={false}
+          className="mt-2 [&_.ant-input]:!rounded-lg [&_.ant-select-selector]:!rounded-lg"
+        >
+          <div className="grid gap-x-4 sm:grid-cols-2">
             <Form.Item label="名称" name="name" rules={[{ required: true, message: '分类名称不能为空' }]}>
               <Input placeholder="请输入分类名称" />
             </Form.Item>
-
             <Form.Item label="标识" name="mark" rules={[{ required: true, message: '分类标识不能为空' }]}>
               <Input placeholder="请输入分类标识" />
             </Form.Item>
+          </div>
 
-            <Form.Item label="图标" name="icon">
-              <Input placeholder="请输入分类图标" />
+          <Form.Item label="图标" name="icon">
+            <Input placeholder="请输入分类图标（如 emoji 或图标名）" />
+          </Form.Item>
+
+          {isCateShow && (
+            <Form.Item label="链接" name="url">
+              <Input placeholder="请输入分类链接" />
             </Form.Item>
+          )}
 
-            {isCateShow && (
-              <Form.Item label="链接" name="url">
-                <Input placeholder="请输入分类链接" />
-              </Form.Item>
-            )}
-
+          <div className="grid gap-x-4 sm:grid-cols-2">
             <Form.Item label="顺序" name="order">
-              <Input placeholder="请输入分类顺序（值越小越靠前）" />
+              <Input placeholder="值越小越靠前" />
             </Form.Item>
-
             <Form.Item label="级别" name="level">
               <Select options={toCascaderOptions(list)} placeholder="请选择分类级别" />
             </Form.Item>
+          </div>
 
-            <Form.Item label="模式" name="type">
-              <Radio.Group
-                onChange={(e) => {
-                  const type = e.target.value;
+          <Form.Item label="模式" name="type">
+            <Radio.Group
+              className="!flex !gap-4"
+              onChange={(e) => {
+                const type = e.target.value;
+                setIsCateShow(type === 'nav');
+              }}
+            >
+              <Radio value="cate" className="!m-0">
+                分类
+              </Radio>
+              <Radio value="nav" className="!m-0">
+                导航
+              </Radio>
+            </Radio.Group>
+          </Form.Item>
 
-                  if (type === 'nav') {
-                    setIsCateShow(true);
-                  } else {
-                    setIsCateShow(false);
-                  }
-                }}
-              >
-                <Radio value="cate">分类</Radio>
-                <Radio value="nav">导航</Radio>
-              </Radio.Group>
-            </Form.Item>
-
-            <Form.Item className="!mb-0 w-full">
-              <Button type="primary" onClick={submit} loading={btnLoading} className="w-full ml-2">
-                {isMethod === 'edit' ? '编辑分类' : '新增分类'}
-              </Button>
-            </Form.Item>
-          </Form>
-        </Modal>
-      </Card>
+          <Form.Item className="!mb-0">
+            <Button
+              type="primary"
+              onClick={submit}
+              loading={btnLoading}
+              className="!h-12 !w-full !rounded-lg !font-medium"
+              icon={isMethod === 'edit' ? <EditOutlined /> : <PlusOutlined />}
+            >
+              {isMethod === 'edit' ? '保存修改' : '新增分类'}
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

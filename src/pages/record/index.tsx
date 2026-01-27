@@ -88,7 +88,7 @@ export default () => {
       dataIndex: 'id',
       width: 80,
       align: 'center',
-      render: (text) => <span className="text-gray-400 font-mono">#{text}</span>,
+      render: (text) => <span className="text-gray-400 dark:text-gray-500 font-mono">#{text}</span>,
     },
     {
       title: '内容',
@@ -96,8 +96,8 @@ export default () => {
       width: 400,
       render: (text) => (
         <Tooltip title={text} placement="topLeft">
-          <div className="max-w-[400px] truncate text-gray-700 font-medium cursor-pointer">
-            {text || <span className="text-gray-300 italic">暂无文字内容</span>}
+          <div className="max-w-[400px] truncate text-gray-700 dark:text-gray-200 font-medium cursor-pointer">
+            {text || <span className="text-gray-300 dark:text-gray-500 italic">暂无文字内容</span>}
           </div>
         </Tooltip>
       ),
@@ -108,7 +108,7 @@ export default () => {
       width: 300,
       render: (text) => {
         const list: string[] = JSON.parse(text || '[]');
-        if (list.length === 0) return <span className="text-gray-300 text-xs">无图片</span>;
+        if (list.length === 0) return <span className="text-gray-300 dark:text-gray-500 text-xs">无图片</span>;
 
         return (
           <Image.PreviewGroup>
@@ -116,7 +116,7 @@ export default () => {
               {list.map((src, idx) => (
                 <div
                   key={idx}
-                  className="relative group overflow-hidden rounded-lg border border-gray-100 shadow-sm record-image-container"
+                  className="relative group overflow-hidden rounded-lg border border-gray-100 dark:border-strokedark shadow-sm record-image-container"
                   style={{ width: 60, height: 60 }}
                 >
                   <Image
@@ -141,8 +141,8 @@ export default () => {
       dataIndex: 'createTime',
       render: (text) => (
         <div className="flex flex-col">
-          <span className="text-gray-700 font-medium">{dayjs(+text).format('YYYY-MM-DD')}</span>
-          <span className="text-gray-400 text-xs">{dayjs(+text).format('HH:mm:ss')}</span>
+          <span className="text-gray-700 dark:text-gray-200 font-medium">{dayjs(+text).format('YYYY-MM-DD')}</span>
+          <span className="text-gray-400 dark:text-gray-500 text-xs">{dayjs(+text).format('HH:mm:ss')}</span>
         </div>
       ),
     },
@@ -160,7 +160,7 @@ export default () => {
                 type="text"
                 size="small"
                 icon={<FormOutlined />}
-                className="text-blue-500 hover:text-blue-600 hover:bg-blue-50"
+                className="text-blue-500 hover:text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:text-blue-300 dark:hover:bg-blue-900/20"
               />
             </Link>
           </Tooltip>
@@ -180,7 +180,7 @@ export default () => {
                 danger
                 loading={btnLoading === record.id}
                 icon={<DeleteOutlined />}
-                className="hover:bg-red-50"
+                className="hover:bg-red-50 dark:hover:bg-red-900/20"
               />
             </Popconfirm>
           </Tooltip>
@@ -192,11 +192,11 @@ export default () => {
   // 骨架屏
   if (initialLoading) return (
     <div className="space-y-2">
-      <div className="px-6 py-3 bg-white rounded-xl shadow-sm border border-gray-100">
+      <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
         <Skeleton.Input active size="large" style={{ width: 200 }} />
       </div>
 
-      <div className="px-6 py-3 bg-white rounded-xl shadow-sm border border-gray-100">
+      <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
         <div className="flex justify-between mb-6">
           <div className="flex gap-4">
             <Skeleton.Input active size="large" style={{ width: 200 }} />
@@ -238,12 +238,12 @@ export default () => {
       <div className="mx-auto">
         <Title value="说说管理" />
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="p-5 border-b border-gray-100 bg-gray-50/30">
+        <div className="bg-white dark:bg-boxdark rounded-2xl shadow-sm border border-gray-100 dark:border-strokedark overflow-hidden">
+          <div className="p-5 border-b border-gray-100 dark:border-strokedark bg-gray-50/30 dark:bg-boxdark-2/50">
             <Form form={form} layout="inline" onFinish={onFilterSubmit} className="gap-y-3">
               <Form.Item name="content" className="!mb-0 w-full sm:w-auto">
                 <Input
-                  prefix={<SearchOutlined className="text-gray-400" />}
+                  prefix={<SearchOutlined className="text-gray-400 dark:text-gray-500" />}
                   placeholder="搜索说说内容..."
                   className="w-full sm:w-[240px]"
                   allowClear
@@ -278,7 +278,7 @@ export default () => {
               position: ['bottomRight'],
               current: currentPage,
               pageSize: pageSize,
-              showTotal: (total) => <div className="mt-[7px] text-sm text-gray-500">当前第 {currentPage} 页 <i className="mx-1 text-gray-300">|</i> 每页 {pageSize} 条 <i className="mx-1 text-gray-300">|</i> 共 {total} 条数据</div>,
+              showTotal: (total) => <div className="mt-[7px] text-sm text-gray-500 dark:text-gray-400">当前第 {currentPage} 页 <i className="mx-1 text-gray-300 dark:text-gray-500">|</i> 每页 {pageSize} 条 <i className="mx-1 text-gray-300 dark:text-gray-500">|</i> 共 {total} 条数据</div>,
               onChange: (page, size) => {
                 setCurrentPage(page);
                 if (size !== pageSize) {
@@ -291,7 +291,7 @@ export default () => {
               },
               className: '!px-6 !py-4'
             }}
-            className="[&_.ant-table-thead>tr>th]:!bg-gray-50 [&_.ant-table-thead>tr>th]:!font-medium [&_.ant-table-thead>tr>th]:!text-gray-500 [&_.ant-table-tbody>tr:hover>td]:!bg-blue-50/30"
+            className="[&_.ant-table-thead>tr>th]:!bg-gray-50 dark:[&_.ant-table-thead>tr>th]:!bg-boxdark-2 [&_.ant-table-thead>tr>th]:!font-medium [&_.ant-table-thead>tr>th]:!text-gray-500 dark:[&_.ant-table-thead>tr>th]:!text-gray-400 [&_.ant-table-tbody>tr:hover>td]:!bg-blue-50/30 dark:[&_.ant-table-tbody>tr:hover>td]:!bg-blue-900/20"
             scroll={{ x: 1000 }}
           />
         </div>
