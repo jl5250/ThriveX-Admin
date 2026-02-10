@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Table, Button, Image, notification, Popconfirm,
-  Form, Input, DatePicker, Skeleton, Tooltip, Space, Divider,
+  Table, Button, Image, notification, Popconfirm, Popover,
+  Form, Input, DatePicker, Tooltip, Space, Divider,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -98,34 +98,79 @@ export default () => {
     {
       title: '图片',
       dataIndex: 'images',
-      width: 300,
+      width: 170,
       render: (text) => {
         const list: string[] = JSON.parse(text || '[]');
         if (list.length === 0) return <span className="text-gray-300 dark:text-gray-500 text-xs">无图片</span>;
 
-        return (
-          <Image.PreviewGroup>
-            <div className="flex items-center gap-2 flex-wrap">
-              {list.map((src, idx) => (
-                <div
-                  key={idx}
-                  className="relative group overflow-hidden rounded-lg border border-gray-100 dark:border-strokedark shadow-sm record-image-container"
-                  style={{ width: 60, height: 60 }}
-                >
-                  <Image
-                    src={src}
-                    width={60}
-                    height={60}
-                    className="object-cover transition-transform duration-300 group-hover:scale-110"
-                    style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }}
-                    preview={{
-                      mask: '预览',
-                    }}
-                  />
-                </div>
-              ))}
+        const trigger = (
+          <div className="record-images-collapse flex items-center gap-2">
+            <div
+              className="relative overflow-hidden rounded-lg border border-gray-100 dark:border-strokedark shadow-sm record-image-container group/img"
+              style={{ width: 60, height: 60 }}
+            >
+              <Image
+                src={list[0]}
+                width={60}
+                height={60}
+                className="object-cover transition-transform duration-300 group-hover/img:scale-110"
+                style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }}
+                preview={{ mask: '预览' }}
+              />
             </div>
-          </Image.PreviewGroup>
+            {list.length > 1 && (
+              <div
+                className="flex items-center justify-center rounded-lg border border-gray-100 dark:border-strokedark bg-gray-100 dark:bg-boxdark-2 text-gray-500 dark:text-gray-400 text-sm font-medium shrink-0 cursor-pointer"
+                style={{ width: 60, height: 60 }}
+              >
+                +{list.length - 1}
+              </div>
+            )}
+          </div>
+        );
+
+        if (list.length <= 1) {
+          return (
+            <Image.PreviewGroup>
+              {trigger}
+            </Image.PreviewGroup>
+          );
+        }
+
+        return (
+          <Popover
+            trigger="hover"
+            placement="bottomLeft"
+            overlayClassName="record-images-popover"
+            content={
+              <Image.PreviewGroup>
+                <div className="flex items-center gap-1.5 flex-wrap" style={{ maxWidth: 280 }}>
+                  {list.map((src, idx) => (
+                    <div
+                      key={idx}
+                      className="overflow-hidden rounded border border-gray-100 dark:border-strokedark record-image-container shrink-0"
+                      style={{ width: 56, height: 56 }}
+                    >
+                      <Image
+                        src={src}
+                        width={56}
+                        height={56}
+                        className="object-cover"
+                        style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }}
+                        preview={{ mask: '预览' }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </Image.PreviewGroup>
+            }
+          >
+            <span className="inline-block">
+              <Image.PreviewGroup>
+                {trigger}
+              </Image.PreviewGroup>
+            </span>
+          </Popover>
         );
       },
     },
@@ -186,24 +231,24 @@ export default () => {
   if (initialLoading) return (
     <div className="space-y-2">
       <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
-        <Skeleton.Input active size="large" style={{ width: 200 }} />
+        <div className="skeleton h-8" style={{ width: 200 }} />
       </div>
 
       <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
         <div className="flex justify-between mb-6">
           <div className="flex gap-4">
-            <Skeleton.Input active size="large" style={{ width: 200 }} />
-            <Skeleton.Input active size="large" style={{ width: 300 }} />
+            <div className="skeleton h-9" style={{ width: 200 }} />
+            <div className="skeleton h-9" style={{ width: 300 }} />
           </div>
-          <Skeleton.Button active />
+          <div className="skeleton h-9 rounded-md" style={{ width: 80 }} />
         </div>
 
         {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
           <div key={i} className="flex gap-4 mb-4 items-center">
-            <Skeleton.Avatar active shape="square" size="large" />
-            <div className="flex-1 space-y-2">
-              <Skeleton.Input active size="small" block />
-              <Skeleton.Input active size="small" style={{ width: '60%' }} />
+            <div className="skeleton shrink-0 rounded-lg" style={{ width: 56, height: 56 }} />
+            <div className="flex-1 space-y-2 min-w-0">
+              <div className="skeleton h-4 w-full rounded" />
+              <div className="skeleton h-3 rounded" style={{ width: '60%' }} />
             </div>
           </div>
         ))}
@@ -225,6 +270,11 @@ export default () => {
         }
         .record-image-container .ant-image-img {
           object-fit: cover !important;
+        }
+        .record-images-popover.ant-popover .ant-popover-inner {
+          padding: 10px;
+          border-radius: 10px;
+          box-shadow: 0 6px 16px rgba(0,0,0,0.12);
         }
       `}</style>
 
@@ -269,7 +319,7 @@ export default () => {
               current: currentPage,
               pageSize: pageSize,
               showTotal: (total) => (
-                <div className="mt-[7px] text-xs text-gray-500 dark:text-gray-400">
+                <div className="mt-[9px] text-xs text-gray-500 dark:text-gray-400">
                   当前第 {currentPage} / {Math.ceil(total / (pageSize || 8))} 页 | 共 {total} 条数据
                 </div>
               ),

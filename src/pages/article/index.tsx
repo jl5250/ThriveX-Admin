@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import {
   Table, Button, Tag, notification, Popconfirm, Form, Input, Select, DatePicker, Modal,
-  message, Dropdown, Skeleton, Tooltip, Space, Divider, Popover,
+  message, Dropdown, Tooltip, Space, Divider, Popover,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { UploadFile, UploadFileStatus, RcFile } from 'antd/es/upload/interface';
@@ -288,7 +288,7 @@ export default () => {
       title: '操作',
       key: 'action',
       fixed: 'right',
-      width: 160,
+      width: 165,
       align: 'center',
       render: (_, record: Article) => (
         <Space split={<Divider type="vertical" />}>
@@ -783,34 +783,34 @@ export default () => {
     getTagList();
   }, []);
 
-  // 骨架屏
+  // 自定义骨架屏
   if (initialLoading) {
     return (
       <div className="space-y-2">
         <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
-          <Skeleton.Input active size="large" style={{ width: 200 }} />
+          <div className="skeleton h-8" style={{ width: 200 }} />
         </div>
 
         <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
           <div className="flex justify-between mb-6">
             <div className="flex gap-4 flex-wrap">
-              <Skeleton.Input active size="large" style={{ width: 200 }} />
-              <Skeleton.Input active size="large" style={{ width: 180 }} />
-              <Skeleton.Input active size="large" style={{ width: 180 }} />
-              <Skeleton.Input active size="large" style={{ width: 280 }} />
+              <div className="skeleton h-9" style={{ width: 200 }} />
+              <div className="skeleton h-9" style={{ width: 180 }} />
+              <div className="skeleton h-9" style={{ width: 180 }} />
+              <div className="skeleton h-9" style={{ width: 280 }} />
             </div>
             <div className="flex gap-2">
-              <Skeleton.Button active />
-              <Skeleton.Button active />
+              <div className="skeleton h-9 rounded-md" style={{ width: 80 }} />
+              <div className="skeleton h-9 rounded-md" style={{ width: 80 }} />
             </div>
           </div>
 
           {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
             <div key={i} className="flex gap-4 mb-4 items-center">
-              <Skeleton.Avatar active shape="square" size="large" />
-              <div className="flex-1 space-y-2">
-                <Skeleton.Input active size="small" block />
-                <Skeleton.Input active size="small" style={{ width: '60%' }} />
+              <div className="skeleton shrink-0 rounded-lg" style={{ width: 56, height: 56 }} />
+              <div className="flex-1 space-y-2 min-w-0">
+                <div className="skeleton h-4 w-full rounded" />
+                <div className="skeleton h-3 rounded" style={{ width: '60%' }} />
               </div>
             </div>
           ))}
@@ -915,7 +915,7 @@ export default () => {
             pageSize: paging.size,
             total,
             showTotal: (totalCount) => (
-              <div className="mt-[7px] text-xs text-gray-500 dark:text-gray-400">
+              <div className="mt-[9px] text-xs text-gray-500 dark:text-gray-400">
                 当前第 {paging.page} / {Math.ceil(totalCount / (paging.size || 8))} 页 | 共 {totalCount} 条数据
               </div>
             ),
