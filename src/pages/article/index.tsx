@@ -193,11 +193,17 @@ export default () => {
       key: 'description',
       width: 320,
       render: (text: string) => (
-        <Tooltip title={text} placement="topLeft">
-          <div className="max-w-[320px] truncate text-gray-700 dark:text-gray-200">
-            {text || <span className="text-gray-300 dark:text-gray-500 italic">暂无摘要</span>}
-          </div>
-        </Tooltip>
+        <>
+          {text ? (
+            <Tooltip title={text}>
+              <div className="max-w-[320px] truncate text-gray-700 dark:text-gray-200 hover:text-primary cursor-pointer">
+                {text}
+              </div>
+            </Tooltip>
+          ) : (
+            <span className="text-gray-300 dark:text-gray-500 italic">暂无摘要</span>
+          )}
+        </>
       ),
     },
     {

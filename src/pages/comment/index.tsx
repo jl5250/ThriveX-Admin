@@ -1,13 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import dayjs from 'dayjs';
 
-import { Card, message, Table, Popconfirm, Button, Modal, Form, Input, DatePicker, Skeleton } from 'antd';
+import { message, Table, Popconfirm, Button, Modal, Form, Input, DatePicker, Tooltip } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { ColumnsType } from 'antd/es/table';
-import { DeleteOutlined, SendOutlined } from '@ant-design/icons';
+import { DeleteOutlined, SendOutlined, SearchOutlined, ClearOutlined } from '@ant-design/icons';
 
 import { addCommentDataAPI, getCommentListAPI, delCommentDataAPI } from '@/api/comment';
-import { titleSty } from '@/styles/sty';
 import Title from '@/components/Title';
 import { Comment, FilterForm } from '@/types/app/comment';
 import { useWebStore, useUserStore } from '@/stores';
@@ -24,8 +23,6 @@ export default () => {
 
   const [comment, setComment] = useState<Comment>({} as Comment);
   const [list, setList] = useState<Comment[]>([]);
-
-  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
 
   const getCommentList = async () => {
     try {
@@ -52,36 +49,51 @@ export default () => {
     getCommentList();
   }, []);
 
+  const [filterForm] = Form.useForm();
+
+  const onFilterReset = () => {
+    filterForm.resetFields();
+    getCommentList();
+  };
+
   const columns: ColumnsType<Comment> = [
     {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
-      align: 'right',
-      width: 120,
+      align: 'center',
+      width: 110,
+      render: (text: number) => <span className="text-gray-400 dark:text-gray-500 font-mono">#{text}</span>,
     },
     {
       title: '名称',
       dataIndex: 'name',
       key: 'name',
-      align: 'center',
-      width: 150,
+      width: 110,
+      render: (text: string) => <span className="text-gray-700 dark:text-gray-200 font-medium">{text || '-'}</span>,
     },
     {
       title: '内容',
       dataIndex: 'content',
       key: 'content',
-      width: 350,
+      width: 280,
       render: (text: string, record: Comment) => (
-        <span
-          className="hover:text-primary cursor-pointer line-clamp-2"
-          onClick={() => {
-            setComment(record);
-            setIsCommentModalOpen(true);
-          }}
-        >
-          {text}
-        </span>
+        <>
+          {text ? (
+            <Tooltip
+              title={text}
+            >
+              <span className="hover:text-primary cursor-pointer line-clamp-1 text-gray-700 dark:text-gray-200"
+                onClick={() => {
+                  setComment(record);
+                }}>{text}</span>
+            </Tooltip>
+          )
+            : (
+              <span className="text-gray-300 dark:text-gray-500 italic">暂无内容</span>
+            )
+          }
+        </>
       ),
     },
     {
@@ -89,41 +101,45 @@ export default () => {
       dataIndex: 'email',
       key: 'email',
       width: 180,
-      render: (text: string) => (text ? text : '暂无邮箱'),
+      render: (text: string) => <span className="text-gray-500 dark:text-gray-400">{text || '暂无邮箱'}</span>,
     },
     {
       title: '网站',
       dataIndex: 'url',
       key: 'url',
-      width: 200,
+      width: 180,
       render: (url: string) =>
         url ? (
-          <a href={url} target="_blank" className="hover:text-primary" rel="noreferrer">
+          <a href={url} target="_blank" className="hover:text-primary text-gray-600 dark:text-gray-300" rel="noreferrer">
             {url}
           </a>
         ) : (
-          '无网站'
+          <span className="text-gray-400 dark:text-gray-500">无网站</span>
         ),
     },
     {
       title: '所属文章',
       dataIndex: 'articleTitle',
       key: 'articleTitle',
-      width: 230,
+      width: 200,
+      ellipsis: true,
       render: (text: string, record: Comment) =>
         text ? (
-          <a href={`${web.url}/article/${record.articleId}`} target="_blank" className="hover:text-primary" rel="noreferrer">
-            {text}
-          </a>
+          <Tooltip title={text}>
+            <a href={`${web.url}/article/${record.articleId}`} target="_blank" className="hover:text-primary text-gray-600 dark:text-gray-300" rel="noreferrer">
+              {text}
+            </a>
+          </Tooltip>
         ) : (
-          '该评论暂未绑定文章'
+          <span className="text-gray-400 dark:text-gray-500">该评论暂未绑定文章</span>
         ),
     },
     {
       title: '评论时间',
       dataIndex: 'createTime',
       key: 'createTime',
-      render: (date: string) => dayjs(+date).format('YYYY-MM-DD HH:mm:ss'),
+      width: 180,
+      render: (date: string) => <span className="text-gray-500 dark:text-gray-400">{dayjs(+date).format('YYYY-MM-DD HH:mm:ss')}</span>,
       sorter: (a: Comment, b: Comment) => +a.createTime! - +b.createTime!,
       showSorterTooltip: false,
     },
@@ -167,25 +183,22 @@ export default () => {
     }
   };
 
-  const onSubmit = async (values: FilterForm) => {
-    setLoading(true);
-
+  const onFilterSubmit = async (values: FilterForm) => {
     try {
-      const query: FilterData = {
+      setLoading(true);
+      const query = {
         key: values?.title,
         content: values?.content,
-        startDate: values.createTime && values.createTime[0].valueOf() + '',
-        endDate: values.createTime && values.createTime[1].valueOf() + '',
+        startDate: values.createTime?.[0]?.valueOf()?.toString(),
+        endDate: values.createTime?.[1]?.valueOf()?.toString(),
       };
-
       const { data } = await getCommentListAPI({ query });
       setList(data);
     } catch (error) {
       console.error(error);
+    } finally {
       setLoading(false);
     }
-
-    setLoading(false);
   };
 
   // 回复内容
@@ -211,140 +224,109 @@ export default () => {
       getCommentList();
       setIsReplyModalOpen(false);
       setReplyInfo('');
-
-      setBtnLoading(true);
     } catch (error) {
       console.error(error);
+    } finally {
       setBtnLoading(false);
     }
   };
 
-  // 初始加载时显示骨架屏
+  // 初始加载时显示骨架屏（与 article 一致）
   if (initialLoading) {
     return (
-      <div>
-        {/* Title 骨架屏 */}
-        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-2">
-          <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
-        </Card>
+      <div className="space-y-2">
+        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
+          <div className="skeleton h-8" style={{ width: 200 }} />
+        </div>
 
-        {/* 筛选卡片骨架屏 */}
-        <Card className="border-stroke my-2 overflow-scroll [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
-          <div className="flex flex-wrap items-center gap-3">
-            <Skeleton.Input active size="default" style={{ width: 200, height: 32 }} />
-            <Skeleton.Input active size="default" style={{ width: 200, height: 32 }} />
-            <Skeleton.Input active size="default" style={{ width: 250, height: 32 }} />
-            <Skeleton.Button active size="default" style={{ width: 80, height: 32 }} />
+        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
+          <div className="flex justify-between mb-6">
+            <div className="flex gap-4 flex-wrap">
+              <div className="skeleton h-9" style={{ width: 200 }} />
+              <div className="skeleton h-9" style={{ width: 200 }} />
+              <div className="skeleton h-9" style={{ width: 280 }} />
+            </div>
+            <div className="flex gap-2">
+              <div className="skeleton h-9 rounded-md" style={{ width: 80 }} />
+              <div className="skeleton h-9 rounded-md" style={{ width: 80 }} />
+            </div>
           </div>
-        </Card>
 
-        {/* 表格卡片骨架屏 */}
-        <Card className={`${titleSty} mt-2 min-h-[calc(100vh-270px)] [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5`}>
-          {/* 表格骨架屏 */}
-          <div className="mb-4">
-            {/* 表格行骨架屏 - 模拟多行 */}
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
-              <div key={item} className="flex items-center gap-4 mb-2 py-2 border-b border-gray-100">
-                <Skeleton.Input active size="small" style={{ width: 60, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 150, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 200, height: 40, flex: 1 }} />
-                <Skeleton.Input active size="small" style={{ width: 150, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 200, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 100, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 300, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 200, height: 40 }} />
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+            <div key={i} className="flex gap-4 mb-4 items-center">
+              <div className="skeleton shrink-0 rounded-lg" style={{ width: 56, height: 56 }} />
+              <div className="flex-1 space-y-2 min-w-0">
+                <div className="skeleton h-4 w-full rounded" />
+                <div className="skeleton h-3 rounded" style={{ width: '60%' }} />
               </div>
-            ))}
-          </div>
-
-          {/* 分页骨架屏 */}
-          <div className="flex justify-center my-5">
-            <Skeleton.Input active size="default" style={{ width: 300, height: 32 }} />
-          </div>
-        </Card>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="mx-auto">
       <Title value="评论管理" />
 
-      <Card className="[&>.ant-card-body]:!p-3 border-stroke my-2 overflow-scroll">
-        <Form layout="inline" onFinish={onSubmit} autoComplete="off" className="flex-nowrap">
-          <Form.Item name="title" className="min-w-[200px]">
-            <Input placeholder="请输入标题关键词" />
-          </Form.Item>
+      <div className="bg-white dark:bg-boxdark rounded-2xl shadow-sm border border-gray-100 dark:border-strokedark overflow-hidden">
+        <div className="p-5 border-b border-gray-100 dark:border-strokedark bg-gray-50/30 dark:bg-boxdark-2/50 space-y-4">
+          <Form form={filterForm} layout="inline" onFinish={onFilterSubmit} className="!flex !flex-wrap !items-center !gap-y-2.5">
+            <Form.Item name="title" className="!mb-0">
+              <Input
+                prefix={<SearchOutlined className="text-gray-400 dark:text-gray-500" />}
+                placeholder="搜索文章标题..."
+                className="!w-[220px]"
+                allowClear
+              />
+            </Form.Item>
+            <Form.Item name="content" className="!mb-0">
+              <Input
+                prefix={<SearchOutlined className="text-gray-400 dark:text-gray-500" />}
+                placeholder="搜索评论内容..."
+                className="!w-[220px]"
+                allowClear
+              />
+            </Form.Item>
+            <Form.Item name="createTime" className="!mb-0">
+              <RangePicker
+                className="!w-[260px]"
+                placeholder={['开始日期', '结束日期']}
+                disabledDate={(current) => current && current > dayjs().endOf('day')}
+              />
+            </Form.Item>
 
-          <Form.Item name="content" className="min-w-[200px]">
-            <Input placeholder="请输入内容关键词" />
-          </Form.Item>
+            <div className="flex gap-2">
+              <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+                查询
+              </Button>
+              <Button icon={<ClearOutlined />} onClick={onFilterReset}>
+                重置
+              </Button>
+            </div>
+          </Form>
+        </div>
 
-          <Form.Item name="createTime" className="min-w-[250px]">
-            <RangePicker placeholder={['选择起始时间', '选择结束时间']} disabledDate={(current) => current && current > dayjs().endOf('day')} />
-          </Form.Item>
-
-          <Form.Item className="pr-6">
-            <Button type="primary" htmlType="submit">
-              筛选
-            </Button>
-          </Form.Item>
-        </Form>
-      </Card>
-
-      <Card className={`${titleSty} mt-2 min-h-[calc(100vh-270px)]`}>
         <Table
           rowKey="id"
           dataSource={list}
           columns={columns}
-          expandable={{ defaultExpandAllRows: false }}
-          scroll={{ x: '1550px' }}
-          pagination={{
-            position: ['bottomCenter'],
-            defaultPageSize: 8,
-          }}
           loading={loading}
+          scroll={{ x: 1300 }}
+          pagination={{
+            position: ['bottomRight'],
+            defaultPageSize: 8,
+            showTotal: (totalCount) => (
+              <div className="mt-[9px] text-xs text-gray-500 dark:text-gray-400">
+                共 {totalCount} 条数据
+              </div>
+            ),
+            className: '!px-6 !py-4',
+          }}
+          className="[&_.ant-table-thead>tr>th]:!bg-gray-50 dark:[&_.ant-table-thead>tr>th]:!bg-boxdark-2 [&_.ant-table-thead>tr>th]:!font-medium [&_.ant-table-thead>tr>th]:!text-gray-500 dark:[&_.ant-table-thead>tr>th]:!text-gray-400"
         />
-      </Card>
-
-      <Modal title="评论详情" open={isCommentModalOpen} onCancel={() => setIsCommentModalOpen(false)} footer={null}>
-        <div className="pt-2 space-y-2">
-          <div>
-            <b>所属文章：</b> {comment?.articleTitle}
-          </div>
-
-          <div>
-            <b>评论时间：</b> {dayjs(+comment?.createTime).format('YYYY-MM-DD HH:mm:ss')}
-          </div>
-
-          <div>
-            <b>评论用户：</b> {comment?.name}
-          </div>
-
-          <div>
-            <b>邮箱：</b> {comment?.email ? comment?.email : '暂无邮箱'}
-          </div>
-
-          <div>
-            <b>网站：</b>{' '}
-            {comment?.url ? (
-              <a href={comment?.url} className="hover:text-primary">
-                {comment?.url}
-              </a>
-            ) : (
-              '无网站'
-            )}
-          </div>
-
-          <div>
-            <b>内容：</b> {comment?.content}
-          </div>
-        </div>
-
-        <Button type="primary" loading={btnLoading} onClick={() => setIsReplyModalOpen(true)} className="w-full mt-4">
-          回复
-        </Button>
-      </Modal>
+      </div>
 
       <Modal title="回复评论" open={isReplyModalOpen} footer={null} onCancel={() => setIsReplyModalOpen(false)}>
         <TextArea value={replyInfo} onChange={(e) => setReplyInfo(e.target.value)} placeholder="请输入回复内容" autoSize={{ minRows: 3, maxRows: 5 }} />
