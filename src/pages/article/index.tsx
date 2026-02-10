@@ -1,16 +1,19 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
-import { Table, Button, Tag, notification, Card, Popconfirm, Form, Input, Select, DatePicker, Modal, message, Pagination, Dropdown, Skeleton } from 'antd';
-import { DeleteOutlined, FormOutlined, InboxOutlined, DownloadOutlined } from '@ant-design/icons';
+import {
+  Table, Button, Tag, notification, Popconfirm, Form, Input, Select, DatePicker, Modal,
+  message, Dropdown, Skeleton, Tooltip, Space, Divider, Popover,
+} from 'antd';
+import type { ColumnsType } from 'antd/es/table';
 import type { UploadFile, UploadFileStatus, RcFile } from 'antd/es/upload/interface';
-import { ColumnType } from 'antd/es/table';
-import { TableRowSelection } from 'antd/es/table/interface';
+import type { TableRowSelection } from 'antd/es/table/interface';
+import { DeleteOutlined, FormOutlined, InboxOutlined, DownloadOutlined, SearchOutlined, ClearOutlined, EyeOutlined, CommentOutlined } from '@ant-design/icons';
+import { HiOutlineChevronDown, HiOutlineChevronUp } from 'react-icons/hi';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import dayjs from 'dayjs';
 
-import { titleSty } from '@/styles/sty';
 import Title from '@/components/Title';
 
 import { getCateListAPI } from '@/api/cate';
@@ -23,10 +26,13 @@ import type { Article, Config, FilterArticle, FilterForm } from '@/types/app/art
 
 import { useWebStore } from '@/stores';
 
+const { RangePicker } = DatePicker;
+
 export default () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [initialLoading, setInitialLoading] = useState<boolean>(true);
   const [importLoading, setImportLoading] = useState<boolean>(false);
+  const [btnLoading, setBtnLoading] = useState<number | null>(null);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -36,7 +42,6 @@ export default () => {
   const [form] = Form.useForm();
   const web = useWebStore((state) => state.web);
   const [articleList, setArticleList] = useState<Article[]>([]);
-  const { RangePicker } = DatePicker;
 
   const [total, setTotal] = useState<number>(0);
   const [paging, setPaging] = useState<Page>({
@@ -52,6 +57,7 @@ export default () => {
     startDate: undefined,
     endDate: undefined,
   });
+  const [showBatchActions, setShowBatchActions] = useState<boolean>(false);
 
   // 分页获取文章
   const getArticleList = async () => {
@@ -81,102 +87,200 @@ export default () => {
 
   const delArticleData = async (id: number) => {
     try {
-      setLoading(true);
-
-      // 普通删除：可从回收站恢复
+      setBtnLoading(id);
       await delArticleDataAPI(id, true);
       await getArticleList();
-      form.resetFields();
-      notification.success({ message: '🎉 删除文章成功' });
-      setLoading(false);
+      notification.success({ message: '删除成功' });
     } catch (error) {
       console.error(error);
-      setLoading(false);
+    } finally {
+      setBtnLoading(null);
     }
   };
 
-  // 标签颜色
-  const colors = ['', '#2db7f5', '#87d068', '#f50', '#108ee9'];
+  // 分类/标签：柔和色系，收纳展示（默认显示前 2 个，其余 +N，悬停展示全部）
+  const tagColors = [
+    'default',
+    'processing',
+    'success',
+    'warning',
+    'cyan',
+  ] as const;
+  const VISIBLE_TAG_COUNT = 1;
 
-  const columns: ColumnType<Article>[] = [
+  const renderCollapsibleTags = <T extends { id?: number; name: string }>(
+    list: T[],
+    keyPrefix: string,
+  ) => {
+    const items = list || [];
+    if (items.length === 0) return null;
+    const visible = items.slice(0, VISIBLE_TAG_COUNT);
+    const restCount = items.length - VISIBLE_TAG_COUNT;
+    const tagList = (
+      <div className="flex flex-wrap gap-1.5 max-w-[280px]">
+        {items.map((item, index) => (
+          <Tag
+            key={item.id ?? index}
+            color={tagColors[index % tagColors.length]}
+            className="!m-0 !border-0"
+          >
+            {item.name}
+          </Tag>
+        ))}
+      </div>
+    );
+    return (
+      <div className="flex flex-wrap items-center gap-1.5 justify-start">
+        {visible.map((item, index) => (
+          <Tag
+            key={`${keyPrefix}-${item.id ?? index}`}
+            color={tagColors[index % tagColors.length]}
+            className="!m-0 !border-0"
+          >
+            {item.name}
+          </Tag>
+        ))}
+        {restCount > 0 && (
+          <Popover
+            content={tagList}
+            trigger="hover"
+            placement="topLeft"
+            overlayClassName="article-tags-popover"
+          >
+            <span
+              className="inline-flex items-center justify-center min-w-[28px] h-6 px-1.5 rounded-md text-xs font-medium cursor-default bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-boxdark-2 dark:text-gray-400 dark:hover:bg-strokedark/80 border-0"
+              role="button"
+              tabIndex={0}
+            >
+              +{restCount}
+            </span>
+          </Popover>
+        )}
+      </div>
+    );
+  };
+
+  const columns: ColumnsType<Article> = [
     {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
+      width: 80,
       align: 'center',
-      width: 100,
+      render: (text) => <span className="text-gray-400 dark:text-gray-500 font-mono">#{text}</span>,
     },
     {
       title: '标题',
       dataIndex: 'title',
       key: 'title',
-      align: 'center',
-      width: 300,
+      width: 280,
       render: (text: string, record: Article) => (
-        <a href={`${web.url}/article/${record.id}`} target="_blank" className="hover:text-primary line-clamp-1" rel="noreferrer">
-          {text}
-        </a>
+        <Tooltip title={text} placement="topLeft">
+          <a
+            href={`${web.url}/article/${record.id}`}
+            target="_blank"
+            rel="noreferrer"
+            className="max-w-[280px] truncate block text-gray-700 dark:text-gray-200 font-medium hover:text-primary"
+          >
+            {text || <span className="text-gray-300 dark:text-gray-500 italic">暂无标题</span>}
+          </a>
+        </Tooltip>
       ),
     },
     {
       title: '摘要',
       dataIndex: 'description',
       key: 'description',
-      width: 350,
-      render: (text: string) => <div className="line-clamp-2">{text ? text : '该文章暂未设置文章摘要'}</div>,
+      width: 320,
+      render: (text: string) => (
+        <Tooltip title={text} placement="topLeft">
+          <div className="max-w-[320px] truncate text-gray-700 dark:text-gray-200">
+            {text || <span className="text-gray-300 dark:text-gray-500 italic">暂无摘要</span>}
+          </div>
+        </Tooltip>
+      ),
     },
     {
       title: '分类',
       dataIndex: 'cateList',
       key: 'cateList',
-      align: 'center',
-      render: (cates: Cate[]) =>
-        cates.map((item, index) => (
-          <Tag key={item.id} color={colors[index]}>
-            {item.name}
-          </Tag>
-        )),
+      width: 140,
+      render: (cates: Cate[]) => renderCollapsibleTags(cates || [], 'cate'),
     },
     {
       title: '标签',
       dataIndex: 'tagList',
       key: 'tagList',
-      render: (tags: ArticleTag[]) =>
-        tags.map((item, index) => (
-          <Tag key={item.id} color={colors[index]}>
-            {item.name}
-          </Tag>
-        )),
+      width: 160,
+      render: (tags: ArticleTag[]) => renderCollapsibleTags(tags || [], 'tag'),
     },
     {
       title: '浏览量',
       dataIndex: 'view',
       key: 'view',
+      width: 100,
       align: 'center',
-      sorter: (a: Article, b: Article) => a.view! - b.view!,
+      render: (v) => (
+        <span className="inline-flex items-center justify-center gap-1.5 text-gray-600 dark:text-gray-300 tabular-nums">
+          <EyeOutlined className="text-gray-400 dark:text-gray-500 text-xs" />
+          <span className="font-medium">{v ?? 0}</span>
+        </span>
+      ),
+      sorter: (a: Article, b: Article) => (a.view ?? 0) - (b.view ?? 0),
+      showSorterTooltip: false,
     },
     {
-      title: '评论数量',
+      title: '评论',
       dataIndex: 'comment',
       key: 'comment',
+      width: 90,
       align: 'center',
-      render: (data: string) => <span>{data}</span>,
-      sorter: (a: Article, b: Article) => a.comment! - b.comment!,
+      render: (v) => (
+        <span className="inline-flex items-center justify-center gap-1.5 text-gray-600 dark:text-gray-300 tabular-nums">
+          <CommentOutlined className="text-gray-400 dark:text-gray-500 text-xs" />
+          <span className="font-medium">{v ?? 0}</span>
+        </span>
+      ),
+      sorter: (a: Article, b: Article) => (a.comment ?? 0) - (b.comment ?? 0),
+      showSorterTooltip: false,
     },
     {
       title: '状态',
       dataIndex: 'config',
       key: 'config',
+      width: 130,
       align: 'center',
-      render: (config: Config) => (config.status === 'default' && <span>正常</span>) || (config.status === 'no_home' && <span>不在首页显示</span>) || (config.status === 'hide' && <span>隐藏</span>) || (config.password.trim().length && <span>文章加密</span>),
+      render: (config: Config) => {
+        const statusMap: Record<string, string> = {
+          default: '正常',
+          no_home: '不在首页显示',
+          hide: '隐藏',
+        };
+        const label = config.password?.trim() ? '文章加密' : statusMap[config.status] ?? config.status;
+        const statusColorMap: Record<string, string> = {
+          default: 'success',
+          no_home: 'warning',
+          hide: 'default',
+        };
+        const color = config.password?.trim() ? 'processing' : statusColorMap[config.status] ?? 'default';
+        return (
+          <Tag color={color} className="!m-0 !border-0 whitespace-nowrap">
+            {label}
+          </Tag>
+        );
+      },
     },
     {
       title: '发布时间',
       dataIndex: 'createTime',
       key: 'createTime',
-      align: 'center',
-      width: 200,
-      render: (text: string) => dayjs(+text).format('YYYY-MM-DD HH:mm:ss'),
+      width: 140,
+      render: (text: string) => (
+        <div className="flex flex-col">
+          <span className="text-gray-700 dark:text-gray-200 font-medium">{dayjs(+text).format('YYYY-MM-DD')}</span>
+          <span className="text-gray-400 dark:text-gray-500 text-xs">{dayjs(+text).format('HH:mm:ss')}</span>
+        </div>
+      ),
       sorter: (a: Article, b: Article) => +a.createTime! - +b.createTime!,
       showSorterTooltip: false,
     },
@@ -184,42 +288,81 @@ export default () => {
       title: '操作',
       key: 'action',
       fixed: 'right',
+      width: 160,
       align: 'center',
-      render: (_: string, record: Article) => (
-        <div className="flex justify-center space-x-2">
-          <Link to={`/create?id=${record.id}`}>
-            <Button type="text" icon={<FormOutlined className="text-primary" />} />
-          </Link>
-
-          <Popconfirm title="警告" description="你确定要删除吗" okText="确定" cancelText="取消" onConfirm={() => delArticleData(record.id!)}>
-            <Button type="text" danger icon={<DeleteOutlined />} />
-          </Popconfirm>
-
-          <Popconfirm title="提醒" description="你确定要导出吗" okText="确定" cancelText="取消" onConfirm={() => exportArticle(record.id!)}>
-            <Button type="text" icon={<DownloadOutlined />} />
-          </Popconfirm>
-        </div>
+      render: (_, record: Article) => (
+        <Space split={<Divider type="vertical" />}>
+          <Tooltip title="编辑">
+            <Link to={`/create?id=${record.id}`}>
+              <Button
+                type="text"
+                size="small"
+                icon={<FormOutlined />}
+                className="text-gray-500 hover:text-blue-500 dark:text-gray-300 dark:hover:!text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+              />
+            </Link>
+          </Tooltip>
+          <Tooltip title="导出">
+            <Popconfirm title="提醒" description="确定要导出该文章吗？" okText="确定" cancelText="取消" onConfirm={() => exportArticle(record.id!)}>
+              <Button
+                type="text"
+                size="small"
+                icon={<DownloadOutlined />}
+                className="text-gray-500 hover:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800/50"
+              />
+            </Popconfirm>
+          </Tooltip>
+          <Tooltip title="删除">
+            <Popconfirm
+              title="删除确认"
+              description="该操作可从回收站恢复，确定删除吗？"
+              okText="删除"
+              okButtonProps={{ danger: true }}
+              cancelText="取消"
+              onConfirm={() => delArticleData(record.id!)}
+            >
+              <Button
+                type="text"
+                size="small"
+                danger
+                loading={btnLoading === record.id}
+                icon={<DeleteOutlined />}
+                className="hover:bg-red-50 dark:hover:bg-red-900/20"
+              />
+            </Popconfirm>
+          </Tooltip>
+        </Space>
       ),
     },
   ];
 
   const onFilterSubmit = async (values: FilterForm) => {
     try {
-      setPaging({
-        ...paging,
-        page: 1,
-      });
-
+      setPaging((prev) => ({ ...prev, page: 1 }));
       setQuery({
         key: values.title,
         cateId: values.cateId,
         tagId: values.tagId,
-        startDate: values.createTime && values.createTime[0].valueOf() + '',
-        endDate: values.createTime && values.createTime[1].valueOf() + '',
+        startDate: values.createTime?.[0]?.valueOf() + '',
+        endDate: values.createTime?.[1]?.valueOf() + '',
       });
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const onFilterReset = () => {
+    form.resetFields();
+    setPaging((prev) => ({ ...prev, page: 1 }));
+    setQuery({
+      key: undefined,
+      cateId: undefined,
+      tagId: undefined,
+      isDraft: 0,
+      isDel: 0,
+      startDate: undefined,
+      endDate: undefined,
+    });
   };
 
   const [cateList, setCateList] = useState<Cate[]>([]);
@@ -640,132 +783,150 @@ export default () => {
     getTagList();
   }, []);
 
-  // 初始加载时显示骨架屏
+  // 骨架屏
   if (initialLoading) {
     return (
-      <div>
-        {/* Title 骨架屏 */}
-        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-2">
-          <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
-        </Card>
+      <div className="space-y-2">
+        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
+          <Skeleton.Input active size="large" style={{ width: 200 }} />
+        </div>
 
-        {/* 筛选卡片骨架屏 */}
-        <Card className="border-stroke my-2 overflow-scroll [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
-          <div className="w-full flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-            <div className="flex flex-wrap items-center gap-3 flex-1">
-              <Skeleton.Input active size="default" style={{ width: 200, height: 32 }} />
-              <Skeleton.Input active size="default" style={{ width: 200, height: 32 }} />
-              <Skeleton.Input active size="default" style={{ width: 200, height: 32 }} />
-              <Skeleton.Input active size="default" style={{ width: 250, height: 32 }} />
-              <Skeleton.Button active size="default" style={{ width: 80, height: 32 }} />
+        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
+          <div className="flex justify-between mb-6">
+            <div className="flex gap-4 flex-wrap">
+              <Skeleton.Input active size="large" style={{ width: 200 }} />
+              <Skeleton.Input active size="large" style={{ width: 180 }} />
+              <Skeleton.Input active size="large" style={{ width: 180 }} />
+              <Skeleton.Input active size="large" style={{ width: 280 }} />
             </div>
-
-            <Skeleton.Button active size="default" style={{ width: 120, height: 32 }} />
+            <div className="flex gap-2">
+              <Skeleton.Button active />
+              <Skeleton.Button active />
+            </div>
           </div>
-        </Card>
 
-        {/* 表格卡片骨架屏 */}
-        <Card className={`${titleSty} min-h-[calc(100vh-250px)] [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5`}>
-          {/* 表格骨架屏 */}
-          <div className="mb-4">
-            {/* 表格行骨架屏 - 模拟多行 */}
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
-              <div key={item} className="flex items-center gap-4 mb-2 py-2 border-b border-gray-100">
-                <Skeleton.Input active size="small" style={{ width: 60, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 150, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 200, height: 40, flex: 1 }} />
-                <Skeleton.Input active size="small" style={{ width: 150, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 200, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 100, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 300, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 200, height: 40 }} />
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+            <div key={i} className="flex gap-4 mb-4 items-center">
+              <Skeleton.Avatar active shape="square" size="large" />
+              <div className="flex-1 space-y-2">
+                <Skeleton.Input active size="small" block />
+                <Skeleton.Input active size="small" style={{ width: '60%' }} />
               </div>
-            ))}
-          </div>
-
-          {/* 分页骨架屏 */}
-          <div className="flex justify-center my-5">
-            <Skeleton.Input active size="default" style={{ width: 300, height: 32 }} />
-          </div>
-        </Card>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="mx-auto">
       <Title value="文章管理" />
 
-      <Card className="[&>.ant-card-body]:!p-3 border-stroke my-2 overflow-scroll">
-        <div className="w-full flex justify-between">
-          <Form form={form} layout="inline" onFinish={onFilterSubmit} autoComplete="off" className="flex-nowrap">
-            <Form.Item name="title" className="min-w-[200px]">
-              <Input placeholder="请输入关键词" />
+      <div className="bg-white dark:bg-boxdark rounded-2xl shadow-sm border border-gray-100 dark:border-strokedark overflow-hidden">
+        <div className="p-5 border-b border-gray-100 dark:border-strokedark bg-gray-50/30 dark:bg-boxdark-2/50 space-y-4">
+          {/* 筛选区：搜索条件 + 查询/重置 */}
+          <Form form={form} layout="inline" onFinish={onFilterSubmit} className="!flex !flex-wrap !items-center !gap-y-2.5">
+            <Form.Item name="title" className="!mb-0">
+              <Input
+                prefix={<SearchOutlined className="text-gray-400 dark:text-gray-500" />}
+                placeholder="搜索文章标题..."
+                className="!w-[220px]"
+                allowClear
+              />
             </Form.Item>
-
-            <Form.Item name="cateId" className="min-w-[200px]">
-              <Select allowClear options={cateList} fieldNames={{ label: 'name', value: 'id' }} placeholder="请选择分类" />
+            <Form.Item name="cateId" className="!mb-0">
+              <Select
+                allowClear
+                options={cateList}
+                fieldNames={{ label: 'name', value: 'id' }}
+                placeholder="选择分类"
+                className="!w-[160px]"
+              />
             </Form.Item>
-
-            <Form.Item name="tagId" className="min-w-[200px]">
+            <Form.Item name="tagId" className="!mb-0">
               <Select
                 allowClear
                 showSearch
                 options={tagList}
                 fieldNames={{ label: 'name', value: 'id' }}
-                placeholder="请选择标签"
-                filterOption={(input, option) => {
-                  if (option?.name) {
-                    return option.name.toLowerCase().includes(input.toLowerCase());
-                  }
-                  return false;
-                }}
+                placeholder="选择标签"
+                className="!w-[140px]"
+                filterOption={(input, option) => (option?.name ?? '').toLowerCase().includes(input.toLowerCase())}
               />
             </Form.Item>
-
-            <Form.Item name="createTime" className="min-w-[250px]">
-              <RangePicker placeholder={['选择起始时间', '选择结束时间']} disabledDate={(current) => current && current > dayjs().endOf('day')} />
+            <Form.Item name="createTime" className="!mb-0">
+              <RangePicker
+                className="!w-[260px]"
+                placeholder={['开始日期', '结束日期']}
+                disabledDate={(current) => current && current > dayjs().endOf('day')}
+              />
             </Form.Item>
-
-            <Form.Item className="pr-6">
-              <Button type="primary" htmlType="submit">
-                筛选
+            <Space className="sm:flex-nowrap">
+              <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+                查询
               </Button>
-            </Form.Item>
+              <Button icon={<ClearOutlined />} onClick={onFilterReset}>
+                重置
+              </Button>
+              <Button
+                icon={showBatchActions ? <HiOutlineChevronUp /> : <HiOutlineChevronDown />}
+                onClick={() => setShowBatchActions((v) => !v)}
+              >
+                {showBatchActions ? '收起' : '功能'}
+              </Button>
+            </Space>
           </Form>
 
-          <div className="flex space-x-3 pl-32 pr-10">
-            <Dropdown.Button
-              menu={{
-                items: [
-                  {
-                    label: '导出选中',
-                    key: 'exportSelected',
-                    onClick: () => exportSelected(),
-                  },
-                  {
-                    label: '导出全部',
-                    key: 'exportAll',
-                    onClick: () => exportAll(),
-                  },
-                ],
-              }}
-            >
-              导出文章
-            </Dropdown.Button>
-
-            <Button type="primary" className="mr-1" onClick={() => setIsModalOpen(true)}>
-              导入文章
-            </Button>
-
-            <Popconfirm title="警告" description="你确定要删除选中的文章吗" okText="确定" cancelText="取消" onConfirm={() => delSelected()}>
-              <Button type="primary" danger>
-                删除选中
+          {/* 批量操作区：点击「高级文案」后显示，按钮组靠右 */}
+          {showBatchActions && (
+            <div className="flex flex-wrap items-center pt-2 !mt-2 border-t border-gray-100 dark:border-strokedark gap-2">
+              <Dropdown.Button
+                icon={<DownloadOutlined />}
+                className="w-[120px]"
+                menu={{
+                  items: [
+                    { label: '导出选中', key: 'exportSelected', onClick: () => exportSelected() },
+                    { label: '导出全部', key: 'exportAll', onClick: () => exportAll() },
+                  ],
+                }}
+              >
+                导出文章
+              </Dropdown.Button>
+              <Button type="primary" icon={<InboxOutlined />} onClick={() => setIsModalOpen(true)}>
+                导入文章
               </Button>
-            </Popconfirm>
-          </div>
+              <Popconfirm title="删除确认" description="确定要删除选中的文章吗？" okText="删除" okButtonProps={{ danger: true }} cancelText="取消" onConfirm={() => delSelected()}>
+                <Button danger icon={<DeleteOutlined />}>删除选中</Button>
+              </Popconfirm>
+            </div>
+          )}
         </div>
-      </Card>
+
+        <Table
+          rowKey="id"
+          rowSelection={rowSelection}
+          dataSource={articleList}
+          columns={columns}
+          loading={loading}
+          pagination={{
+            position: ['bottomRight'],
+            current: paging.page,
+            pageSize: paging.size,
+            total,
+            showTotal: (totalCount) => (
+              <div className="mt-[7px] text-xs text-gray-500 dark:text-gray-400">
+                当前第 {paging.page} / {Math.ceil(totalCount / (paging.size || 8))} 页 | 共 {totalCount} 条数据
+              </div>
+            ),
+            onChange: (page, size) => setPaging((prev) => ({ ...prev, page, size: size || prev.size })),
+            onShowSizeChange: (_, size) => setPaging((prev) => ({ ...prev, page: 1, size })),
+            className: '!px-6 !py-4',
+          }}
+          className="[&_.ant-table-thead>tr>th]:!bg-gray-50 dark:[&_.ant-table-thead>tr>th]:!bg-boxdark-2 [&_.ant-table-thead>tr>th]:!font-medium [&_.ant-table-thead>tr>th]:!text-gray-500 dark:[&_.ant-table-thead>tr>th]:!text-gray-400"
+          scroll={{ x: 1400 }}
+        />
+      </div>
 
       <Modal
         title="导入文章"
@@ -827,14 +988,6 @@ export default () => {
           )}
         </div>
       </Modal>
-
-      <Card className={`${titleSty} min-h-[calc(100vh-250px)]`}>
-        <Table rowKey="id" rowSelection={rowSelection} dataSource={articleList} columns={columns} pagination={false} loading={loading} scroll={{ x: 'max-content' }} className="[&_.ant-table-selection-column]:w-18" />
-
-        <div className="flex justify-center my-5">
-          <Pagination total={total} current={paging.page} pageSize={paging.size} onChange={(page, pageSize) => setPaging({ ...paging, page, size: pageSize })} />
-        </div>
-      </Card>
     </div>
   );
 };

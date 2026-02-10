@@ -10,7 +10,6 @@ import {
   DeleteOutlined,
   FormOutlined,
   SearchOutlined,
-  ClearOutlined
 } from '@ant-design/icons';
 
 import Title from '@/components/Title';
@@ -73,12 +72,6 @@ export default () => {
       endDate: values.createTime?.[1]?.valueOf(),
     };
     fetchData({ query });
-  };
-
-  // 重置筛选
-  const handleReset = () => {
-    form.resetFields();
-    fetchData();
   };
 
   // 表格列定义
@@ -160,7 +153,7 @@ export default () => {
                 type="text"
                 size="small"
                 icon={<FormOutlined />}
-                className="text-blue-500 hover:text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:text-blue-300 dark:hover:bg-blue-900/20"
+                className="text-gray-500 hover:text-blue-500 dark:text-gray-300 dark:hover:!text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20"
               />
             </Link>
           </Tooltip>
@@ -262,9 +255,6 @@ export default () => {
                 <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
                   查询
                 </Button>
-                <Button icon={<ClearOutlined />} onClick={handleReset}>
-                  重置
-                </Button>
               </div>
             </Form>
           </div>
@@ -278,7 +268,11 @@ export default () => {
               position: ['bottomRight'],
               current: currentPage,
               pageSize: pageSize,
-              showTotal: (total) => <div className="mt-[7px] text-sm text-gray-500 dark:text-gray-400">当前第 {currentPage} 页 <i className="mx-1 text-gray-300 dark:text-gray-500">|</i> 每页 {pageSize} 条 <i className="mx-1 text-gray-300 dark:text-gray-500">|</i> 共 {total} 条数据</div>,
+              showTotal: (total) => (
+                <div className="mt-[7px] text-xs text-gray-500 dark:text-gray-400">
+                  当前第 {currentPage} / {Math.ceil(total / (pageSize || 8))} 页 | 共 {total} 条数据
+                </div>
+              ),
               onChange: (page, size) => {
                 setCurrentPage(page);
                 if (size !== pageSize) {
@@ -291,8 +285,8 @@ export default () => {
               },
               className: '!px-6 !py-4'
             }}
-            className="[&_.ant-table-thead>tr>th]:!bg-gray-50 dark:[&_.ant-table-thead>tr>th]:!bg-boxdark-2 [&_.ant-table-thead>tr>th]:!font-medium [&_.ant-table-thead>tr>th]:!text-gray-500 dark:[&_.ant-table-thead>tr>th]:!text-gray-400 [&_.ant-table-tbody>tr:hover>td]:!bg-blue-50/30 dark:[&_.ant-table-tbody>tr:hover>td]:!bg-blue-900/20"
-            scroll={{ x: 1000 }}
+            className="[&_.ant-table-thead>tr>th]:!bg-gray-50 dark:[&_.ant-table-thead>tr>th]:!bg-boxdark-2 [&_.ant-table-thead>tr>th]:!font-medium [&_.ant-table-thead>tr>th]:!text-gray-500 dark:[&_.ant-table-thead>tr>th]:!text-gray-400"
+            scroll={{ x: 1030 }}
           />
         </div>
       </div>
