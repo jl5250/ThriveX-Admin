@@ -197,8 +197,8 @@ export default () => {
               <Button
                 type="text"
                 size="small"
-                icon={<FormOutlined />}
-                className="text-gray-500 hover:text-blue-500 dark:text-gray-300 dark:hover:!text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                icon={<FormOutlined className="text-blue-500" />}
+                className="text-blue-500 dark:text-gray-300 dark:hover:!text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20"
               />
             </Link>
           </Tooltip>

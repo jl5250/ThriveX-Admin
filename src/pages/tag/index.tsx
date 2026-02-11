@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Table, Button, Form, Input, Popconfirm, message, Card, Spin, Skeleton } from 'antd';
+import { Table, Button, Form, Input, Popconfirm, message, Card, Spin, Skeleton, Tooltip } from 'antd';
 import { getTagListAPI, addTagDataAPI, editTagDataAPI, delTagDataAPI, getTagDataAPI } from '@/api/tag';
 import { Tag } from '@/types/app/tag';
 import Title from '@/components/Title';
@@ -45,10 +45,15 @@ export default () => {
       width: 130,
       render: (_: string, record: Tag) => (
         <div className="space-x-2">
-          <Button type="text" onClick={() => editTagData(record)} icon={<FormOutlined className="text-primary" />} />
-          <Popconfirm title="警告" description="你确定要删除吗" okText="确定" cancelText="取消" onConfirm={() => delTagData(record.id!)}>
-            <Button type="text" danger icon={<DeleteOutlined />} />
-          </Popconfirm>
+          <Tooltip title="编辑">
+            <Button type="text" onClick={() => editTagData(record)} icon={<FormOutlined className="text-blue-500" />} />
+          </Tooltip>
+
+          <Tooltip title="删除">
+            <Popconfirm title="警告" description="你确定要删除吗" okText="确定" cancelText="取消" onConfirm={() => delTagData(record.id!)}>
+              <Button type="text" danger icon={<DeleteOutlined />} />
+            </Popconfirm>
+          </Tooltip>
         </div>
       ),
     },

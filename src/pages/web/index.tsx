@@ -223,7 +223,7 @@ export default () => {
   return (
     <div>
       <Title value="网站管理">
-        <Button type="primary" size="large" onClick={openAddModal}>
+        <Button type="primary" onClick={openAddModal}>
           新增网站
         </Button>
       </Title>
@@ -297,13 +297,13 @@ export default () => {
                           <div className="absolute top-0 left-6 right-6 h-[2px] bg-gradient-to-r from-transparent via-primary/40 to-transparent dark:via-primary/50"></div>
 
                           {/* 第一行：修改和删除按钮 */}
-                          <div className="flex gap-3">
+                          <div className="flex gap-2">
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 editLinkData(item);
                               }}
-                              className="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-emerald-500 via-emerald-500 to-emerald-600 hover:from-emerald-600 hover:via-emerald-600 hover:to-emerald-700 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/40 active:scale-95 transform flex items-center justify-center gap-1.5"
+                              className="flex-1 px-3 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-emerald-500 via-emerald-500 to-emerald-600 hover:from-emerald-600 hover:via-emerald-600 hover:to-emerald-700 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/40 active:scale-95 transform flex items-center justify-center gap-1.5"
                             >
                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -324,7 +324,7 @@ export default () => {
                             >
                               <button
                                 onClick={(e) => e.stopPropagation()}
-                                className="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-red-500 via-red-500 to-red-600 hover:from-red-600 hover:via-red-600 hover:to-red-700 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-red-500/40 active:scale-95 transform flex items-center justify-center gap-1.5"
+                                className="flex-1 px-3 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-red-500 via-red-500 to-red-600 hover:from-red-600 hover:via-red-600 hover:to-red-700 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-red-500/40 active:scale-95 transform flex items-center justify-center gap-1.5"
                               >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -371,18 +371,8 @@ export default () => {
         title={isMethod === 'edit' ? '编辑网站' : '新增网站'}
         open={modalVisible}
         onCancel={reset}
-        footer={
-          <div className="flex justify-end gap-2">
-            <Button onClick={reset}>
-              取消
-            </Button>
-
-            <Button type="primary" htmlType="submit" loading={btnLoading}>
-              确定
-            </Button>
-          </div>
-        }
         width={600}
+        footer={null}
       >
         <Spin spinning={editLoading}>
           <Form form={form} layout="vertical" size="large" initialValues={link} onFinish={onSubmit}>
@@ -422,6 +412,12 @@ export default () => {
 
             <Form.Item label="顺序" name="order">
               <Input placeholder="请输入网站顺序（值越小越靠前）" />
+            </Form.Item>
+
+            <Form.Item className="mb-0">
+              <Button type="primary" htmlType="submit" loading={btnLoading} className="w-full">
+                确定
+              </Button>
             </Form.Item>
           </Form>
         </Spin>

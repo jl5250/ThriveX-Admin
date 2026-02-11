@@ -420,7 +420,7 @@ export default () => {
 
           <Form.Item className="mb-0">
             <Button type="primary" htmlType="submit" loading={btnLoading} className="w-full">
-              {oss.id ? '保存修改' : '新增配置'}
+              确定
             </Button>
           </Form.Item>
         </Form>
