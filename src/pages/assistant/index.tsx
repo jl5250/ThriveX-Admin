@@ -212,7 +212,7 @@ export default () => {
             <Card
               key={item.id}
               className={`relative p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden ${item.isDefault
-                ? 'border-2 border-blue-500 bg-gradient-to-br from-blue-50 via-white to-blue-50 dark:from-blue-900/30 dark:via-boxdark dark:to-blue-900/30 dark:border-blue-500'
+                ? 'border-2 border-blue-500 bg-gradient-to-br from-blue-50 via-white to-blue-50 dark:from-blue-900/30 dark:via-boxdark dark:to-blue-900/30 dark:!border-blue-500'
                 : 'border border-gray-200 bg-gradient-to-br from-gray-50 via-white to-slate-50 dark:from-boxdark/80 dark:via-boxdark dark:to-boxdark-2/80 dark:border-strokedark'
                 }`}
               styles={{ body: { padding: '10px', flex: 1, display: 'flex', flexDirection: 'column', backgroundColor: 'transparent' } }}
@@ -249,7 +249,7 @@ export default () => {
                 </div>
 
                 {/* 更多操作菜单 */}
-                <Dropdown menu={{ items: menuItems }} placement="bottomRight" arrow className="bg-gray-50 dark:bg-boxdark-2/30 dark:hover:bg-boxdark-2/90">
+                <Dropdown menu={{ items: menuItems }} placement="bottomRight" arrow className="bg-gray-50 dark:bg-boxdark-2/50 dark:hover:bg-boxdark-2/30">
                   <Button type="text" icon={<MoreOutlined className="text-xl text-gray-400 dark:text-gray-500" />} />
                 </Dropdown>
               </div>

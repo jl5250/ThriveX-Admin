@@ -51,3 +51,35 @@
     padding-left: 10px;
     background-clip: padding-box;
 }
+
+// 自定义骨架屏 - 闪光动画
+@keyframes skeleton-shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        #e5e7eb 0%,
+        #f3f4f6 50%,
+        #e5e7eb 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+    border-radius: 4px;
+}
+
+.dark .skeleton {
+    background: linear-gradient(
+        90deg,
+        #374151 0%,
+        #4b5563 50%,
+        #374151 100%
+    );
+    background-size: 200% 100%;
+}
