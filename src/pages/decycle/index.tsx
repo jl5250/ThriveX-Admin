@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Table, Button, Tag, notification, Card, Popconfirm, Form } from 'antd';
-import { DeleteOutlined, UndoOutlined } from '@ant-design/icons';
+import { Table, Button, Tag, notification, Popconfirm, Form, Tooltip, Popover, Space, Divider } from 'antd';
+import { DeleteOutlined, UndoOutlined, EyeOutlined, CommentOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 
-import { titleSty } from '@/styles/sty';
 import Title from '@/components/Title';
 import { delArticleDataAPI, getArticleListAPI, reductionArticleDataAPI } from '@/api/article';
 import { useWebStore } from '@/stores';
@@ -15,6 +14,8 @@ import { ColumnType } from 'antd/es/table';
 
 export default () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
+  const isFirstLoadRef = useRef<boolean>(true);
 
   const navigate = useNavigate();
   const web = useWebStore((state) => state.web);
@@ -26,14 +27,18 @@ export default () => {
 
   const getArticleList = async () => {
     try {
-      setLoading(true);
-
+      if (isFirstLoadRef.current) {
+        setInitialLoading(true);
+      } else {
+        setLoading(true);
+      }
       const { data } = await getArticleListAPI({ query: { isDel: 1 } });
       setArticleList(data);
-
-      setLoading(false);
+      isFirstLoadRef.current = false;
     } catch (error) {
       console.error(error);
+    } finally {
+      setInitialLoading(false);
       setLoading(false);
     }
   };
@@ -45,8 +50,6 @@ export default () => {
   const delArticleData = async (id: number) => {
     try {
       setLoading(true);
-
-      // 严格删除：彻底从数据库删除，无法恢复
       await delArticleDataAPI(id);
       await getArticleList();
       form.resetFields();
@@ -54,6 +57,7 @@ export default () => {
       notification.success({ message: '🎉 删除文章成功' });
     } catch (error) {
       console.error(error);
+    } finally {
       setLoading(false);
     }
   };
@@ -61,20 +65,55 @@ export default () => {
   const reductionArticleData = async (id: number) => {
     try {
       setLoading(true);
-
       await reductionArticleDataAPI(id);
       notification.success({ message: '🎉 恢复文章成功' });
       navigate('/article');
-
-      setLoading(false);
     } catch (error) {
       console.error(error);
+    } finally {
       setLoading(false);
     }
   };
 
-  // 标签颜色
-  const colors = ['', '#2db7f5', '#87d068', '#f50', '#108ee9'];
+  // 分类/标签：与文章管理一致，柔和色系 + 收纳展示
+  const tagColors = ['default', 'processing', 'success', 'warning', 'cyan'] as const;
+  const VISIBLE_TAG_COUNT = 1;
+
+  const renderCollapsibleTags = <T extends { id?: number; name: string }>(list: T[], keyPrefix: string) => {
+    const items = list || [];
+    if (items.length === 0) return null;
+    const visible = items.slice(0, VISIBLE_TAG_COUNT);
+    const restCount = items.length - VISIBLE_TAG_COUNT;
+    const tagList = (
+      <div className="flex flex-wrap gap-1.5 max-w-[280px]">
+        {items.map((item, index) => (
+          <Tag key={item.id ?? index} color={tagColors[index % tagColors.length]} className="!m-0 !border-0">
+            {item.name}
+          </Tag>
+        ))}
+      </div>
+    );
+    return (
+      <div className="flex flex-wrap items-center gap-1.5 justify-start">
+        {visible.map((item, index) => (
+          <Tag key={`${keyPrefix}-${item.id ?? index}`} color={tagColors[index % tagColors.length]} className="!m-0 !border-0">
+            {item.name}
+          </Tag>
+        ))}
+        {restCount > 0 && (
+          <Popover content={tagList} trigger="hover" placement="topLeft" overlayClassName="article-tags-popover">
+            <span
+              className="inline-flex items-center justify-center min-w-[28px] h-6 px-1.5 rounded-md text-xs font-medium cursor-default bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-boxdark-2 dark:text-gray-400 dark:hover:bg-strokedark/80 border-0"
+              role="button"
+              tabIndex={0}
+            >
+              +{restCount}
+            </span>
+          </Popover>
+        )}
+      </div>
+    );
+  };
 
   const columns: ColumnType<Article>[] = [
     {
@@ -82,17 +121,17 @@ export default () => {
       dataIndex: 'id',
       key: 'id',
       align: 'center',
-      width: 120,
+      width: 80,
+      render: (text: number) => <span className="text-gray-400 dark:text-gray-500 font-mono">#{text}</span>,
     },
     {
       title: '标题',
       dataIndex: 'title',
       key: 'title',
-      align: 'center',
-      width: 300,
+      width: 280,
       render: (text: string, record: Article) => (
-        <a href={`${web.url}/article/${record.id}`} target="_blank" className="hover:text-primary line-clamp-1" rel="noreferrer">
-          {text}
+        <a href={`${web.url}/article/${record.id}`} target="_blank" className="hover:text-primary line-clamp-1 text-gray-700 dark:text-gray-200 font-medium" rel="noreferrer">
+          {text || <span className="text-gray-300 dark:text-gray-500 italic">暂无标题</span>}
         </a>
       ),
     },
@@ -100,53 +139,80 @@ export default () => {
       title: '摘要',
       dataIndex: 'description',
       key: 'description',
-      width: 350,
-      render: (text: string) => <div className="line-clamp-2">{text ? text : '该文章暂未设置文章摘要'}</div>,
+      width: 320,
+      render: (text: string) => (
+        <div className="line-clamp-2 text-gray-600 dark:text-gray-300">{text || <span className="text-gray-400 dark:text-gray-500 italic">该文章暂未设置文章摘要</span>}</div>
+      ),
     },
     {
       title: '分类',
       dataIndex: 'cateList',
       key: 'cateList',
-      width: 200,
-      render: (cates: Cate[]) =>
-        cates.map((item, index) => (
-          <Tag key={item.id} color={colors[index]}>
-            {item.name}
-          </Tag>
-        )),
+      width: 140,
+      render: (cates: Cate[] = []) => renderCollapsibleTags(cates, 'cate'),
     },
     {
       title: '标签',
       dataIndex: 'tagList',
       key: 'tagList',
-      width: 200,
-      render: (tags: ArticleTag[]) =>
-        tags.map((item, index) => (
-          <Tag key={item.id} color={colors[index]}>
-            {item.name}
-          </Tag>
-        )),
+      width: 160,
+      render: (tags: ArticleTag[] = []) => (
+        <div>
+          {
+            tags.length > 0 ? (
+              renderCollapsibleTags(tags, 'tag')
+            ) : (
+              <span className="text-gray-300 dark:text-gray-500 italic">暂无标签</span>
+            )
+          }
+        </div>
+      ),
     },
     {
       title: '浏览量',
       dataIndex: 'view',
       key: 'view',
-      width: 120,
-      sorter: (a: Article, b: Article) => a.view! - b.view!,
+      width: 100,
+      align: 'center',
+      render: (v: number) => (
+        <span className="inline-flex items-center justify-center gap-1.5 text-gray-600 dark:text-gray-300 tabular-nums">
+          <EyeOutlined className="text-gray-400 dark:text-gray-500 text-xs" />
+          <span className="font-medium">{v ?? 0}</span>
+        </span>
+      ),
+      sorter: (a: Article, b: Article) => (a.view ?? 0) - (b.view ?? 0),
+      showSorterTooltip: false,
     },
     {
-      title: '评论数量',
+      title: '评论',
       dataIndex: 'comment',
       key: 'comment',
-      width: 120,
-      render: (data: string) => <span>{data}</span>,
-      sorter: (a: Article, b: Article) => a.comment! - b.comment!,
+      width: 90,
+      align: 'center',
+      render: (v: number) => (
+        <span className="inline-flex items-center justify-center gap-1.5 text-gray-600 dark:text-gray-300 tabular-nums">
+          <CommentOutlined className="text-gray-400 dark:text-gray-500 text-xs" />
+          <span className="font-medium">{v ?? 0}</span>
+        </span>
+      ),
+      sorter: (a: Article, b: Article) => (a.comment ?? 0) - (b.comment ?? 0),
+      showSorterTooltip: false,
     },
     {
       title: '发布时间',
       dataIndex: 'createTime',
       key: 'createTime',
-      render: (text: string) => dayjs(+text).format('YYYY-MM-DD HH:mm:ss'),
+      width: 180,
+      align: 'left',
+      render: (text: string) => {
+        const d = dayjs(+text);
+        return (
+          <div className="flex flex-col gap-0.5">
+            <span className="text-gray-700 dark:text-gray-200 font-medium">{d.format('YYYY-MM-DD')}</span>
+            <span className="text-sm text-gray-500 dark:text-gray-400">{d.format('HH:mm:ss')}</span>
+          </div>
+        );
+      },
       sorter: (a: Article, b: Article) => +a.createTime! - +b.createTime!,
       showSorterTooltip: false,
     },
@@ -157,40 +223,71 @@ export default () => {
       align: 'center',
       width: 130,
       render: (_: string, record: Article) => (
-        <div className="flex justify-center space-x-2">
+        <Space split={<Divider type="vertical" />}>
           <Popconfirm title="警告" description="点击恢复文章" okText="确定" cancelText="取消" onConfirm={() => reductionArticleData(record.id!)}>
-            <Button type="text" icon={<UndoOutlined />} />
+            <Tooltip title="恢复">
+              <Button type="text" icon={<UndoOutlined className="text-green-500" />} />
+            </Tooltip>
           </Popconfirm>
 
           <Popconfirm title="警告" description="点击彻底删除文章且无法恢复" okText="确定" cancelText="取消" onConfirm={() => delArticleData(record.id!)}>
-            <Button type="text" danger icon={<DeleteOutlined />} />
+            <Tooltip title="彻底删除">
+              <Button type="text" danger icon={<DeleteOutlined />} />
+            </Tooltip>
           </Popconfirm>
-        </div>
+        </Space>
       ),
     },
   ];
 
+  if (initialLoading) {
+    return (
+      <div className="space-y-2">
+        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
+          <div className="skeleton h-8" style={{ width: 200 }} />
+        </div>
+        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+            <div key={i} className="flex gap-4 mb-4 items-center">
+              <div className="skeleton shrink-0 rounded-lg" style={{ width: 56, height: 56 }} />
+              <div className="flex-1 space-y-2 min-w-0">
+                <div className="skeleton h-4 w-full rounded" />
+                <div className="skeleton h-3 rounded" style={{ width: '60%' }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div>
+    <div className="mx-auto">
       <Title value="回收站" />
 
-      <Card className={`${titleSty} mt-2 min-h-[calc(100vh-160px)]`}>
+      <div className="bg-white dark:bg-boxdark rounded-2xl shadow-sm border border-gray-100 dark:border-strokedark overflow-hidden">
         <Table
           rowKey="id"
           dataSource={articleList}
           columns={columns}
-          scroll={{ x: '1750px' }}
-          pagination={{
-            position: ['bottomCenter'],
-            current,
-            defaultPageSize: 8,
-            onChange(current) {
-              setCurrent(current);
-            },
-          }}
           loading={loading}
+          scroll={{ x: 1400 }}
+          pagination={{
+            position: ['bottomRight'],
+            current,
+            pageSize: 8,
+            total: articleList.length,
+            showTotal: (totalCount) => (
+              <div className="mt-[9px] text-xs text-gray-500 dark:text-gray-400">
+                共 {totalCount} 条数据
+              </div>
+            ),
+            onChange: (page) => setCurrent(page),
+            className: '!px-6 !py-4',
+          }}
+          className="[&_.ant-table-thead>tr>th]:!bg-gray-50 dark:[&_.ant-table-thead>tr>th]:!bg-boxdark-2 [&_.ant-table-thead>tr>th]:!font-medium [&_.ant-table-thead>tr>th]:!text-gray-500 dark:[&_.ant-table-thead>tr>th]:!text-gray-400"
         />
-      </Card>
+      </div>
     </div>
   );
 };
