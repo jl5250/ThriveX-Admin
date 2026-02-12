@@ -76,7 +76,7 @@ export default () => {
 
         <Form.Item>
           <Button type="primary" htmlType="submit" loading={loading} block>
-            保存
+            确定
           </Button>
         </Form.Item>
       </Form>
