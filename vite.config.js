@@ -18,7 +18,9 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@use "./src/styles/var.scss";`,
+        api: 'modern-compiler',
+        loadPaths: [path.resolve(__dirname, 'src/styles')],
+        additionalData: `@use "var" as *;`,
       },
     },
   },
