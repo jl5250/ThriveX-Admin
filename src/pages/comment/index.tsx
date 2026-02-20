@@ -151,17 +151,21 @@ export default () => {
       width: 110,
       render: (_: string, record: Comment) => (
         <div className="flex justify-center space-x-2">
-          <Button
-            type="text"
-            onClick={() => {
-              setComment(record);
-              setIsReplyModalOpen(true);
-            }}
-            icon={<SendOutlined className="text-primary" />}
-          />
+          <Tooltip title="回复">
+            <Button
+              type="text"
+              onClick={() => {
+                setComment(record);
+                setIsReplyModalOpen(true);
+              }}
+              icon={<SendOutlined className="text-primary" />}
+            />
+          </Tooltip>
 
           <Popconfirm title="警告" description="你确定要删除吗" okText="确定" cancelText="取消" onConfirm={() => delCommentData(record.id!)}>
-            <Button type="text" danger icon={<DeleteOutlined />} />
+            <Tooltip title="删除">
+              <Button type="text" danger icon={<DeleteOutlined />} />
+            </Tooltip>
           </Popconfirm>
         </div>
       ),

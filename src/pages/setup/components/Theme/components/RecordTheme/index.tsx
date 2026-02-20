@@ -73,7 +73,7 @@ export default () => {
           </Form.Item>
 
           <Button type="primary" size="large" className="w-full mt-4" htmlType="submit" loading={loading}>
-            保存
+            确定
           </Button>
         </Form>
       </div>

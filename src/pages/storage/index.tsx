@@ -216,8 +216,8 @@ export default () => {
       <div>
         <Title value="存储管理" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-2">
-          {[1, 2, 3].map((item) => (
-            <Card key={item} className="shadow-md dark:bg-boxdark dark:border-strokedark">
+          {[1, 2, 3, 4, 5, 6].map((item) => (
+            <Card key={item} className="shadow-md dark:bg-boxdark dark:border-strokedark rounded-xl">
               <Skeleton active paragraph={{ rows: 4 }} />
             </Card>
           ))}
@@ -420,7 +420,7 @@ export default () => {
 
           <Form.Item className="mb-0">
             <Button type="primary" htmlType="submit" loading={btnLoading} className="w-full">
-              {oss.id ? '保存修改' : '新增配置'}
+              确定
             </Button>
           </Form.Item>
         </Form>

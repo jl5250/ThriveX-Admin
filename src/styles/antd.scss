@@ -1,3 +1,6 @@
+/* ------------------ 自定义Antd组件样式开始 ------------------ */
+
+// 取消所有关于颜色的过渡效果, 否则暗色效果过度时间不一致导致效果不好
 * {
     transition-property: opacity, transform, box-shadow, filter !important;
 }
@@ -36,9 +39,17 @@
         }
     }
 }
-/* ------------------ 自定义表单样式结束 ------------------ */
 
-// ------------------> Antd组件库暗色适配 开始 <------------------
+.ant-form-inline {
+    margin-inline-end: 10px;
+}
+
+.ant-tabs-nav {
+    padding-top: 0 !important;
+}
+/* ------------------ 自定义Antd组件样式结束 ------------------ */
+
+// ------------------ Antd组件暗色适配 开始 ------------------
 .ant-card {
     @apply overflow-hidden;
 }
@@ -87,8 +98,4 @@
     background: rgba(71, 95, 125, 0.4) !important;
     border-color: rgba(71, 95, 125, 0.7) !important;
 }
-// ------------------> Antd组件库暗色适配 结束 <------------------
-
-.ant-form-inline {
-    margin-inline-end: 10px;
-}
+// ------------------ Antd组件暗色适配 结束 ------------------

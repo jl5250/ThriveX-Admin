@@ -287,8 +287,6 @@ export default () => {
           <span className="text-gray-400 dark:text-gray-500 text-xs">{dayjs(+text).format('HH:mm:ss')}</span>
         </div>
       ),
-      sorter: (a: Article, b: Article) => +a.createTime! - +b.createTime!,
-      showSorterTooltip: false,
     },
     {
       title: '操作',
@@ -298,26 +296,28 @@ export default () => {
       align: 'center',
       render: (_, record: Article) => (
         <Space split={<Divider type="vertical" />}>
-          <Tooltip title="编辑">
-            <Link to={`/create?id=${record.id}`}>
-              <Button
-                type="text"
-                size="small"
-                icon={<FormOutlined />}
-                className="text-gray-500 hover:text-blue-500 dark:text-gray-300 dark:hover:!text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-              />
-            </Link>
-          </Tooltip>
           <Tooltip title="导出">
             <Popconfirm title="提醒" description="确定要导出该文章吗？" okText="确定" cancelText="取消" onConfirm={() => exportArticle(record.id!)}>
               <Button
                 type="text"
                 size="small"
                 icon={<DownloadOutlined />}
-                className="text-gray-500 hover:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800/50"
+                className="hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800/50"
               />
             </Popconfirm>
           </Tooltip>
+
+          <Tooltip title="编辑">
+            <Link to={`/create?id=${record.id}`}>
+              <Button
+                type="text"
+                size="small"
+                icon={<FormOutlined className="text-blue-500" />}
+                className="text-blue-500 dark:text-gray-300 dark:hover:!text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+              />
+            </Link>
+          </Tooltip>
+
           <Tooltip title="删除">
             <Popconfirm
               title="删除确认"

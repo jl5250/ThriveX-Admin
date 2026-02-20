@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Table, Button, Image, Form, Input, Tabs, Card, Popconfirm, message, Spin, Skeleton } from 'antd';
+import { Table, Button, Image, Form, Input, Tabs, Popconfirm, message, Spin, Tooltip, Divider, Space } from 'antd';
 import { getSwiperListAPI, addSwiperDataAPI, editSwiperDataAPI, delSwiperDataAPI, getSwiperDataAPI } from '@/api/swiper';
 import { Swiper } from '@/types/app/swiper';
 import Title from '@/components/Title';
@@ -27,7 +27,8 @@ export default () => {
       dataIndex: 'id',
       key: 'id',
       align: 'center',
-      width: 120,
+      width: 80,
+      render: (text: number) => <span className="text-gray-400 dark:text-gray-500 font-mono">#{text}</span>,
     },
     {
       title: '图片',
@@ -35,23 +36,54 @@ export default () => {
       key: 'image',
       width: 200,
       align: 'center',
-      render: (url: string) => <Image width={200} src={url} className="w-full rounded cursor-pointer" />,
+      render: (url: string) => <Image width={180} src={url} className="w-full rounded cursor-pointer" alt="" />,
     },
-    { title: '标题', dataIndex: 'title', key: 'title', width: 200 },
-    { title: '描述', dataIndex: 'description', key: 'description' },
+    {
+      title: '标题',
+      dataIndex: 'title',
+      key: 'title',
+      width: 230,
+      render: (text: string) => (
+        <Tooltip title={text}>
+          <span className="line-clamp-1 text-gray-700 dark:text-gray-200 font-medium hover:text-primary cursor-pointer">{text}</span>
+        </Tooltip>
+      ),
+    },
+    {
+      title: '描述',
+      dataIndex: 'description',
+      key: 'description',
+      width: 300,
+      render: (text: string) => (
+        <>
+          {text ? (
+            <Tooltip title={text}>
+              <span className="line-clamp-1 text-gray-600 dark:text-gray-300 hover:text-primary cursor-pointer">{text}</span>
+            </Tooltip>
+          ) : (
+            <span className="text-gray-300 dark:text-gray-500 italic">暂无描述</span>
+          )}
+        </>
+      ),
+    },
     {
       title: '操作',
       key: 'action',
       align: 'center',
+      fixed: 'right',
       width: 130,
       render: (_: string, record: Swiper) => (
-        <div className="space-x-2">
-          <Button type="text" onClick={() => editSwiperData(record)} icon={<FormOutlined className="text-primary" />} />
+        <Space split={<Divider type="vertical" />}>
+          <Tooltip title="编辑">
+            <Button type="text" onClick={() => editSwiperData(record)} icon={<FormOutlined className="text-blue-500" />} />
+          </Tooltip>
 
-          <Popconfirm title="警告" description="你确定要删除吗" okText="确定" cancelText="取消" onConfirm={() => delSwiperData(record.id!)}>
-            <Button type="text" danger icon={<DeleteOutlined />} />
-          </Popconfirm>
-        </div>
+          <Tooltip title="删除">
+            <Popconfirm title="警告" description="你确定要删除吗" okText="确定" cancelText="取消" onConfirm={() => delSwiperData(record.id!)}>
+              <Button type="text" danger icon={<DeleteOutlined />} />
+            </Popconfirm>
+          </Tooltip>
+        </Space>
       ),
     },
   ];
@@ -99,14 +131,12 @@ export default () => {
   const delSwiperData = async (id: number) => {
     try {
       setBtnLoading(true);
-
       await delSwiperDataAPI(id);
       getSwiperList();
       message.success('🎉 删除轮播图成功');
-
-      setBtnLoading(false);
     } catch (error) {
       console.error(error);
+    } finally {
       setBtnLoading(false);
     }
   };
@@ -114,8 +144,7 @@ export default () => {
   const onSubmit = async () => {
     try {
       setBtnLoading(true);
-
-      form.validateFields().then(async (values: Swiper) => {
+      await form.validateFields().then(async (values: Swiper) => {
         if (swiper.id) {
           await editSwiperDataAPI({ ...swiper, ...values });
           message.success('🎉 编辑轮播图成功');
@@ -129,10 +158,9 @@ export default () => {
         form.resetFields();
         setSwiper({} as Swiper);
       });
-
-      setBtnLoading(false);
     } catch (error) {
       console.error(error);
+    } finally {
       setBtnLoading(false);
     }
   };
@@ -155,13 +183,19 @@ export default () => {
           rowKey="id"
           dataSource={list}
           columns={columns}
-          scroll={{ x: '1000px' }}
-          pagination={{
-            position: ['bottomCenter'],
-            pageSize: 8,
-          }}
           loading={loading}
-          className="w-full"
+          scroll={{ x: 900 }}
+          pagination={{
+            position: ['bottomRight'],
+            pageSize: 8,
+            showTotal: (totalCount) => (
+              <div className="mt-[9px] text-xs text-gray-500 dark:text-gray-400">
+                共 {totalCount} 条数据
+              </div>
+            ),
+            className: '!px-6 !py-4',
+          }}
+          className="[&_.ant-table-thead>tr>th]:!bg-gray-50 dark:[&_.ant-table-thead>tr>th]:!bg-boxdark-2 [&_.ant-table-thead>tr>th]:!font-medium [&_.ant-table-thead>tr>th]:!text-gray-500 dark:[&_.ant-table-thead>tr>th]:!text-gray-400 w-full"
         />
       ),
     },
@@ -170,9 +204,9 @@ export default () => {
       key: 'operate',
       children: (
         <Spin spinning={editLoading}>
-          <h2 className="text-xl pb-4 text-center">{swiper.id ? '编辑轮播图' : '新增轮播图'}</h2>
+          <h2 className="text-xl pb-4 pt-8 text-center text-gray-800 dark:text-gray-100">{swiper.id ? '编辑轮播图' : '新增轮播图'}</h2>
 
-          <Form form={form} layout="vertical" initialValues={swiper} onFinish={onSubmit} size="large" className="max-w-md mx-auto">
+          <Form form={form} layout="vertical" initialValues={swiper} onFinish={onSubmit} size="large" className="max-w-md mx-auto px-6 pb-6">
             <Form.Item label="标题" name="title" rules={[{ required: true, message: '轮播图标题不能为空' }]}>
               <Input placeholder="要么沉沦 要么巅峰!" />
             </Form.Item>
@@ -191,7 +225,7 @@ export default () => {
 
             <Form.Item>
               <Button type="primary" htmlType="submit" loading={btnLoading} className="w-full">
-                {swiper.id ? '编辑轮播图' : '新增轮播图'}
+                确定
               </Button>
             </Form.Item>
           </Form>
@@ -200,56 +234,41 @@ export default () => {
     },
   ];
 
-  // 初始加载时显示骨架屏
+  // 初始加载时显示骨架屏（与 article 一致）
   if (initialLoading) {
     return (
-      <div>
-        {/* Title 骨架屏 */}
-        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-2">
-          <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
-        </Card>
+      <div className="space-y-2">
+        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
+          <div className="skeleton h-8" style={{ width: 200 }} />
+        </div>
 
-        {/* Tabs 和表格骨架屏 */}
-        <Card className="border-stroke [&>.ant-card-body]:!pt-0 mt-2 min-h-[calc(100vh-160px)] [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
-          {/* Tabs 骨架屏 */}
-          <div className="flex space-x-4 my-6">
-            <Skeleton.Button active size="default" style={{ width: 120, height: 40 }} />
-            <Skeleton.Button active size="default" style={{ width: 120, height: 40 }} />
+        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
+          <div className="flex gap-4 mb-6">
+            <div className="skeleton h-9 rounded-md" style={{ width: 120 }} />
+            <div className="skeleton h-9 rounded-md" style={{ width: 140 }} />
           </div>
 
-          {/* 表格骨架屏 */}
-          <div className="mb-4">
-            {/* 表格行骨架屏 - 模拟多行 */}
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
-              <div key={item} className="flex items-center gap-4 mb-2 py-2 border-b border-gray-100">
-                <Skeleton.Input active size="small" style={{ width: 60, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 150, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 200, height: 40, flex: 1 }} />
-                <Skeleton.Input active size="small" style={{ width: 150, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 200, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 100, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 300, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 200, height: 40 }} />
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+            <div key={i} className="flex gap-4 mb-4 items-center">
+              <div className="skeleton shrink-0 rounded-lg" style={{ width: 56, height: 56 }} />
+              <div className="flex-1 space-y-2 min-w-0">
+                <div className="skeleton h-4 w-full rounded" />
+                <div className="skeleton h-3 rounded" style={{ width: '60%' }} />
               </div>
-            ))}
-          </div>
-          
-          {/* 分页骨架屏 */}
-          <div className="flex justify-center my-5">
-            <Skeleton.Input active size="default" style={{ width: 300, height: 32 }} />
-          </div>
-        </Card>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="mx-auto">
       <Title value="轮播图管理" />
 
-      <Card className="border-stroke [&>.ant-card-body]:!pt-0 mt-2 min-h-[calc(100vh-160px)]">
-        <Tabs activeKey={tab} onChange={handleTabChange} items={tabItems} />
-      </Card>
+      <div className="bg-white dark:bg-boxdark rounded-2xl shadow-sm border border-gray-100 dark:border-strokedark overflow-hidden">
+        <Tabs activeKey={tab} onChange={handleTabChange} items={tabItems} className="[&_.ant-tabs-nav]:mb-0 [&_.ant-tabs-nav]:px-6 [&_.ant-tabs-nav]:pt-4 [&_.ant-tabs-nav]:bg-gray-50/30 dark:[&_.ant-tabs-nav]:bg-boxdark-2/50 [&_.ant-tabs-content]:pt-0" />
+      </div>
 
       <Material
         // multiple

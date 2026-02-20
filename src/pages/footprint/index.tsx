@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import { Table, Button, Tag, notification, Card, Popconfirm, Form, Input, DatePicker, Modal, Spin, message, Skeleton } from 'antd';
+import { Table, Button, Tag, notification, Popconfirm, Form, Input, DatePicker, Modal, Spin, message, Tooltip, Space, Divider } from 'antd';
 import { GiPositionMarker } from 'react-icons/gi';
 import { IoSearch } from 'react-icons/io5';
 import dayjs from 'dayjs';
 import axios from 'axios';
-import { CloudUploadOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons';
+import { CloudUploadOutlined, DeleteOutlined, FormOutlined, SearchOutlined, ClearOutlined } from '@ant-design/icons';
 
-import { titleSty } from '@/styles/sty';
 import Title from '@/components/Title';
 import Material from '@/components/Material';
 import { delFootprintDataAPI, getFootprintListAPI, addFootprintDataAPI, editFootprintDataAPI, getFootprintDataAPI } from '@/api/footprint';
@@ -30,49 +29,87 @@ export default () => {
   const [isMethod, setIsMethod] = useState<'create' | 'edit'>('create');
   const [form] = Form.useForm();
 
+  const [filterForm] = Form.useForm();
+
+  const onFilterReset = () => {
+    filterForm.resetFields();
+    getFootprintList();
+  };
+
   const columns: ColumnType<Footprint>[] = [
     {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
       align: 'center',
-      width: 120,
+      width: 80,
+      render: (text: number) => <span className="text-gray-400 dark:text-gray-500 font-mono">#{text}</span>,
     },
     {
       title: '标题',
       dataIndex: 'title',
       key: 'title',
-      width: 200,
+      width: 180,
+      render: (text: string) => <span className="text-gray-700 dark:text-gray-200 font-medium">{text || '-'}</span>,
     },
     {
       title: '地址',
       dataIndex: 'address',
       key: 'address',
-      width: 250,
+      width: 220,
+      ellipsis: true,
+      render: (text: string) => (
+        <div>
+          {text ? (
+            <Tooltip title={text}>
+              <div className="max-w-[220px] truncate text-gray-700 dark:text-gray-200 hover:text-primary cursor-pointer">
+                {text}
+              </div>
+            </Tooltip>
+          ) : (
+            <span className="text-gray-300 dark:text-gray-500 italic">暂无地址</span>
+          )}
+        </div>
+      ),
     },
     {
       title: '内容',
       dataIndex: 'content',
       key: 'content',
-      width: 400,
-      render: (value: string) => <div className="line-clamp-3">{value || '---'}</div>,
+      width: 320,
+      render: (value: string) => (
+        <div>
+          {value ? (
+            <Tooltip title={value}>
+              <div className="max-w-[320px] truncate text-gray-700 dark:text-gray-200 hover:text-primary cursor-pointer">
+                {value}
+              </div>
+            </Tooltip>
+          ) : (
+            <span className="text-gray-300 dark:text-gray-500 italic">暂无内容</span>
+          )}
+        </div>
+      ),
     },
     {
-      title: '坐标纬度',
+      title: '坐标',
       dataIndex: 'position',
       key: 'position',
       align: 'center',
-      width: 170,
-      render: (value: string) => <Tag>{value}</Tag>,
+      width: 160,
+      render: (value: string) => <Tag className="!m-0">{value || '-'}</Tag>,
     },
     {
-      title: '时间',
+      title: '发布时间',
       dataIndex: 'createTime',
       key: 'createTime',
-      align: 'center',
-      render: (time: string) => dayjs(+time).format('YYYY-MM-DD HH:mm:ss'),
-      sorter: (a: Footprint, b: Footprint) => +a.createTime! - +b.createTime!,
-      showSorterTooltip: false,
+      width: 140,
+      render: (text: string) => (
+        <div className="flex flex-col">
+          <span className="text-gray-700 dark:text-gray-200 font-medium">{dayjs(+text).format('YYYY-MM-DD')}</span>
+          <span className="text-gray-400 dark:text-gray-500 text-xs">{dayjs(+text).format('HH:mm:ss')}</span>
+        </div>
+      ),
     },
     {
       title: '操作',
@@ -81,12 +118,17 @@ export default () => {
       align: 'center',
       width: 130,
       render: (_: string, record: Footprint) => (
-        <div className="flex justify-center space-x-2">
-          <Button type="text" onClick={() => editFootprintData(record.id!)} icon={<FormOutlined className="text-primary" />} />
-          <Popconfirm title="警告" description="你确定要删除吗" okText="确定" cancelText="取消" onConfirm={() => delFootprintData(record.id!)}>
-            <Button type="text" danger icon={<DeleteOutlined />} />
-          </Popconfirm>
-        </div>
+        <Space split={<Divider type="vertical" />}>
+          <Tooltip title="编辑">
+            <Button type="text" onClick={() => editFootprintData(record.id!)} icon={<FormOutlined className="text-primary" />} />
+          </Tooltip>
+
+          <Tooltip title="删除">
+            <Popconfirm title="警告" description="你确定要删除吗" okText="确定" cancelText="取消" onConfirm={() => delFootprintData(record.id!)}>
+              <Button type="text" danger icon={<DeleteOutlined />} />
+            </Popconfirm>
+          </Tooltip>
+        </Space>
       ),
     },
   ];
@@ -132,14 +174,14 @@ export default () => {
   };
 
   const delFootprintData = async (id: number) => {
-    setLoading(true);
-
     try {
+      setLoading(true);
       await delFootprintDataAPI(id);
       notification.success({ message: '🎉 删除足迹成功' });
       getFootprintList();
     } catch (error) {
       console.error(error);
+    } finally {
       setLoading(false);
     }
   };
@@ -176,8 +218,7 @@ export default () => {
   const onSubmit = async () => {
     try {
       setBtnLoading(true);
-
-      form.validateFields().then(async (values: Footprint) => {
+      await form.validateFields().then(async (values: Footprint) => {
         values.createTime = values.createTime.valueOf();
         values.images = values.images ? (values.images as string).split('\n') : [];
 
@@ -189,14 +230,12 @@ export default () => {
           message.success('🎉 新增足迹成功');
         }
 
-        setBtnLoading(false);
         getFootprintList();
         reset();
       });
-
-      setBtnLoading(false);
     } catch (error) {
       console.error(error);
+    } finally {
       setBtnLoading(false);
     }
   };
@@ -206,19 +245,16 @@ export default () => {
   const onFilterSubmit = async (values: FilterForm) => {
     try {
       setLoading(true);
-
-      const query: FilterData = {
+      const query = {
         key: values.address,
-        startDate: values.createTime && values.createTime[0].valueOf() + '',
-        endDate: values.createTime && values.createTime[1].valueOf() + '',
+        startDate: values.createTime?.[0]?.valueOf()?.toString(),
+        endDate: values.createTime?.[1]?.valueOf()?.toString(),
       };
-
       const { data } = await getFootprintListAPI({ query });
       setFootprintList(data);
-
-      setLoading(false);
     } catch (error) {
       console.error(error);
+    } finally {
       setLoading(false);
     }
   };
@@ -256,96 +292,97 @@ export default () => {
     }
   };
 
-  // 初始加载时显示骨架屏
+  // 初始加载时显示骨架屏（与 article 一致）
   if (initialLoading) {
     return (
-      <div>
-        {/* Title 骨架屏 */}
-        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-2">
-          <div className="flex justify-between items-center">
-            <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
-            <Skeleton.Button active size="large" style={{ width: 120, height: 40 }} />
-          </div>
-        </Card>
+      <div className="space-y-2">
+        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
+          <div className="skeleton h-8" style={{ width: 200 }} />
+        </div>
 
-        {/* 筛选卡片骨架屏 */}
-        <Card className="border-stroke my-2 overflow-scroll [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
-          <div className="flex flex-wrap items-center gap-3">
-            <Skeleton.Input active size="default" style={{ width: 200, height: 32 }} />
-            <Skeleton.Input active size="default" style={{ width: 250, height: 32 }} />
-            <Skeleton.Button active size="default" style={{ width: 80, height: 32 }} />
+        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
+          <div className="flex justify-between mb-6">
+            <div className="flex gap-4 flex-wrap">
+              <div className="skeleton h-9" style={{ width: 200 }} />
+              <div className="skeleton h-9" style={{ width: 280 }} />
+            </div>
+            <div className="flex gap-2">
+              <div className="skeleton h-9 rounded-md" style={{ width: 80 }} />
+              <div className="skeleton h-9 rounded-md" style={{ width: 80 }} />
+            </div>
           </div>
-        </Card>
 
-        {/* 表格卡片骨架屏 */}
-        <Card className={`${titleSty} min-h-[calc(100vh-270px)] [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5`}>
-          {/* 表格骨架屏 */}
-          <div className="mb-4">
-            {/* 表格行骨架屏 - 模拟多行 */}
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
-              <div key={item} className="flex items-center gap-4 mb-2 py-2 border-b border-gray-100">
-                <Skeleton.Input active size="small" style={{ width: 60, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 150, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 200, height: 40, flex: 1 }} />
-                <Skeleton.Input active size="small" style={{ width: 150, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 200, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 100, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 300, height: 40 }} />
-                <Skeleton.Input active size="small" style={{ width: 200, height: 40 }} />
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+            <div key={i} className="flex gap-4 mb-4 items-center">
+              <div className="skeleton shrink-0 rounded-lg" style={{ width: 56, height: 56 }} />
+              <div className="flex-1 space-y-2 min-w-0">
+                <div className="skeleton h-4 w-full rounded" />
+                <div className="skeleton h-3 rounded" style={{ width: '60%' }} />
               </div>
-            ))}
-          </div>
-
-          {/* 分页骨架屏 */}
-          <div className="flex justify-center my-5">
-            <Skeleton.Input active size="default" style={{ width: 300, height: 32 }} />
-          </div>
-        </Card>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="mx-auto">
       <Title value="足迹管理">
-        <Button type="primary" size="large" onClick={addFootprintData}>
+        <Button type="primary" onClick={addFootprintData}>
           新增足迹
         </Button>
       </Title>
 
-      <Card className="[&>.ant-card-body]:!p-3 border-stroke my-2 overflow-scroll">
-        <div className="flex">
-          <Form layout="inline" onFinish={onFilterSubmit} autoComplete="off" className="flex-nowrap w-full">
-            <Form.Item name="address" className="min-w-[200px]">
-              <Input placeholder="请输入关键词" />
+      <div className="bg-white dark:bg-boxdark rounded-2xl shadow-sm border border-gray-100 dark:border-strokedark overflow-hidden">
+        <div className="p-5 border-b border-gray-100 dark:border-strokedark bg-gray-50/30 dark:bg-boxdark-2/50 space-y-4">
+          <Form form={filterForm} layout="inline" onFinish={onFilterSubmit} className="!flex !flex-wrap !items-center !gap-y-2.5">
+            <Form.Item name="address" className="!mb-0">
+              <Input
+                prefix={<SearchOutlined className="text-gray-400 dark:text-gray-500" />}
+                placeholder="搜索地址..."
+                className="!w-[220px]"
+                allowClear
+              />
+            </Form.Item>
+            <Form.Item name="createTime" className="!mb-0">
+              <RangePicker
+                className="!w-[260px]"
+                placeholder={['开始日期', '结束日期']}
+                disabledDate={(current) => current && current > dayjs().endOf('day')}
+              />
             </Form.Item>
 
-            <Form.Item name="createTime" className="min-w-[250px]">
-              <RangePicker placeholder={['选择起始时间', '选择结束时间']} disabledDate={(current) => current && current > dayjs().endOf('day')} />
-            </Form.Item>
-
-            <Form.Item className="pr-6">
-              <Button type="primary" htmlType="submit">
-                筛选
+            <div className="flex gap-2">
+              <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+                查询
               </Button>
-            </Form.Item>
+              <Button icon={<ClearOutlined />} onClick={onFilterReset}>
+                重置
+              </Button>
+            </div>
           </Form>
         </div>
-      </Card>
 
-      <Card className={`${titleSty} min-h-[calc(100vh-270px)]`}>
         <Table
           rowKey="id"
           dataSource={footprintList}
           columns={columns}
           loading={loading}
-          scroll={{ x: 'max-content' }}
+          scroll={{ x: 1200 }}
           pagination={{
-            position: ['bottomCenter'],
+            position: ['bottomRight'],
             pageSize: 8,
+            showTotal: (totalCount) => (
+              <div className="mt-[9px] text-xs text-gray-500 dark:text-gray-400">
+                共 {totalCount} 条数据
+              </div>
+            ),
+            className: '!px-6 !py-4',
           }}
+          className="[&_.ant-table-thead>tr>th]:!bg-gray-50 dark:[&_.ant-table-thead>tr>th]:!bg-boxdark-2 [&_.ant-table-thead>tr>th]:!font-medium [&_.ant-table-thead>tr>th]:!text-gray-500 dark:[&_.ant-table-thead>tr>th]:!text-gray-400"
         />
-      </Card>
+      </div>
 
       <Modal loading={editLoading} title={isMethod === 'edit' ? '编辑足迹' : '新增足迹'} open={isModelOpen} onCancel={closeModel} destroyOnClose footer={null}>
         <Spin spinning={searchLoading}>
@@ -386,7 +423,7 @@ export default () => {
 
             <Form.Item className="!mb-0 w-full">
               <Button type="primary" onClick={onSubmit} loading={btnLoading} className="w-full">
-                {isMethod === 'edit' ? '编辑足迹' : '新增足迹'}
+                确定
               </Button>
             </Form.Item>
           </Form>

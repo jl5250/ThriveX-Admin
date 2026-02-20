@@ -154,34 +154,40 @@ export default () => {
       width: 130,
       render: (_: string, record: Wall) => (
         <div className="flex justify-center space-x-2">
-          <Button
-            type="text"
-            onClick={async () => {
-              try {
-                setLoading(true);
-                await updateChoiceAPI(record.id);
-                message.success('🎉 操作成功');
-                getWallList();
-              } catch (error) {
-                console.error(error);
-              } finally {
-                setLoading(false);
-              }
-            }}
-            icon={record.isChoice === 1 ? <StarFilled className="text-yellow-400" /> : <StarOutlined />}
-          />
+          <Tooltip title={record.isChoice === 1 ? '取消精选' : '设为精选'}>
+            <Button
+              type="text"
+              onClick={async () => {
+                try {
+                  setLoading(true);
+                  await updateChoiceAPI(record.id);
+                  message.success('🎉 操作成功');
+                  getWallList();
+                } catch (error) {
+                  console.error(error);
+                } finally {
+                  setLoading(false);
+                }
+              }}
+              icon={record.isChoice === 1 ? <StarFilled className="text-yellow-400" /> : <StarOutlined />}
+            />
+          </Tooltip>
 
-          <Button
-            type="text"
-            onClick={() => {
-              setWall(record);
-              setIsReplyModalOpen(true);
-            }}
-            icon={<SendOutlined className="text-primary" />}
-          />
+          <Tooltip title="回复">
+            <Button
+              type="text"
+              onClick={() => {
+                setWall(record);
+                setIsReplyModalOpen(true);
+              }}
+              icon={<SendOutlined className="text-primary" />}
+            />
+          </Tooltip>
 
           <Popconfirm title="警告" description="你确定要删除吗" okText="确定" cancelText="取消" onConfirm={() => delWallData(record.id)}>
-            <Button type="text" danger icon={<DeleteOutlined />} />
+            <Tooltip title="删除">
+              <Button type="text" danger icon={<DeleteOutlined />} />
+            </Tooltip>
           </Popconfirm>
         </div>
       ),

@@ -89,7 +89,7 @@ export default () => {
     }
   };
 
-  const submit = async () => {
+  const onSubmit = async () => {
     setBtnLoading(true);
 
     try {
@@ -245,7 +245,6 @@ export default () => {
       <Title value="分类管理">
         <Button
           type="primary"
-          size="large"
           onClick={() => addCateData(0)}
         >
           新增分类
@@ -328,14 +327,8 @@ export default () => {
           </Form.Item>
 
           <Form.Item className="!mb-0">
-            <Button
-              type="primary"
-              onClick={submit}
-              loading={btnLoading}
-              className="!h-12 !w-full !rounded-lg !font-medium"
-              icon={isMethod === 'edit' ? <EditOutlined /> : <PlusOutlined />}
-            >
-              {isMethod === 'edit' ? '保存修改' : '新增分类'}
+            <Button type="primary" onClick={onSubmit} loading={btnLoading} className="w-full">
+              确定
             </Button>
           </Form.Item>
         </Form>
