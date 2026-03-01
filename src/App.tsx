@@ -1,13 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-// import Loader from './components/Loader';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 import { App as AntdApp, ConfigProvider, theme } from 'antd';
 import RouteList from './components/RouteList';
 import '@/styles/antd.scss';
 
 import { getWebConfigDataAPI } from '@/api/config';
-import { useWebStore, useUserStore } from './stores';
+import { useWebStore, useUserStore, useConfigStore } from './stores';
 import { Web } from './types/app/config';
 
 import zhCN from 'antd/locale/zh_CN';
@@ -17,9 +16,7 @@ function App() {
   useAuthRedirect();
 
   const token = useUserStore((state) => state.token);
-
-  // const [loading, setLoading] = useState<boolean>(true);
-  const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
+  const colorMode = useConfigStore((state) => state.colorMode);
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -34,24 +31,6 @@ function App() {
   };
 
   useEffect(() => {
-    // setTimeout(() => setLoading(false), 1000);
-
-    const bodyClassList = document.body.classList;
-
-    // 监听类名变化
-    const observer = new MutationObserver(() => {
-      setIsDarkTheme(bodyClassList.contains('dark'));
-    });
-
-    observer.observe(document.body, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
     getWebData();
   }, [token]);
 
@@ -61,10 +40,10 @@ function App() {
         token: {
           colorPrimary: '#60a5fa',
           borderRadius: 4,
-          colorBgBase: isDarkTheme ? '#24303F' : '#ffffff',
-          colorTextBase: isDarkTheme ? '#e0e0e0' : '#000000',
+          colorBgBase: colorMode === 'dark' ? '#191e29' : '#ffffff',
+          colorTextBase: colorMode === 'dark' ? '#e0e0e0' : '#000000',
         },
-        algorithm: isDarkTheme ? theme.darkAlgorithm : theme.defaultAlgorithm,
+        algorithm: colorMode === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm,
       }}
       locale={zhCN}
     >

@@ -19,7 +19,7 @@
     "npm": ">=10"
   },
   "dependencies": {
-    "@ant-design/icons": "^5.5.2",
+    "@ant-design/icons": "^6.1.0",
     "@bytemd/plugin-gemoji": "^1.21.0",
     "@bytemd/plugin-gfm": "^1.21.0",
     "@bytemd/plugin-highlight": "^1.21.0",
@@ -31,7 +31,7 @@
     "@uiw/react-codemirror": "^4.23.14",
     "@wangeditor-next/editor": "^5.6.45",
     "@wangeditor-next/editor-for-react": "^1.0.10",
-    "antd": "^5.19.3",
+    "antd": "^6.3.1",
     "apexcharts": "^4.7.0",
     "axios": "^1.7.2",
     "bytemd": "^1.22.0",
