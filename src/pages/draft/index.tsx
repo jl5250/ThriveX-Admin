@@ -116,7 +116,7 @@ export default () => {
       key: 'title',
       width: 280,
       render: (text: string, record: Article) => (
-        <a href={`${web.url}/article/${record.id}`} target="_blank" className="hover:text-primary line-clamp-1 text-gray-700 dark:text-gray-200 font-medium" rel="noreferrer">
+        <a href={`${web.url}/article/${record.id}`} target="_blank" className="hover:text-primary! line-clamp-1 text-gray-700! dark:text-gray-200! font-medium" rel="noreferrer">
           {text || <span className="text-gray-300 dark:text-gray-500 italic">暂无标题</span>}
         </a>
       ),

@@ -215,7 +215,7 @@ export default () => {
                 ? 'border-2 border-blue-500 bg-linear-to-br from-blue-50 via-white to-blue-50 dark:from-blue-900/30 dark:via-boxdark dark:to-blue-900/30 dark:border-blue-500!'
                 : 'border border-gray-200 bg-linear-to-br from-gray-50 via-white to-slate-50 dark:from-boxdark/80 dark:via-boxdark dark:to-boxdark-2/80 dark:border-strokedark'
                 }`}
-              styles={{ body: { padding: '10px', flex: 1, display: 'flex', flexDirection: 'column', backgroundColor: 'transparent' } }}
+              styles={{ body: { flex: 1, display: 'flex', flexDirection: 'column', backgroundColor: 'transparent' } }}
             >
               {/* 卡片头部：图标与名称 */}
               <div className="flex items-start justify-between mb-4">
@@ -241,7 +241,7 @@ export default () => {
 
                       {info && (
                         <Tooltip title={info.desc}>
-                          <InfoCircleOutlined className="text-gray-400 dark:text-gray-500 cursor-pointer hover:text-primary dark:hover:text-primary" />
+                          <InfoCircleOutlined className="text-gray-400! dark:text-gray-500 cursor-pointer hover:text-primary dark:hover:text-primary" />
                         </Tooltip>
                       )}
                     </Space>

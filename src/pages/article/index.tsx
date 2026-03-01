@@ -180,7 +180,7 @@ export default () => {
             href={`${web.url}/article/${record.id}`}
             target="_blank"
             rel="noreferrer"
-            className="max-w-[280px] truncate block text-gray-700 dark:text-gray-200 font-medium hover:text-primary"
+            className="max-w-[280px] truncate block text-gray-700! dark:text-gray-200! font-medium hover:text-primary!"
           >
             {text || <span className="text-gray-300 dark:text-gray-500 italic">暂无标题</span>}
           </a>
@@ -196,7 +196,7 @@ export default () => {
         <>
           {text ? (
             <Tooltip title={text}>
-              <div className="max-w-[320px] truncate text-gray-700 dark:text-gray-200 hover:text-primary cursor-pointer">
+              <div className="max-w-[320px] truncate text-gray-700! dark:text-gray-200! hover:text-primary! cursor-pointer">
                 {text}
               </div>
             </Tooltip>
