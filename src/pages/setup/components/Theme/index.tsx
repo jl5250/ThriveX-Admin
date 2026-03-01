@@ -9,9 +9,7 @@ export default () => {
   return (
     <div>
       <Segmented<string> size="large" options={['综合配置', '说说配置']} onChange={setCurrent} className="md:ml-10 mb-4" />
-
       {current === '综合配置' && <SynthesisTheme />}
-
       {current === '说说配置' && <RecordTheme />}
     </div>
   );

@@ -49,7 +49,7 @@ export default () => {
 
   return (
     <div>
-      <h2 className="text-xl pb-4 pl-10">网站配置</h2>
+      <h2 className="text-xl pb-4">网站配置</h2>
 
       <Form form={form} size="large" layout="vertical" onFinish={onSubmit} initialValues={initialValues} className="w-full lg:w-[500px] md:ml-10">
         <Form.Item label="网站名称" name="title" rules={[{ required: true, message: '网站名称不能为空' }]}>

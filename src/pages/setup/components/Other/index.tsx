@@ -63,7 +63,7 @@ export default () => {
 
   return (
     <div>
-      <h2 className="text-xl pb-4 pl-10">其他配置</h2>
+      <h2 className="text-xl pb-4">其他配置</h2>
 
       <Form form={form} size="large" layout="vertical" onFinish={onSubmit} className="w-full lg:w-[500px] md:ml-10">
         <Form.Item label={<Label title="百度统计 Token" url="https://docs.liuyuyang.net/docs/项目部署/API/百度统计.html" />} name="baidu_token" className="[&_label]:w-full">

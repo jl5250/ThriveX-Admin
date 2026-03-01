@@ -25,14 +25,14 @@ interface TimelineItem {
 
 type TimelineCardIcon = React.ComponentType<{ size?: number; className?: string }>;
 
-// 骨架屏
+// 骨架屏（与图一卡片风格一致）
 const ProjectSkeleton = () => (
-  <div className="bg-white dark:bg-boxdark rounded-2xl p-6 border border-slate-100 dark:border-strokedark shadow-xs h-full transition-colors">
-    <div className="flex items-center gap-3 mb-6 border-b border-slate-100 dark:border-strokedark pb-4">
-      <div className="w-10 h-10 bg-slate-200 dark:bg-boxdark-2 rounded-lg animate-pulse" />
-      <div className="h-6 w-32 bg-slate-200 dark:bg-boxdark-2 rounded-sm animate-pulse" />
+  <div className="bg-slate-100 dark:bg-boxdark-2 rounded-2xl border border-slate-200/80 dark:border-strokedark shadow-sm h-full transition-colors overflow-hidden">
+    <div className="flex items-center gap-3 p-4 border-b border-slate-200/60 dark:border-strokedark">
+      <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-strokedark animate-pulse shrink-0" />
+      <div className="h-5 w-28 bg-slate-200 dark:bg-strokedark rounded animate-pulse" />
     </div>
-    <div className="space-y-6">
+    <div className="p-4 space-y-6 bg-white/60 dark:bg-boxdark/60">
       {[1, 2, 3, 4].map((i) => (
         <div key={i} className="flex gap-4">
           <div className="flex flex-col items-center">
@@ -40,8 +40,8 @@ const ProjectSkeleton = () => (
             <div className="w-0.5 flex-1 bg-slate-100 dark:bg-strokedark mt-1" />
           </div>
           <div className="flex-1 space-y-2 pb-4">
-            <div className="h-4 w-24 bg-slate-200 dark:bg-boxdark-2 rounded-sm animate-pulse" />
-            <div className="h-4 w-full bg-slate-200 dark:bg-boxdark-2 rounded-sm animate-pulse" />
+            <div className="h-4 w-24 bg-slate-200 dark:bg-strokedark rounded animate-pulse" />
+            <div className="h-4 w-full bg-slate-200 dark:bg-strokedark rounded animate-pulse" />
           </div>
         </div>
       ))}
@@ -49,28 +49,36 @@ const ProjectSkeleton = () => (
   </div>
 );
 
-// 自定义时间轴
+// 图一风格：图标背景色与图标色
+const CARD_STYLES = [
+  { iconBg: 'bg-blue-100 dark:bg-blue-900/30', iconColor: 'text-blue-600 dark:text-blue-400' },
+  { iconBg: 'bg-amber-100 dark:bg-amber-900/30', iconColor: 'text-amber-600 dark:text-amber-400' },
+  { iconBg: 'bg-red-100 dark:bg-red-900/30', iconColor: 'text-red-600 dark:text-red-400' },
+] as const;
+
+// 自定义时间轴（图一：圆角浅灰卡片 + 左侧彩色圆形图标 + 右侧粗体标题）
 const ProjectTimelineCard = ({
   title,
   icon: Icon,
   data,
-  colorClass,
+  colorIndex,
 }: {
   title: string;
   icon: TimelineCardIcon;
   data: TimelineItem[];
-  colorClass: string;
+  colorIndex: 0 | 1 | 2;
 }) => {
+  const { iconBg, iconColor } = CARD_STYLES[colorIndex];
   return (
-    <div className="bg-white dark:bg-boxdark rounded-2xl border border-slate-100 dark:border-strokedark shadow-xs hover:shadow-md transition-all duration-300 flex flex-col h-full overflow-hidden group">
-      <div className="p-5 border-b border-slate-50 dark:border-strokedark bg-slate-50/50 dark:bg-boxdark-2/50 flex items-center gap-3">
-        <div className={`p-2.5 rounded-xl ${colorClass} bg-opacity-10 dark:bg-opacity-20 text-opacity-100`}>
-          <Icon size={20} className={colorClass.replace('bg-', 'text-')} />
+    <div className="bg-slate-100 dark:bg-boxdark-2 rounded-2xl border border-slate-200/80 dark:border-strokedark shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full overflow-hidden group">
+      <div className="bg-white dark:bg-boxdark p-4 flex items-center gap-3 border-b border-slate-200/60 dark:border-strokedark">
+        <div className={`flex items-center justify-center w-10 h-10 rounded-xl shrink-0 ${iconBg} ${iconColor}`}>
+          <Icon size={22} className={iconColor} />
         </div>
-        <h3 className="font-bold text-slate-800 dark:text-slate-100 text-lg tracking-tight">{title}</h3>
+        <h3 className="font-bold text-slate-800 dark:text-slate-100 text-base tracking-tight">{title}</h3>
       </div>
 
-      <div className="p-5 overflow-y-auto max-h-[500px] scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-strokedark scrollbar-track-transparent">
+      <div className="p-4 overflow-y-auto max-h-[500px] scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-strokedark scrollbar-track-transparent bg-white/60 dark:bg-boxdark/60 rounded-b-2xl">
         {data.length === 0 ? (
           <div className="text-center py-10 text-slate-400 dark:text-slate-500 text-sm">暂无提交记录</div>
         ) : (
@@ -246,21 +254,21 @@ const IterativePage = () => {
             <ProjectTimelineCard
               title="ThriveX Blog"
               icon={FiGlobe}
-              colorClass="bg-blue-500"
+              colorIndex={0}
               data={blogData}
             />
 
             <ProjectTimelineCard
               title="ThriveX Admin"
               icon={FiLayout}
-              colorClass="bg-yellow-500"
+              colorIndex={1}
               data={adminData}
             />
 
             <ProjectTimelineCard
               title="ThriveX Server"
               icon={FiServer}
-              colorClass="bg-red-500"
+              colorIndex={2}
               data={serverData}
             />
           </div>
