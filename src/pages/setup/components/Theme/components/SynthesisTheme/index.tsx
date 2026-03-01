@@ -98,19 +98,19 @@ export default () => {
           <Form.Item name="light_logo" label="亮色主题 Logo">
             <Input prefix={<PictureOutlined />} addonAfter={<UploadBtn type="light_logo" />} size="large" placeholder="请输入亮色Logo地址" />
           </Form.Item>
-          <img src={form.getFieldValue('light_logo')} alt="" className="w-1/3 mt-4 rounded" />
+          <img src={form.getFieldValue('light_logo')} alt="" className="w-1/3 mt-4 rounded-sm" />
 
           <Divider orientation="left">暗色主题 Logo</Divider>
           <Form.Item name="dark_logo" label="暗色主题 Logo">
             <Input prefix={<PictureOutlined />} addonAfter={<UploadBtn type="dark_logo" />} size="large" placeholder="请输入暗色Logo地址" />
           </Form.Item>
-          <img src={form.getFieldValue('dark_logo')} alt="" className="w-1/3 mt-4 rounded" />
+          <img src={form.getFieldValue('dark_logo')} alt="" className="w-1/3 mt-4 rounded-sm" />
 
           <Divider orientation="left">首页背景图</Divider>
           <Form.Item name="swiper_image" label="首页背景图">
             <Input prefix={<PictureOutlined />} addonAfter={<UploadBtn type="swiper_image" />} size="large" placeholder="请输入背景图地址" />
           </Form.Item>
-          <img src={form.getFieldValue('swiper_image')} alt="" className="w-1/3 mt-4 rounded" />
+          <img src={form.getFieldValue('swiper_image')} alt="" className="w-1/3 mt-4 rounded-sm" />
 
           <Divider orientation="left">打字机文本</Divider>
           <Form.Item name="swiper_text" label="打字机文本">
@@ -157,10 +157,10 @@ export default () => {
           <div className="overflow-auto w-full">
             <div className="article flex w-[650px]">
               {['classics', 'card', 'waterfall'].map((item) => (
-                <div key={item} onClick={() => setTheme({ ...theme, is_article_layout: item })} className={`item flex flex-col items-center p-4 m-4 border-2 rounded cursor-pointer ${theme.is_article_layout === item ? 'border-primary' : 'border-stroke'}`}>
+                <div key={item} onClick={() => setTheme({ ...theme, is_article_layout: item })} className={`item flex flex-col items-center p-4 m-4 border-2 rounded-sm cursor-pointer ${theme.is_article_layout === item ? 'border-primary' : 'border-stroke'}`}>
                   <p className={`text-center ${theme.is_article_layout === item ? 'text-primary' : ''}`}>{item === 'classics' ? '经典布局' : item === 'card' ? '卡片布局' : '瀑布流布局'}</p>
 
-                  <img src={`${getFile(item)}`} alt="" className="w-[200px] mt-4 rounded" />
+                  <img src={`${getFile(item)}`} alt="" className="w-[200px] mt-4 rounded-sm" />
                 </div>
               ))}
             </div>

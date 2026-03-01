@@ -1,8 +1,9 @@
 /* ------------------ 自定义Antd组件样式开始 ------------------ */
 
 // 取消所有关于颜色的过渡效果, 否则暗色效果过度时间不一致导致效果不好
+// 含 scale：Tailwind v4 的 scale-* 使用 CSS scale 属性，需单独声明才能有过渡
 * {
-    transition-property: opacity, transform, box-shadow, filter !important;
+    transition-property: opacity, transform, scale, box-shadow, filter !important;
 }
 
 /* 表单获取焦点时的阴影效果 */
@@ -50,6 +51,7 @@
 /* ------------------ 自定义Antd组件样式结束 ------------------ */
 
 // ------------------ Antd组件暗色适配 开始 ------------------
+// 使用 CSS 变量而非 @apply 自定义颜色，避免 antd.scss 单独编译时 Tailwind 无法识别 index.css 中的 @theme
 .ant-card {
     @apply overflow-hidden;
 }
@@ -59,14 +61,19 @@
 .ant-drawer-header,
 .ant-drawer-body,
 .ant-table-cell::before {
-    @apply dark:bg-boxdark;
+    .dark & {
+        background-color: var(--color-boxdark);
+    }
 }
 
 .ant-pagination-item:hover,
 .ant-table-cell,
 .ant-table-row:hover .ant-table-cell,
 .ant-card {
-    @apply dark:!bg-boxdark dark:!border-strokedark;
+    .dark & {
+        background-color: var(--color-boxdark) !important;
+        border-color: var(--color-strokedark) !important;
+    }
 }
 
 .ant-input,
@@ -77,15 +84,22 @@
 .ant-select,
 .ant-select-selector,
 .ant-modal-content {
-    @apply dark:!bg-boxdark-2 dark:!border-strokedark;
+    .dark & {
+        background-color: var(--color-boxdark-2) !important;
+        border-color: var(--color-strokedark) !important;
+    }
 }
 
 .ant-modal-header {
-    @apply dark:bg-transparent;
+    .dark & {
+        background: transparent;
+    }
 }
 
 .ant-transfer-list {
-    @apply dark:border-strokedark;
+    .dark & {
+        border-color: var(--color-strokedark);
+    }
 }
 
 /* 暗色下标签统一为柔和样式，提升对比度与一致性 */

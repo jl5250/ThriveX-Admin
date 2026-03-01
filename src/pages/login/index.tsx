@@ -61,7 +61,7 @@ export default () => {
       </div>
 
       <div className="relative z-10 w-full max-w-md">
-        <div className="bg-[rgba(255,255,255,0.5)] backdrop-blur-sm rounded-3xl shadow-2xl p-8 border border-white/20">
+        <div className="bg-[rgba(255,255,255,0.5)] backdrop-blur-xs rounded-3xl shadow-2xl p-8 border border-white/20">
           <div className="flex justify-center space-x-4 mb-8">
             <img src="/logo.png" alt="" className="w-12 h-12" />
             <div className="flex flex-col">

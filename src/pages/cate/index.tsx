@@ -207,27 +207,27 @@ export default () => {
   if (initialLoading) {
     return (
       <div className="space-y-2">
-        <Card className="!rounded-xl !border-stroke !shadow-sm [&>.ant-card-body]:!p-4 dark:!border-strokedark">
+        <Card className="rounded-xl! border-stroke! shadow-xs! [&>.ant-card-body]:p-4! dark:border-strokedark!">
           <div className="flex items-center justify-between">
-            <Skeleton.Input active size="large" className="!h-9 !w-40" />
-            <Skeleton.Button active size="large" className="!h-10 !w-28" />
+            <Skeleton.Input active size="large" className="h-9! w-40!" />
+            <Skeleton.Button active size="large" className="h-10! w-28!" />
           </div>
         </Card>
 
-        <Card className="!min-h-[calc(100vh-160px)] !rounded-xl !border-stroke !shadow-sm [&>.ant-card-body]:!p-6 dark:!border-strokedark">
+        <Card className="min-h-[calc(100vh-160px)]! rounded-xl! border-stroke! shadow-xs! [&>.ant-card-body]:p-6! dark:border-strokedark!">
           <div className="space-y-5">
             {[1, 2, 3, 4, 5, 6].map((item) => (
               <div key={item} className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Skeleton.Input active className="!h-6 !w-48" />
-                  <Skeleton.Button active size="small" className="!h-6 !w-14" />
+                  <Skeleton.Input active className="h-6! w-48!" />
+                  <Skeleton.Button active size="small" className="h-6! w-14!" />
                 </div>
                 {item <= 3 && (
                   <div className="ml-6 space-y-2">
                     {[1, 2, 3].map((child) => (
                       <div key={child} className="flex items-center justify-between">
-                        <Skeleton.Input active size="small" className="!h-5 !w-36" />
-                        <Skeleton.Button active size="small" className="!h-5 !w-12" />
+                        <Skeleton.Input active size="small" className="h-5! w-36!" />
+                        <Skeleton.Button active size="small" className="h-5! w-12!" />
                       </div>
                     ))}
                   </div>
@@ -252,11 +252,11 @@ export default () => {
       </Title>
 
       <Card
-        className={`CatePage !min-h-[calc(100vh-160px)] !rounded-xl !border !border-stroke !bg-white !shadow-sm [&>.ant-card-body]:!p-6 dark:!border-strokedark dark:!bg-boxdark`}
+        className={`CatePage min-h-[calc(100vh-160px)]! rounded-xl! border! border-stroke! bg-white! shadow-xs! [&>.ant-card-body]:p-6! dark:border-strokedark! dark:bg-boxdark!`}
       >
         <Spin spinning={loading} className="min-h-[280px]">
           <Tree
-            className="!bg-transparent [&_.ant-tree-treenode]:!py-0.5 [&_.ant-tree-indent-unit]:!w-4"
+            className="bg-transparent! [&_.ant-tree-treenode]:py-0.5! [&_.ant-tree-indent-unit]:w-4!"
             defaultExpandAll
             treeData={toTreeData(list)}
             showLine={{ showLeafIcon: false }}
@@ -271,7 +271,7 @@ export default () => {
         footer={null}
         title={isMethod === 'edit' ? '编辑分类' : '新增分类'}
         loading={editLoading}
-        className="[&_.ant-modal-content]:!rounded-2xl"
+        className="[&_.ant-modal-content]:rounded-2xl!"
       >
         <Form
           form={form}
@@ -279,7 +279,7 @@ export default () => {
           initialValues={cate}
           size="large"
           preserve={false}
-          className="mt-2 [&_.ant-input]:!rounded-lg [&_.ant-select-selector]:!rounded-lg"
+          className="mt-2 [&_.ant-input]:rounded-lg! [&_.ant-select-selector]:rounded-lg!"
         >
           <div className="grid gap-x-4 sm:grid-cols-2">
             <Form.Item label="名称" name="name" rules={[{ required: true, message: '分类名称不能为空' }]}>
@@ -311,22 +311,22 @@ export default () => {
 
           <Form.Item label="模式" name="type">
             <Radio.Group
-              className="!flex !gap-4"
+              className="flex! gap-4!"
               onChange={(e) => {
                 const type = e.target.value;
                 setIsCateShow(type === 'nav');
               }}
             >
-              <Radio value="cate" className="!m-0">
+              <Radio value="cate" className="m-0!">
                 分类
               </Radio>
-              <Radio value="nav" className="!m-0">
+              <Radio value="nav" className="m-0!">
                 导航
               </Radio>
             </Radio.Group>
           </Form.Item>
 
-          <Form.Item className="!mb-0">
+          <Form.Item className="mb-0!">
             <Button type="primary" onClick={onSubmit} loading={btnLoading} className="w-full">
               确定
             </Button>

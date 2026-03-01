@@ -118,7 +118,7 @@ export default () => {
     return (
       <div>
         {/* Title 骨架屏 */}
-        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-2">
+        <Card className="[&>.ant-card-body]:py-2! [&>.ant-card-body]:px-5! mb-2">
           <div className="flex justify-between items-center">
             <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
             <Skeleton.Button active size="default" style={{ width: 100, height: 32 }} />
@@ -211,9 +211,9 @@ export default () => {
           return (
             <Card
               key={item.id}
-              className={`relative p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden ${item.isDefault
-                ? 'border-2 border-blue-500 bg-gradient-to-br from-blue-50 via-white to-blue-50 dark:from-blue-900/30 dark:via-boxdark dark:to-blue-900/30 dark:!border-blue-500'
-                : 'border border-gray-200 bg-gradient-to-br from-gray-50 via-white to-slate-50 dark:from-boxdark/80 dark:via-boxdark dark:to-boxdark-2/80 dark:border-strokedark'
+              className={`relative p-5 rounded-xl shadow-xs hover:shadow-md transition-shadow duration-300 overflow-hidden ${item.isDefault
+                ? 'border-2 border-blue-500 bg-linear-to-br from-blue-50 via-white to-blue-50 dark:from-blue-900/30 dark:via-boxdark dark:to-blue-900/30 dark:border-blue-500!'
+                : 'border border-gray-200 bg-linear-to-br from-gray-50 via-white to-slate-50 dark:from-boxdark/80 dark:via-boxdark dark:to-boxdark-2/80 dark:border-strokedark'
                 }`}
               styles={{ body: { padding: '10px', flex: 1, display: 'flex', flexDirection: 'column', backgroundColor: 'transparent' } }}
             >
@@ -285,7 +285,7 @@ export default () => {
         {/* 空状态下的添加按钮（如果没有数据或者作为最后一个Card） */}
         <Button
           type="dashed"
-          className="h-auto min-h-[200px] border-2 flex flex-col items-center justify-center gap-2 !bg-white dark:!bg-boxdark text-gray-400 dark:text-gray-500 hover:text-primary dark:hover:text-primary hover:border-primary dark:hover:border-primary rounded-lg bg-transparent dark:border-strokedark"
+          className="h-auto min-h-[200px] border-2 flex flex-col items-center justify-center gap-2 bg-white! dark:bg-boxdark! text-gray-400 dark:text-gray-500 hover:text-primary dark:hover:text-primary hover:border-primary dark:hover:border-primary rounded-lg bg-transparent dark:border-strokedark"
           onClick={() => setIsModalOpen(true)}
         >
           <PlusOutlined style={{ fontSize: '24px' }} />

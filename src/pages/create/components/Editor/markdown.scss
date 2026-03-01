@@ -18,7 +18,11 @@
      }
 
      h1 {
-         @apply text-2xl my-6 pb-3 border-b border-stroke;
+         @apply text-2xl my-6 pb-3 border-b;
+         border-color: var(--color-stroke);
+         .dark & {
+             border-color: var(--color-strokedark);
+         }
 
          // &::before {
          //     content: "✨️";
@@ -51,7 +55,11 @@
      }
 
      hr {
-         @apply my-5 border-stroke transition-colors;
+         @apply my-5 transition-colors;
+         border-color: var(--color-stroke);
+         .dark & {
+             border-color: var(--color-strokedark);
+         }
      }
 
      p code,
@@ -132,7 +140,7 @@
      }
 
      a {
-         @apply text-primary
+         color: var(--color-primary);
      }
 
      p {

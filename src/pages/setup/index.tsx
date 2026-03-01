@@ -95,11 +95,11 @@ export default () => {
     return (
       <div>
         {/* Title 骨架屏 */}
-        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-2">
+        <Card className="[&>.ant-card-body]:py-2! [&>.ant-card-body]:px-5! mb-2">
           <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
         </Card>
 
-        <Card className="border-stroke mt-2 min-h-[calc(100vh-160px)] [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
+        <Card className="border-stroke mt-2 min-h-[calc(100vh-160px)] [&>.ant-card-body]:py-2! [&>.ant-card-body]:px-5!">
           <div className="flex flex-col md:flex-row">
             {/* 左侧菜单骨架屏 */}
             <ul className="w-full md:w-[20%] md:mr-5 mb-10 md:mb-0 border-b-0 md:border-r border-stroke dark:border-strokedark divide-y divide-solid divide-[#F6F6F6] dark:divide-strokedark">
@@ -132,7 +132,7 @@ export default () => {
         <div className="flex flex-col md:flex-row">
           <ul className="w-full md:w-[20%] md:mr-5 mb-10 md:mb-0 border-b-0 md:border-r border-stroke dark:border-strokedark divide-y divide-solid divide-[#F6F6F6] dark:divide-strokedark">
             {list.map((item) => (
-              <li key={item.key} className={`relative p-3 pl-5 before:content-[''] before:absolute before:top-1/2 before:left-0 before:-translate-y-1/2 before:w-[3.5px] before:h-[0%] before:bg-[#60a5fa] cursor-pointer transition-all ${active === item.key ? 'bg-[#f7f7f8] dark:bg-[#3c5370] before:h-full' : ''}`} onClick={() => handleTabClick(item.key)}>
+              <li key={item.key} className={`relative p-3 pl-5 before:content-[''] before:absolute before:top-1/2 before:left-0 before:-translate-y-1/2 before:w-[3.5px] before:h-[0%] before:bg-primary cursor-pointer transition-all ${active === item.key ? 'bg-[#f7f7f8] dark:bg-[#3c5370] before:h-full' : ''}`} onClick={() => handleTabClick(item.key)}>
                 <h3 className="flex items-center text-base dark:text-white">
                   {item.icon} {item.title}
                 </h3>

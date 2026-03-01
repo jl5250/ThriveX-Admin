@@ -41,7 +41,7 @@ export default () => {
           {/* 统计卡片骨架屏 */}
           <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-4">
             {[1, 2, 3, 4].map((item) => (
-              <Card key={item} className="border-stroke [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
+              <Card key={item} className="border-stroke [&>.ant-card-body]:py-2! [&>.ant-card-body]:px-5!">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <Skeleton.Input active size="small" style={{ width: 100, height: 20, marginBottom: 8 }} />
@@ -56,13 +56,13 @@ export default () => {
           {/* 图表骨架屏 */}
           <div className="rounded-lg mt-2 grid grid-cols-12 gap-2">
             {/* 访客统计图表 */}
-            <Card className="col-span-12 xl:col-span-8 border-stroke [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
+            <Card className="col-span-12 xl:col-span-8 border-stroke [&>.ant-card-body]:py-2! [&>.ant-card-body]:px-5!">
               <Skeleton.Input active size="default" style={{ width: 150, height: 24, marginBottom: 16 }} />
               <Skeleton active paragraph={{ rows: 10 }} />
             </Card>
 
             {/* 新老访客图表 */}
-            <Card className="col-span-12 xl:col-span-4 border-stroke [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
+            <Card className="col-span-12 xl:col-span-4 border-stroke [&>.ant-card-body]:py-2! [&>.ant-card-body]:px-5!">
               <Skeleton.Input active size="default" style={{ width: 120, height: 24, marginBottom: 16 }} />
               <Skeleton active paragraph={{ rows: 10 }} />
             </Card>

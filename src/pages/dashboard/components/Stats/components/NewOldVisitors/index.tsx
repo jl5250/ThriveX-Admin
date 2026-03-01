@@ -107,7 +107,7 @@ export default () => {
             <div className="flex w-full items-center">
               <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#91C8EA]"></span>
               <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-                <span className="text-black dark:text-[#475f7d]"> 新访客 </span>
+                <span className="text-black dark:text-strokedark"> 新访客 </span>
                 <span> {result.newVisitors.toFixed(2)}% </span>
               </p>
             </div>
@@ -115,9 +115,9 @@ export default () => {
 
           <div className="sm:w-1/2 w-full px-8">
             <div className="flex w-full items-center">
-              <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#60a5fa]"></span>
+              <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-primary"></span>
               <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-                <span className="text-black dark:text-[#475f7d]"> 老访客 </span>
+                <span className="text-black dark:text-strokedark"> 老访客 </span>
                 <span> {result.oldVisitors.toFixed(2)}% </span>
               </p>
             </div>

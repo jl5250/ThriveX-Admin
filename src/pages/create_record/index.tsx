@@ -111,7 +111,7 @@ export default () => {
       {
         key: 'upload',
         label: <span>从素材库选择</span>,
-        icon: <LuImagePlus className="!text-base" />,
+        icon: <LuImagePlus className="text-base!" />,
         onClick: () => {
           if (imageList.length >= 4) return message.warning('最多只能上传 4 张图片');
           setIsMaterialModalOpen(true);
@@ -120,7 +120,7 @@ export default () => {
       {
         key: 'input',
         label: <span>输入图片链接</span>,
-        icon: <BiLink className="!text-base" />,
+        icon: <BiLink className="text-base!" />,
         onClick: handleLinkInput,
       },
     ],
@@ -133,7 +133,7 @@ export default () => {
           {/* 主编辑器卡片 */}
           <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-black/20 overflow-hidden border dark:border-gray-700 transition-all duration-300 hover:shadow-2xl">
             <div className="p-3 md:p-6">
-              <Input.TextArea value={content} onChange={(e) => setContent(e.target.value)} placeholder="此刻你在想什么？..." autoSize={{ minRows: 3, maxRows: 10 }} variant="filled" className="!p-4 text-lg md:text-xl text-gray-700 dark:text-gray-200 placeholder:text-gray-300 dark:placeholder:text-gray-600 px-0 resize-none !bg-transparent dark:!bg-transparent !border-none !shadow-none focus:shadow-none" />
+              <Input.TextArea value={content} onChange={(e) => setContent(e.target.value)} placeholder="此刻你在想什么？..." autoSize={{ minRows: 3, maxRows: 10 }} variant="filled" className="p-4! text-lg md:text-xl text-gray-700 dark:text-gray-200 placeholder:text-gray-300 dark:placeholder:text-gray-600 px-0 resize-none bg-transparent! dark:bg-transparent! border-none! shadow-none! focus:shadow-none" />
             </div>
 
             {/* 图片预览网格区*/}
@@ -222,7 +222,7 @@ export default () => {
             )}
 
             {/* 底部工具栏 */}
-            <div className="bg-gray-50/80 dark:bg-gray-700/30 backdrop-blur-sm px-6 py-4 flex items-center justify-between border-t border-gray-100 dark:border-gray-700">
+            <div className="bg-gray-50/80 dark:bg-gray-700/30 backdrop-blur-xs px-6 py-4 flex items-center justify-between border-t border-gray-100 dark:border-gray-700">
               {/* 左侧：功能按钮 */}
               <div className="flex items-center space-x-2">
                 <Dropdown menu={dropdownItems} placement="topLeft" trigger={['click']}>

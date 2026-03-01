@@ -35,7 +35,7 @@ export default ({ title, children, open, onClose, loading, className }: Props) =
       height="100vh"
       placement="bottom"
       closeIcon={null}
-      className={`[&>.ant-drawer-header]:!p-0 ${className}`}
+      className={`[&>.ant-drawer-header]:p-0! ${className}`}
     >
       {children}
     </Drawer>

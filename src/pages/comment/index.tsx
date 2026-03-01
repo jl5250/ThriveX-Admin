@@ -239,11 +239,11 @@ export default () => {
   if (initialLoading) {
     return (
       <div className="space-y-2">
-        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
+        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-xs border border-gray-100 dark:border-strokedark">
           <div className="skeleton h-8" style={{ width: 200 }} />
         </div>
 
-        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
+        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-xs border border-gray-100 dark:border-strokedark">
           <div className="flex justify-between mb-6">
             <div className="flex gap-4 flex-wrap">
               <div className="skeleton h-9" style={{ width: 200 }} />
@@ -260,8 +260,8 @@ export default () => {
             <div key={i} className="flex gap-4 mb-4 items-center">
               <div className="skeleton shrink-0 rounded-lg" style={{ width: 56, height: 56 }} />
               <div className="flex-1 space-y-2 min-w-0">
-                <div className="skeleton h-4 w-full rounded" />
-                <div className="skeleton h-3 rounded" style={{ width: '60%' }} />
+                <div className="skeleton h-4 w-full rounded-sm" />
+                <div className="skeleton h-3 rounded-sm" style={{ width: '60%' }} />
               </div>
             </div>
           ))}
@@ -274,28 +274,28 @@ export default () => {
     <div className="mx-auto">
       <Title value="评论管理" />
 
-      <div className="bg-white dark:bg-boxdark rounded-2xl shadow-sm border border-gray-100 dark:border-strokedark overflow-hidden">
+      <div className="bg-white dark:bg-boxdark rounded-2xl shadow-xs border border-gray-100 dark:border-strokedark overflow-hidden">
         <div className="p-5 border-b border-gray-100 dark:border-strokedark bg-gray-50/30 dark:bg-boxdark-2/50 space-y-4">
-          <Form form={filterForm} layout="inline" onFinish={onFilterSubmit} className="!flex !flex-wrap !items-center !gap-y-2.5">
-            <Form.Item name="title" className="!mb-0">
+          <Form form={filterForm} layout="inline" onFinish={onFilterSubmit} className="flex! flex-wrap! items-center! gap-y-2.5!">
+            <Form.Item name="title" className="mb-0!">
               <Input
                 prefix={<SearchOutlined className="text-gray-400 dark:text-gray-500" />}
                 placeholder="搜索文章标题..."
-                className="!w-[220px]"
+                className="w-[220px]!"
                 allowClear
               />
             </Form.Item>
-            <Form.Item name="content" className="!mb-0">
+            <Form.Item name="content" className="mb-0!">
               <Input
                 prefix={<SearchOutlined className="text-gray-400 dark:text-gray-500" />}
                 placeholder="搜索评论内容..."
-                className="!w-[220px]"
+                className="w-[220px]!"
                 allowClear
               />
             </Form.Item>
-            <Form.Item name="createTime" className="!mb-0">
+            <Form.Item name="createTime" className="mb-0!">
               <RangePicker
-                className="!w-[260px]"
+                className="w-[260px]!"
                 placeholder={['开始日期', '结束日期']}
                 disabledDate={(current) => current && current > dayjs().endOf('day')}
               />
@@ -326,9 +326,9 @@ export default () => {
                 共 {totalCount} 条数据
               </div>
             ),
-            className: '!px-6 !py-4',
+            className: 'px-6! py-4!',
           }}
-          className="[&_.ant-table-thead>tr>th]:!bg-gray-50 dark:[&_.ant-table-thead>tr>th]:!bg-boxdark-2 [&_.ant-table-thead>tr>th]:!font-medium [&_.ant-table-thead>tr>th]:!text-gray-500 dark:[&_.ant-table-thead>tr>th]:!text-gray-400"
+          className="[&_.ant-table-thead>tr>th]:bg-gray-50! dark:[&_.ant-table-thead>tr>th]:bg-boxdark-2! [&_.ant-table-thead>tr>th]:font-medium! [&_.ant-table-thead>tr>th]:text-gray-500! dark:[&_.ant-table-thead>tr>th]:text-gray-400!"
         />
       </div>
 

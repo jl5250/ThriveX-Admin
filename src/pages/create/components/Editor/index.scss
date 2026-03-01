@@ -1,29 +1,48 @@
 @use "./markdown.scss";
+@reference "../../../../styles/index.css";
 
 .bytemd {
     height: calc(100vh - 200px);
     border: none;
     z-index: 99999;
-    @apply bg-white dark:bg-boxdark text-black dark:text-white;
+    background-color: #fff;
+    color: #000;
+    .dark & {
+        background-color: var(--color-boxdark);
+        color: #fff;
+    }
 
     .bytemd-toolbar {
         background-color: transparent;
-        @apply dark:border-strokedark;
+        .dark & {
+            border-color: var(--color-strokedark);
+        }
     }
 
     .bytemd-preview {
-        @apply dark:border-strokedark;
+        .dark & {
+            border-color: var(--color-strokedark);
+        }
     }
 
     .bytemd-status {
-        @apply dark:border-strokedark;
+        .dark & {
+            border-color: var(--color-strokedark);
+        }
     }
 
     .CodeMirror {
-        @apply dark:text-white bg-white dark:bg-boxdark;
+        background-color: #fff;
+        color: #000;
+        .dark & {
+            background-color: var(--color-boxdark);
+            color: #fff;
+        }
     }
 
     .icon {
-        @apply dark:fill-white;
+        .dark & {
+            fill: #fff;
+        }
     }
 }

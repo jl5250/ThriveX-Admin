@@ -77,11 +77,11 @@ export default () => {
     return (
       <div>
         {/* Title 骨架屏 */}
-        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-2">
+        <Card className="[&>.ant-card-body]:py-2! [&>.ant-card-body]:px-5! mb-2">
           <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
         </Card>
 
-        <Card className="border-stroke mt-2 min-h-[calc(100vh-160px)] [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
+        <Card className="border-stroke mt-2 min-h-[calc(100vh-160px)] [&>.ant-card-body]:py-2! [&>.ant-card-body]:px-5!">
           <div className="flex flex-col md:flex-row w-full">
             {/* 左侧菜单骨架屏 */}
             <div className="w-full min-w-[200px] md:w-2/12 md:min-h-96 mb-5 md:mb-0 pr-4 md:border-b-transparent md:border-r border-stroke dark:border-strokedark">

@@ -39,7 +39,7 @@ function App() {
       theme={{
         token: {
           colorPrimary: '#60a5fa',
-          borderRadius: 4,
+          borderRadius: 6,
           colorBgBase: colorMode === 'dark' ? '#263444' : '#ffffff',
           colorTextBase: colorMode === 'dark' ? '#e0e0e0' : '#000000',
           ...(colorMode === 'dark' && {

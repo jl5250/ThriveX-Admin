@@ -36,7 +36,7 @@ export default () => {
       key: 'image',
       width: 200,
       align: 'center',
-      render: (url: string) => <Image width={180} src={url} className="w-full rounded cursor-pointer" alt="" />,
+      render: (url: string) => <Image width={180} src={url} className="w-full rounded-sm cursor-pointer" alt="" />,
     },
     {
       title: '标题',
@@ -193,9 +193,9 @@ export default () => {
                 共 {totalCount} 条数据
               </div>
             ),
-            className: '!px-6 !py-4',
+            className: 'px-6! py-4!',
           }}
-          className="[&_.ant-table-thead>tr>th]:!bg-gray-50 dark:[&_.ant-table-thead>tr>th]:!bg-boxdark-2 [&_.ant-table-thead>tr>th]:!font-medium [&_.ant-table-thead>tr>th]:!text-gray-500 dark:[&_.ant-table-thead>tr>th]:!text-gray-400 w-full"
+          className="[&_.ant-table-thead>tr>th]:bg-gray-50! dark:[&_.ant-table-thead>tr>th]:bg-boxdark-2! [&_.ant-table-thead>tr>th]:font-medium! [&_.ant-table-thead>tr>th]:text-gray-500! dark:[&_.ant-table-thead>tr>th]:text-gray-400! w-full"
         />
       ),
     },
@@ -238,11 +238,11 @@ export default () => {
   if (initialLoading) {
     return (
       <div className="space-y-2">
-        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
+        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-xs border border-gray-100 dark:border-strokedark">
           <div className="skeleton h-8" style={{ width: 200 }} />
         </div>
 
-        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
+        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-xs border border-gray-100 dark:border-strokedark">
           <div className="flex gap-4 mb-6">
             <div className="skeleton h-9 rounded-md" style={{ width: 120 }} />
             <div className="skeleton h-9 rounded-md" style={{ width: 140 }} />
@@ -252,8 +252,8 @@ export default () => {
             <div key={i} className="flex gap-4 mb-4 items-center">
               <div className="skeleton shrink-0 rounded-lg" style={{ width: 56, height: 56 }} />
               <div className="flex-1 space-y-2 min-w-0">
-                <div className="skeleton h-4 w-full rounded" />
-                <div className="skeleton h-3 rounded" style={{ width: '60%' }} />
+                <div className="skeleton h-4 w-full rounded-sm" />
+                <div className="skeleton h-3 rounded-sm" style={{ width: '60%' }} />
               </div>
             </div>
           ))}
@@ -266,7 +266,7 @@ export default () => {
     <div className="mx-auto">
       <Title value="轮播图管理" />
 
-      <div className="bg-white dark:bg-boxdark rounded-2xl shadow-sm border border-gray-100 dark:border-strokedark overflow-hidden">
+      <div className="bg-white dark:bg-boxdark rounded-2xl shadow-xs border border-gray-100 dark:border-strokedark overflow-hidden">
         <Tabs activeKey={tab} onChange={handleTabChange} items={tabItems} className="[&_.ant-tabs-nav]:mb-0 [&_.ant-tabs-nav]:px-6 [&_.ant-tabs-nav]:pt-4 [&_.ant-tabs-nav]:bg-gray-50/30 dark:[&_.ant-tabs-nav]:bg-boxdark-2/50 [&_.ant-tabs-content]:pt-0" />
       </div>
 

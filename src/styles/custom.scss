@@ -1,6 +1,8 @@
 // 编辑器样式
 .vditor .vditor-reset {
-    @apply dark:text-white;
+    .dark & {
+        color: #fff;
+    }
 }
 
 /* 文本渐变 */
