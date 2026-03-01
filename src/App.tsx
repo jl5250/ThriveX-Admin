@@ -40,8 +40,14 @@ function App() {
         token: {
           colorPrimary: '#60a5fa',
           borderRadius: 4,
-          colorBgBase: colorMode === 'dark' ? '#191e29' : '#ffffff',
+          colorBgBase: colorMode === 'dark' ? '#263444' : '#ffffff',
           colorTextBase: colorMode === 'dark' ? '#e0e0e0' : '#000000',
+          ...(colorMode === 'dark' && {
+            colorBgLayout: '#263444',
+            colorBgContainer: '#263444',
+            colorBgElevated: '#263444',
+            colorBgSpotlight: '#263444',
+          }),
         },
         algorithm: colorMode === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm,
       }}
