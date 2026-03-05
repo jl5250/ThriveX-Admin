@@ -35,19 +35,19 @@ export default () => {
   const getPlatformIcon = (platform: string) => {
     switch (platform.toLowerCase()) {
       case 'local':
-        return <BsDatabase className="text-4xl text-yellow-500" />;
+        return <BsDatabase className="text-4xl text-yellow-500!" />;
       case 'webdav':
-        return <GlobalOutlined className="text-4xl text-red-500" />;
+        return <GlobalOutlined className="text-4xl text-red-500!" />;
       case 'minio':
-        return <HddOutlined className="text-4xl text-red-600" />;
+        return <HddOutlined className="text-4xl text-red-600!" />;
       case 'qiniu':
-        return <CloudServerOutlined className="text-4xl text-blue-500" />;
+        return <CloudServerOutlined className="text-4xl text-blue-500!" />;
       case 'tencent':
-        return <CloudOutlined className="text-4xl text-blue-700" />;
+        return <CloudOutlined className="text-4xl text-blue-700!" />;
       case 'aliyun':
-        return <CloudOutlined className="text-4xl text-orange-500" />;
+        return <CloudOutlined className="text-4xl text-orange-500!" />;
       default:
-        return <CloudOutlined className="text-4xl text-blue-500" />;
+        return <CloudOutlined className="text-4xl text-blue-500!" />;
     }
   };
 

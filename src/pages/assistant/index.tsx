@@ -212,7 +212,7 @@ export default () => {
             <Card
               key={item.id}
               className={`relative p-5 rounded-xl shadow-xs hover:shadow-md transition-shadow duration-300 overflow-hidden ${item.isDefault
-                ? 'border-2 border-blue-500 bg-linear-to-br from-blue-50 via-white to-blue-50 dark:from-blue-900/30 dark:via-boxdark dark:to-blue-900/30 dark:border-blue-500!'
+                ? 'border-2! border-primary! bg-linear-to-br from-blue-50 via-white to-blue-50 dark:from-blue-900/30 dark:via-boxdark dark:to-blue-900/30 dark:border-primary!'
                 : 'border border-gray-200 bg-linear-to-br from-gray-50 via-white to-slate-50 dark:from-boxdark/80 dark:via-boxdark dark:to-boxdark-2/80 dark:border-strokedark'
                 }`}
               styles={{ body: { flex: 1, display: 'flex', flexDirection: 'column', backgroundColor: 'transparent' } }}
