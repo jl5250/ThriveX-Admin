@@ -5,9 +5,6 @@
 </p>
 <h1 align="center" style="margin: 20px 0; font-weight: 700; padding-bottom:10px;">ThriveX Admin</h1>
 
-<p align="center" style="font-size: 18px; color: #666;">
-    ThriveX 博客系统 - 控制端
-</p>
 
 <p align="center">
     <a href="https://github.com/LiuYuYang01/ThriveX-Admin/blob/main/LICENSE" target="_blank">
@@ -27,6 +24,8 @@
 
 作为 ThriveX 全栈解决方案的核心组成部分，Admin 控制端与前端博客（[ThriveX-Blog](https://github.com/LiuYuYang01/ThriveX-Blog)）和后端服务（[ThriveX-Server](https://github.com/LiuYuYang01/ThriveX-Server)）共同构成了一个完整的开源博客生态系统。
 
+
+
 ## ✨ 核心特性
 
 - 🎨 **现代化 UI**：基于 Ant Design 6.x + Tailwind CSS 4.x，提供优雅的视觉体验
@@ -39,29 +38,7 @@
 - 🌓 **暗色模式**：支持主题切换，保护用户视力
 - ⚡ **性能优化**：代码分割、懒加载、缓存策略，确保极致性能
 
-## 🛠️ 技术栈
 
-### 前端技术
-
-| 技术         | 版本   | 说明       |
-| ------------ | ------ | ---------- |
-| React        | 19.2.4 | UI 框架    |
-| Next.js      | 15.x   | 全栈框架   |
-| TypeScript   | 5.x    | 类型安全   |
-| Ant Design   | 6.3.1  | UI 组件库  |
-| Tailwind CSS | 4.2.1  | CSS 框架   |
-| ECharts      | 5.6.0  | 数据可视化 |
-| Zustand      | 4.5.4  | 状态管理   |
-| React Router | 6.14.2 | 路由管理   |
-
-### 后端技术
-
-| 技术         | 版本   | 说明          |
-| ------------ | ------ | ------------- |
-| Spring Boot  | 最新版 | Java 后端框架 |
-| MyBatis-Plus | 最新版 | ORM 框架      |
-| MySQL        | 最新版 | 关系型数据库  |
-| Docker       | 最新版 | 容器化部署    |
 
 ## 📸 界面预览
 
@@ -69,9 +46,12 @@
     <img src="https://bu.dusays.com/2026/03/08/69ad27c95c51f.jpg" alt="ThriveX Admin Dashboard" style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1)" />
 </div>
 
+
 ## 🚀 快速开始
 
 https://docs.liuyuyang.net/docs/项目部署/1Panel.html
+
+
 
 ## 📂 项目结构
 
@@ -102,6 +82,8 @@ ThriveX-Admin/
 └── vite.config.js        # Vite 配置
 ```
 
+
+
 ## 🌐 项目链接
 
 | 名称        | 链接                                                                                         | 说明         |
@@ -110,6 +92,8 @@ ThriveX-Admin/
 | 官网地址    | [https://thrivex.liuyuyang.net](https://thrivex.liuyuyang.net)                               | 项目官网     |
 | 文档中心    | [https://docs.liuyuyang.net](https://docs.liuyuyang.net)                                     | 使用文档     |
 | GitHub 主页 | [https://github.com/LiuYuYang01/ThriveX-Admin](https://github.com/LiuYuYang01/ThriveX-Admin) | 源码仓库     |
+
+
 
 ## 📝 开源协议
 
@@ -124,9 +108,13 @@ ThriveX-Admin/
 
 在项目 Star 突破 2K 后，您可以自由选择保留或删除版权信息。
 
+
+
 ## ⭐ Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=LiuYuYang01/ThriveX-Admin&type=Date)](https://star-history.com/#LiuYuYang01/ThriveX-Admin&Date)
+
+
 
 ## 👨‍💻 作者信息
 
@@ -136,6 +124,20 @@ ThriveX-Admin/
 - 我的博客: [https://liuyuyang.net](https://liuyuyang.net)
 - 关于我：[https://my.liuyuyang.net](https://my.liuyuyang.net)
 - 邮箱: [liuyuyang1024@yeah.net](mailto:liuyuyang1024@yeah.net)
+
+
+
+## 💬 交流群
+
+欢迎加入 ThriveX 官方交流群，与开发者和其他用户交流：
+
+<div align="center">
+    <img src="https://bu.dusays.com/2025/06/03/683e96eb43ad8.jpg" alt="WeChat Group" style="width: 300px; border-radius: 8px;" />
+</div>
+
+**加群方式**：添加微信 `liuyuyang2023`，备注 "ThriveX"
+
+
 
 ## 🙏 鸣谢
 
@@ -147,15 +149,7 @@ ThriveX-Admin/
 - [blatr](https://www.blatr.cn/)
 - [poetize](https://poetize.cn/)
 
-## 💬 交流群
 
-欢迎加入 ThriveX 官方交流群，与开发者和其他用户交流：
-
-<div align="center">
-    <img src="https://bu.dusays.com/2025/06/03/683e96eb43ad8.jpg" alt="WeChat Group" style="width: 300px; border-radius: 8px;" />
-</div>
-
-**加群方式**：添加微信 `liuyuyang2023`，备注 "ThriveX"
 
 ## 🔒 免责声明
 
