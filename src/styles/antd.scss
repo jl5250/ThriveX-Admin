@@ -2,15 +2,12 @@
 
 // 只取消颜色相关的过渡效果, 其他过渡保持正常 (暗色切换时颜色变化不一致会导致效果不好)
 * {
-    transition-property: opacity, transform, scale, box-shadow, filter,
-        width, height, min-width, min-height, max-width, max-height,
-        margin, margin-top, margin-right, margin-bottom, margin-left,
-        padding, padding-top, padding-right, padding-bottom, padding-left,
-        left, right, top, bottom, inset,
-        font-size, font-weight, letter-spacing, line-height, text-indent, text-shadow,
-        border-width, border-radius, outline-width, outline-offset,
-        flex, flex-grow, flex-shrink, flex-basis, gap, row-gap, column-gap,
-        visibility, z-index, clip-path, backdrop-filter,
+    transition-property:
+        opacity, transform, translate, scale, box-shadow, filter, width, height, min-width, min-height, max-width,
+        max-height, margin, margin-top, margin-right, margin-bottom, margin-left, padding, padding-top, padding-right,
+        padding-bottom, padding-left, left, right, top, bottom, inset, font-size, font-weight, letter-spacing,
+        line-height, text-indent, text-shadow, border-width, border-radius, outline-width, outline-offset, flex,
+        flex-grow, flex-shrink, flex-basis, gap, row-gap, column-gap, visibility, z-index, clip-path, backdrop-filter,
         border-style, outline-style !important;
 }
 

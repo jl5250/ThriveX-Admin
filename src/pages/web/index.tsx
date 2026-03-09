@@ -237,7 +237,6 @@ export default () => {
           <div className="space-y-10">
             {Object.keys(list).map((key, index1) => (
               <div key={index1} className="space-y-6">
-                {/* 分组标题 - Glassmorphism 风格 */}
                 <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/60 dark:bg-boxdark/60 backdrop-blur-md border border-white/20 dark:border-strokedark/30 shadow-xs shadow-primary/5">
                   <img src={GroupSvg} alt="分组图标" className="w-5 h-5 opacity-80" />
                   <span className="text-base font-semibold text-gray-800 dark:text-gray-200">{key}</span>
@@ -250,40 +249,31 @@ export default () => {
                         key={index2}
                         className="group relative flex flex-col items-center p-6 pb-0 rounded-3xl bg-linear-to-br from-white/80 via-white/70 to-white/60 dark:from-boxdark/80 dark:via-boxdark/70 dark:to-boxdark/60 backdrop-blur-xl border border-white/40 dark:border-strokedark/50 shadow-lg hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300 hover:-translate-y-2 cursor-pointer overflow-hidden"
                       >
-                        {/* 背景装饰 - 动态渐变 */}
                         <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-blue-500/5 dark:from-primary/10 dark:to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-                        {/* 顶部装饰条 - 增强版 */}
                         <div className="absolute top-0 left-0 right-0 h-24 bg-linear-to-br from-primary/30 via-primary/15 to-transparent dark:from-primary/40 dark:via-primary/20 rounded-t-3xl"></div>
 
-                        {/* 装饰性光晕效果 */}
                         <div className="absolute top-4 right-4 w-20 h-20 bg-primary/10 dark:bg-primary/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <div className="absolute bottom-4 left-4 w-16 h-16 bg-blue-500/10 dark:bg-blue-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
 
-                        {/* 头像容器 - 增强版 */}
                         <div className="relative z-10 flex items-center justify-center w-24 h-24 mt-3 mb-5 rounded-full bg-linear-to-br from-white to-gray-50 dark:from-boxdark-2 dark:to-boxdark shadow-2xl ring-4 ring-white/60 dark:ring-strokedark/40 ring-offset-2 ring-offset-white/50 dark:ring-offset-boxdark/50 transition-transform duration-300 group-hover:scale-110 group-hover:ring-primary/30 group-hover:shadow-primary/30">
-                          {/* 头像光晕 */}
                           <div className="absolute inset-0 rounded-full bg-linear-to-br from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                           <img
                             src={item.image}
                             alt={item.title}
                             className="relative z-10 w-[88%] h-[88%] rounded-full object-cover transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3"
                           />
-                          {/* 头像边框动画 */}
                           <div className="absolute inset-0 rounded-full border-2 border-primary/0 group-hover:border-primary/30 transition-all duration-300"></div>
                         </div>
 
-                        {/* 网站标题 - 增强版 */}
                         <h3 className="relative z-10 mb-2 text-lg font-bold text-gray-900 dark:text-white text-center transition-all duration-300 group-hover:text-primary group-hover:scale-105 line-clamp-1">
                           {item.title}
                         </h3>
 
-                        {/* 网站描述 - 增强版 */}
                         <p className="relative z-10 mb-4 text-sm text-gray-600 dark:text-gray-300 text-center line-clamp-2 leading-relaxed min-h-10 px-2 transition-colors duration-300 group-hover:text-gray-700 dark:group-hover:text-gray-200">
                           {item.description}
                         </p>
 
-                        {/* 分类标签 - 增强版 */}
                         <div className="relative z-10 mb-4 px-4 py-2 rounded-full bg-linear-to-r from-primary/15 via-primary/10 to-primary/5 dark:from-primary/25 dark:via-primary/20 dark:to-primary/15 text-primary dark:text-primary/90 text-xs font-semibold transition-all duration-300 group-hover:bg-linear-to-r group-hover:from-primary/25 group-hover:via-primary/20 group-hover:to-primary/15 dark:group-hover:from-primary/35 dark:group-hover:via-primary/30 dark:group-hover:to-primary/25 group-hover:scale-105 group-hover:shadow-md group-hover:shadow-primary/20 border border-primary/20 dark:border-primary/30">
                           <span className="flex items-center gap-1.5">
                             <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
@@ -291,12 +281,9 @@ export default () => {
                           </span>
                         </div>
 
-                        {/* 操作按钮区域 - 优化后的设计 */}
                         <div className="absolute z-50 inset-x-0 bottom-0 flex flex-col gap-3 py-5 px-3 bg-linear-to-t from-white/98 via-white/95 to-white/90 dark:from-boxdark/98 dark:via-boxdark/95 dark:to-boxdark/90 backdrop-blur-xl border-t border-gray-200/60 dark:border-strokedark/60 shadow-[0_-8px_24px_rgba(0,0,0,0.08)] dark:shadow-[0_-8px_24px_rgba(0,0,0,0.3)] transform translate-y-full group-hover:translate-y-0 transition-all duration-300 ease-out">
-                          {/* 分隔线 - 增强版 */}
                           <div className="absolute top-0 left-6 right-6 h-[2px] bg-linear-to-r from-transparent via-primary/40 to-transparent dark:via-primary/50"></div>
 
-                          {/* 第一行：修改和删除按钮 */}
                           <div className="flex gap-2">
                             <button
                               onClick={(e) => {
@@ -352,7 +339,6 @@ export default () => {
                           </button>
                         </div>
 
-                        {/* 底部装饰条 */}
                         <div className="absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r from-transparent via-primary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       </div>
                     ))}
@@ -366,7 +352,6 @@ export default () => {
         </Spin>
       </Card>
 
-      {/* 新增/编辑网站弹框 */}
       <Modal
         title={isMethod === 'edit' ? '编辑网站' : '新增网站'}
         open={modalVisible}
