@@ -30,8 +30,15 @@ export default () => {
       title: '标签名称',
       key: 'name',
       dataIndex: 'name',
-      width: 150,
+      width: 200,
       align: 'center',
+      render: (text: string) => (
+        <Tooltip title={text}>
+          <div className="max-w-[200px] truncate text-gray-700 dark:text-gray-200 hover:text-primary cursor-pointer">
+            {text}
+          </div>
+        </Tooltip>
+      ),
     },
     {
       title: '文章数量',
