@@ -1,5 +1,5 @@
 import Request from '@/utils/request';
-import { Article, FilterArticle } from '@/types/app/article';
+import { Article, ArticleFilterQueryParams } from '@/types/app/article';
 
 // 新增文章
 export const addArticleDataAPI = (data: Article) =>
@@ -11,7 +11,7 @@ export const delArticleDataAPI = (id: number, isDel?: boolean) =>
 
 // 批量删除文章
 export const delBatchArticleDataAPI = (ids: number[]) =>
-  Request('DELETE', '/article/batch', { data: ids});
+  Request('DELETE', '/article/batch', { data: ids });
 // 还原被删除的文章
 export const reductionArticleDataAPI = (id: number) =>
   Request('PATCH', `/article/reduction/${id}`);
@@ -23,31 +23,22 @@ export const editArticleDataAPI = (data: Article) =>
 // 获取文章
 export const getArticleDataAPI = (id?: number) => Request<Article>('GET', `/article/${id}`)
 
-// 获取文章列表
-export const getArticleListAPI = (data?: QueryData<FilterArticle>) => Request<Article[]>('POST', `/article/list`, {
-  data: { ...data?.query }
-})
-
 // 分页获取文章列表
-export const getArticlePagingAPI = (data?: QueryData) => Request<Paginate<Article[]>>('POST', `/article/paging`, {
-  data: { ...data?.query },
-  params: {
-    ...data?.pagination
-  }
-})
+// 后续改一下：不传分页参数表示获取所有文章
+export const getArticlePagingAPI = (params?: ArticleFilterQueryParams) => Request<Paginate<Article[]>>('GET', `/article`, { params })
 
 // 导入文章
 export const importArticleDataAPI = (list: File[]) => {
-    const formData = new FormData();
+  const formData = new FormData();
 
-    list.forEach((file) => {
-        formData.append(`list`, file);
-    });
+  list.forEach((file) => {
+    formData.append(`list`, file);
+  });
 
-    return Request('POST', '/article/import', { 
-        data: formData,
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        }
-    });
+  return Request('POST', '/article/import', {
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
 }

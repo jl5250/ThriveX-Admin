@@ -29,16 +29,19 @@ export interface Article {
   createTime?: string;
 }
 
-export interface FilterForm {
+export interface ArticleFilterDataForm {
   title?: string;
   cateId?: number;
   tagId?: number;
   createTime: Date[];
 }
 
-export interface FilterArticle extends FilterData {
+export interface ArticleFilterQueryParams extends Page {
+  key?: string;
   cateId?: number;
   tagId?: number;
   isDraft?: number;
   isDel?: number;
+  startDate?: string;
+  endDate?: string;
 }

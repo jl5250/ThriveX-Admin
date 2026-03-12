@@ -24,7 +24,7 @@ export interface FilterForm {
   createTime: Date[];
 }
 
-export interface FilterWall extends FilterData {
+export interface FilterWall extends FilterQueryParams {
   content?: string;
   cateId?: number;
 }

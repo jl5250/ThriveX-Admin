@@ -1,10 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
-import {
-  Table, Button, Tag, notification, Popconfirm, Form, Input, Select, DatePicker, Modal,
-  message, Dropdown, Tooltip, Space, Divider, Popover,
-} from 'antd';
+import { Table, Button, Tag, notification, Popconfirm, Form, Input, Select, DatePicker, message, Dropdown, Tooltip, Space, Divider, Popover } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { UploadFile, UploadFileStatus, RcFile } from 'antd/es/upload/interface';
 import type { TableRowSelection } from 'antd/es/table/interface';
@@ -15,14 +12,15 @@ import { saveAs } from 'file-saver';
 import dayjs from 'dayjs';
 
 import Title from '@/components/Title';
+import ArticleImportModal from './components/ArticleImportModal';
 
 import { getCateListAPI } from '@/api/cate';
 import { getTagListAPI } from '@/api/tag';
-import { delArticleDataAPI, getArticlePagingAPI, addArticleDataAPI, getArticleListAPI, delBatchArticleDataAPI } from '@/api/article';
+import { delArticleDataAPI, getArticlePagingAPI, addArticleDataAPI, delBatchArticleDataAPI } from '@/api/article';
 
 import type { Tag as ArticleTag } from '@/types/app/tag';
 import type { Cate } from '@/types/app/cate';
-import type { Article, Config, FilterArticle, FilterForm } from '@/types/app/article';
+import type { Article, Config, ArticleFilterQueryParams, ArticleFilterDataForm } from '@/types/app/article';
 
 import { useWebStore } from '@/stores';
 
@@ -36,7 +34,7 @@ export default () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const isFirstLoadRef = useRef<boolean>(true);
 
   const [form] = Form.useForm();
@@ -44,11 +42,8 @@ export default () => {
   const [articleList, setArticleList] = useState<Article[]>([]);
 
   const [total, setTotal] = useState<number>(0);
-  const [paging, setPaging] = useState<Page>({
-    page: 1,
-    size: 8,
-  });
-  const [query, setQuery] = useState<FilterArticle>({
+
+  const [filter, setFilter] = useState<ArticleFilterQueryParams>({
     key: undefined,
     cateId: undefined,
     tagId: undefined,
@@ -56,24 +51,21 @@ export default () => {
     isDel: 0,
     startDate: undefined,
     endDate: undefined,
+    page: 1,
+    size: 8,
   });
   const [showBatchActions, setShowBatchActions] = useState<boolean>(false);
 
   // 分页获取文章
   const getArticleList = async () => {
     try {
-      // 如果是第一次加载，使用 initialLoading
-      // 否则使用 loading
       if (isFirstLoadRef.current) {
         setInitialLoading(true);
       } else {
         setLoading(true);
       }
 
-      const { data } = await getArticlePagingAPI({
-        pagination: paging,
-        query,
-      });
+      const { data } = await getArticlePagingAPI(filter);
       setTotal(data.total);
       setArticleList(data.result);
       isFirstLoadRef.current = false;
@@ -342,15 +334,16 @@ export default () => {
     },
   ];
 
-  const onFilterSubmit = async (values: FilterForm) => {
+  const onFilterSubmit = async (values: ArticleFilterDataForm) => {
     try {
-      setPaging((prev) => ({ ...prev, page: 1 }));
-      setQuery({
+      setFilter({
         key: values.title,
         cateId: values.cateId,
         tagId: values.tagId,
-        startDate: values.createTime?.[0]?.valueOf() + '',
-        endDate: values.createTime?.[1]?.valueOf() + '',
+        startDate: values.createTime?.[0] && values.createTime?.[0]?.valueOf() + '',
+        endDate: values.createTime?.[1] && values.createTime?.[1]?.valueOf() + '',
+        page: 1,
+        size: 8,
       });
     } catch (error) {
       console.error(error);
@@ -359,8 +352,9 @@ export default () => {
 
   const onFilterReset = () => {
     form.resetFields();
-    setPaging((prev) => ({ ...prev, page: 1 }));
-    setQuery({
+    setFilter({
+      page: 1,
+      size: 8,
       key: undefined,
       cateId: undefined,
       tagId: undefined,
@@ -406,8 +400,8 @@ export default () => {
           articles.push(article);
         } else if (file.name.endsWith('.json')) {
           const json = JSON.parse(text);
-          const article = parseJsonToArticles(json); // 可能需要适配结构
-          articles.concat(article);
+          const parsedArticles = parseJsonToArticles(json); // 可能需要适配结构
+          articles.push(...parsedArticles);
         }
       }
 
@@ -700,7 +694,7 @@ export default () => {
       const { code } = await delBatchArticleDataAPI(selectedRowKeys as number[]);
       if (code === 200) {
         message.success('删除成功');
-        await getArticleList();
+        await getArticlePagingAPI({ page: 1, size: 8 });
       } else {
         message.error('删除失败');
       }
@@ -728,8 +722,8 @@ export default () => {
   const exportAll = async () => {
     try {
       setLoading(true);
-      const { data } = await getArticleListAPI({});
-      downloadMarkdownZip(data);
+      const { data } = await getArticlePagingAPI({ page: 1, size: 999999999 });
+      downloadMarkdownZip(data.result);
     } catch (error) {
       console.error(error);
     } finally {
@@ -781,10 +775,9 @@ export default () => {
 
   useEffect(() => {
     getArticleList();
-  }, [paging, query]);
+  }, [filter]);
 
   useEffect(() => {
-    getArticleList();
     getCateList();
     getTagList();
   }, []);
@@ -917,16 +910,16 @@ export default () => {
           loading={loading}
           pagination={{
             position: ['bottomRight'],
-            current: paging.page,
-            pageSize: paging.size,
+            current: filter.page,
+            pageSize: filter.size,
             total,
             showTotal: (totalCount) => (
               <div className="mt-[9px] text-xs text-gray-500 dark:text-gray-400">
-                当前第 {paging.page} / {Math.ceil(totalCount / (paging.size || 8))} 页 | 共 {totalCount} 条数据
+                当前第 {filter.page} / {Math.ceil(totalCount / (filter.size || 8))} 页 | 共 {totalCount} 条数据
               </div>
             ),
-            onChange: (page, size) => setPaging((prev) => ({ ...prev, page, size: size || prev.size })),
-            onShowSizeChange: (_, size) => setPaging((prev) => ({ ...prev, page: 1, size })),
+            onChange: (page, size) => setFilter((prev) => ({ ...prev, page, size: size || prev.size })),
+            onShowSizeChange: (_, size) => setFilter((prev) => ({ ...prev, page: 1, size })),
             className: 'px-6! py-4!',
           }}
           className="[&_.ant-table-thead>tr>th]:bg-gray-50! dark:[&_.ant-table-thead>tr>th]:bg-boxdark-2! [&_.ant-table-thead>tr>th]:font-medium! [&_.ant-table-thead>tr>th]:text-gray-500! dark:[&_.ant-table-thead>tr>th]:text-gray-400!"
@@ -934,66 +927,24 @@ export default () => {
         />
       </div>
 
-      <Modal
-        title="导入文章"
+      <ArticleImportModal
         open={isModalOpen}
+        fileList={fileList}
+        isDragging={isDragging}
+        importLoading={importLoading}
         onCancel={handleCancel}
-        footer={[
-          <Button key="cancel" onClick={handleCancel}>
-            取消
-          </Button>,
-
-          <Button key="import" type="primary" onClick={handleArticleImport} loading={importLoading} disabled={fileList.length === 0}>
-            开始导入
-          </Button>,
-        ]}
-      >
-        <div className="py-4">
-          <div onClick={() => fileInputRef?.current?.click()} onDragOver={handleDragOver} onDragEnter={handleDragEnter} onDragLeave={handleDragLeave} onDrop={handleDrop} className={`w-full h-40 p-4 border border-dashed rounded-lg transition-all duration-300 ${isDragging ? 'border-primary bg-primary/5' : 'border-[#D7D7D7] hover:border-primary bg-[#FAFAFA]'} space-y-2 cursor-pointer`}>
-            <div className="flex justify-center">
-              <InboxOutlined className="text-5xl text-primary" />
-            </div>
-
-            <p className="text-base text-center">{isDragging ? '文件放在此处即上传' : '点击或拖动文件到此区域'}</p>
-
-            <p className="text-sm text-[#999] text-center">仅支持 Markdown 或 JSON 格式</p>
-          </div>
-
-          <input multiple type="file" onChange={handleFileInput} ref={fileInputRef} className="hidden" accept=".md" placeholder="请选择 Markdown 格式文件" />
-
-          {fileList.length > 0 && (
-            <div className="mt-4">
-              <p className="text-sm text-gray-500 mb-2">已选择的文件：</p>
-              <ul className="space-y-2">
-                {fileList.map((file) => (
-                  <li key={file.uid} className="flex items-center justify-between bg-gray-50 p-2 rounded-sm">
-                    <span className="text-sm">{file.name}</span>
-
-                    <Button type="text" danger size="small" onClick={() => setFileList(fileList.filter((f) => f.uid !== file.uid))}>
-                      删除
-                    </Button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {fileList.length === 0 && (
-            <div className="mt-4 flex justify-between items-center text-sm text-gray-500">
-              <span>你可以下载模板后填写再导入：</span>
-
-              <div className="space-x-2">
-                <Button type="link" size="small" onClick={downloadMarkdownTemplate}>
-                  下载 Markdown 模板
-                </Button>
-                <Button type="link" size="small" onClick={downloadJsonTemplate}>
-                  下载 JSON 模板
-                </Button>
-              </div>
-            </div>
-          )}
-        </div>
-      </Modal>
+        onImport={handleArticleImport}
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onFileInputChange={handleFileInput}
+        onRemoveFile={(uid) => setFileList(fileList.filter((f) => f.uid !== uid))}
+        // 断言为非空以满足 RefObject<HTMLInputElement> 的类型约束
+        fileInputRef={fileInputRef as React.RefObject<HTMLInputElement>}
+        onDownloadMarkdownTemplate={downloadMarkdownTemplate}
+        onDownloadJsonTemplate={downloadJsonTemplate}
+      />
     </div>
   );
 };

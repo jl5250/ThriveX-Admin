@@ -5,7 +5,7 @@ import { DeleteOutlined, UndoOutlined, EyeOutlined, CommentOutlined } from '@ant
 import dayjs from 'dayjs';
 
 import Title from '@/components/Title';
-import { delArticleDataAPI, getArticleListAPI, reductionArticleDataAPI } from '@/api/article';
+import { delArticleDataAPI, getArticlePagingAPI, reductionArticleDataAPI } from '@/api/article';
 import { useWebStore } from '@/stores';
 import type { Tag as ArticleTag } from '@/types/app/tag';
 import type { Cate } from '@/types/app/cate';
@@ -32,8 +32,8 @@ export default () => {
       } else {
         setLoading(true);
       }
-      const { data } = await getArticleListAPI({ query: { isDel: 1 } });
-      setArticleList(data);
+      const { data } = await getArticlePagingAPI({ isDel: 1, page: 1, size: 8 });
+      setArticleList(data.result);
       isFirstLoadRef.current = false;
     } catch (error) {
       console.error(error);
@@ -51,7 +51,7 @@ export default () => {
     try {
       setLoading(true);
       await delArticleDataAPI(id);
-      await getArticleList();
+      await getArticlePagingAPI({ page: 1, size: 8 });
       form.resetFields();
       setCurrent(1);
       notification.success({ message: '🎉 删除文章成功' });

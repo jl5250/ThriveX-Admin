@@ -19,7 +19,7 @@ interface Page {
   size?: number;
 }
 
-interface FilterData {
+interface FilterQueryParams {
   key?: string;
   content?: string;
   status?: 0 | 1;
@@ -28,12 +28,11 @@ interface FilterData {
   createTime?: Date[];
 }
 
-interface QueryData<T = FilterData> {
+interface QueryData<T = FilterQueryParams> {
   // 通用的
   sort?: 'asc' | 'desc';
   pattern?: 'list' | 'recursion';
   query?: T;
-  pagination?: Page;
 
   // 文件相关
   dir?: 'all' | string;
