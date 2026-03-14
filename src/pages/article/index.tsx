@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 
 import { Table, Button, Tag, notification, Popconfirm, Form, Input, Select, DatePicker, message, Dropdown, Tooltip, Space, Divider, Popover } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import type { UploadFile, UploadFileStatus, RcFile } from 'antd/es/upload/interface';
 import type { TableRowSelection } from 'antd/es/table/interface';
 import { DeleteOutlined, FormOutlined, InboxOutlined, DownloadOutlined, SearchOutlined, ClearOutlined, EyeOutlined, CommentOutlined } from '@ant-design/icons';
 import { HiOutlineChevronDown, HiOutlineChevronUp } from 'react-icons/hi';
@@ -29,12 +28,8 @@ const { RangePicker } = DatePicker;
 export default () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [initialLoading, setInitialLoading] = useState<boolean>(true);
-  const [importLoading, setImportLoading] = useState<boolean>(false);
   const [btnLoading, setBtnLoading] = useState<number | null>(null);
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [isDragging, setIsDragging] = useState<boolean>(false);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const isFirstLoadRef = useRef<boolean>(true);
 
   const [form] = Form.useForm();
@@ -378,149 +373,46 @@ export default () => {
     setTagList(data as ArticleTag[]);
   };
 
-  // 导入文章
-  const handleArticleImport = async () => {
-    if (fileList.length === 0) {
-      notification.warning({ message: '请上传至少一个 .md 或 .json 文件' });
+  // 导入文章：由 ArticleImportModal 收集文件后调用，仅负责解析与提交
+  const handleArticleImport = async (files: File[]) => {
+    const articles: Article[] = [];
+
+    for (const file of files) {
+      const text = await file.text();
+      if (file.name.endsWith('.md')) {
+        const article = parseMarkdownToArticle(text);
+        articles.push(article);
+      } else if (file.name.endsWith('.json')) {
+        const json = JSON.parse(text);
+        articles.push(...parseJsonToArticles(json));
+      }
+    }
+
+    if (articles.length === 0) {
+      notification.error({ message: '解析失败，未提取出有效文章数据' });
       return;
     }
 
     try {
       setLoading(true);
-      setImportLoading(true);
-
-      const articles: Article[] = [];
-
-      for (const fileItem of fileList) {
-        const file = fileItem.originFileObj as File;
-        const text = await file.text();
-
-        if (file.name.endsWith('.md')) {
-          const article = await parseMarkdownToArticle(text);
-          articles.push(article);
-        } else if (file.name.endsWith('.json')) {
-          const json = JSON.parse(text);
-          const parsedArticles = parseJsonToArticles(json); // 可能需要适配结构
-          articles.push(...parsedArticles);
-        }
-      }
-
-      if (articles.length === 0) return notification.error({ message: '解析失败，未提取出有效文章数据' });
-
-      articles.forEach(async (article: Article) => {
+      for (const article of articles) {
         try {
           const { code } = await addArticleDataAPI(article);
-          if (code === 200) {
-            message.success(`${article.title}--导入成功~`);
-          }
+          if (code === 200) message.success(`${article.title}--导入成功~`);
         } catch (error) {
           console.error(error);
           message.error(`${article.title}--导入失败~`);
         }
-      });
-
+      }
       await getArticleList();
-
-      setFileList([]);
-      setIsModalOpen(false);
-
-      notification.success({
-        message: `🎉 成功导入 ${articles.length} 篇文章`,
-      });
+      notification.success({ message: `🎉 成功导入 ${articles.length} 篇文章` });
     } catch (err) {
       console.error(err);
       notification.error({ message: '导入失败，请检查文件格式或控制台报错' });
+      throw err;
     } finally {
-      setImportLoading(false);
       setLoading(false);
     }
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-    setFileList([]);
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  const handleDragEnter = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-  };
-
-  // 拖拽上传
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-
-    const files = Array.from(e.dataTransfer.files);
-    const validFiles = files.filter((file) => file.name.toLowerCase().endsWith('.md') || file.name.toLowerCase().endsWith('.json'));
-
-    if (validFiles.length === 0) {
-      message.error('仅支持 Markdown(.md) 或 JSON(.json) 文件');
-      return;
-    }
-
-    if (fileList.length + validFiles.length > 5) {
-      message.error('最多只能上传 5 个文件');
-      return;
-    }
-
-    const newFileList: UploadFile[] = validFiles.map((file) => {
-      const rcFile = file as RcFile;
-      rcFile.uid = Math.random().toString();
-      return {
-        uid: rcFile.uid,
-        name: file.name,
-        status: 'done' as UploadFileStatus,
-        originFileObj: rcFile,
-      };
-    });
-
-    setFileList([...fileList, ...newFileList]);
-    message.success(`成功添加 ${validFiles.length} 个文件`);
-  };
-
-  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-
-    const validFiles = files.filter((file) => file.name.toLowerCase().endsWith('.md') || file.name.toLowerCase().endsWith('.json'));
-
-    if (validFiles.length === 0) {
-      message.error('仅支持 Markdown(.md) 或 JSON(.json) 文件');
-      return;
-    }
-
-    if (fileList.length + validFiles.length > 5) {
-      message.error('最多只能上传 5 个文件');
-      return;
-    }
-
-    const newFileList: UploadFile[] = validFiles.map((file) => {
-      const rcFile = file as RcFile;
-      rcFile.uid = Math.random().toString();
-      return {
-        uid: rcFile.uid,
-        name: file.name,
-        status: 'done' as UploadFileStatus,
-        originFileObj: rcFile,
-      };
-    });
-
-    setFileList([...fileList, ...newFileList]);
-    // 允许重复上传同一文件
-    e.target.value = '';
   };
 
   // 导出为markdown文件
@@ -731,48 +623,6 @@ export default () => {
     }
   };
 
-  // Markdown 模板
-  const downloadMarkdownTemplate = () => {
-    const content = `---\ntitle: 示例文章标题\ndescription: 这里是文章描述\ntags: 示例标签1 示例标签2\ncategories: 示例分类\ncover: https://example.com/image.png\ndate: 2025-07-12 12:00:00\nkeywords: 示例标签1 示例标签2 示例分类\n---\n\n这里是 Markdown 正文内容，请开始创作吧~`;
-    const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = '文章模板.md';
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  // JSON 模板
-  const downloadJsonTemplate = () => {
-    const data = {
-      title: '示例文章标题',
-      description: '文章描述',
-      content: '# 正文内容',
-      cover: '',
-      createTime: Date.now().toString(),
-      cateList: [{ id: 1, name: '示例分类' }],
-      tagList: [{ id: 2, name: '示例标签' }],
-      config: {
-        status: 'default',
-        password: '',
-        isDraft: 0,
-        isEncrypt: 0,
-        isDel: 0,
-      },
-    };
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: 'application/json',
-    });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = '文章模板.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
   useEffect(() => {
     getArticleList();
   }, [filter]);
@@ -929,21 +779,8 @@ export default () => {
 
       <ArticleImportModal
         open={isModalOpen}
-        fileList={fileList}
-        isDragging={isDragging}
-        importLoading={importLoading}
-        onCancel={handleCancel}
+        onClose={() => setIsModalOpen(false)}
         onImport={handleArticleImport}
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-        onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}
-        onFileInputChange={handleFileInput}
-        onRemoveFile={(uid) => setFileList(fileList.filter((f) => f.uid !== uid))}
-        // 断言为非空以满足 RefObject<HTMLInputElement> 的类型约束
-        fileInputRef={fileInputRef as React.RefObject<HTMLInputElement>}
-        onDownloadMarkdownTemplate={downloadMarkdownTemplate}
-        onDownloadJsonTemplate={downloadJsonTemplate}
       />
     </div>
   );
