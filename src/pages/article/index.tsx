@@ -122,7 +122,7 @@ export default () => {
           <Tag
             key={item.id ?? index}
             color={tagColors[index % tagColors.length]}
-            className="!m-0 !border-0"
+            className="m-0! border-0!"
           >
             {item.name}
           </Tag>
@@ -135,7 +135,7 @@ export default () => {
           <Tag
             key={`${keyPrefix}-${item.id ?? index}`}
             color={tagColors[index % tagColors.length]}
-            className="!m-0 !border-0"
+            className="m-0! border-0!"
           >
             {item.name}
           </Tag>
@@ -148,7 +148,7 @@ export default () => {
             overlayClassName="article-tags-popover"
           >
             <span
-              className="inline-flex items-center justify-center min-w-[28px] h-6 px-1.5 rounded-md text-xs font-medium cursor-default bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-boxdark-2 dark:text-gray-400 dark:hover:bg-strokedark/80 border-0"
+              className="inline-flex items-center justify-center min-w-[28px] h-6 px-1.5 rounded-md text-xs font-medium cursor-default bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-boxdark-2 dark:text-gray-400 dark:hover:bg-strokedark/80 border-0 cursor-pointer"
               role="button"
               tabIndex={0}
             >
@@ -180,7 +180,7 @@ export default () => {
             href={`${web.url}/article/${record.id}`}
             target="_blank"
             rel="noreferrer"
-            className="max-w-[280px] truncate block text-gray-700 dark:text-gray-200 font-medium hover:text-primary"
+            className="max-w-[280px] truncate block text-gray-700! dark:text-gray-200! font-medium hover:text-primary!"
           >
             {text || <span className="text-gray-300 dark:text-gray-500 italic">暂无标题</span>}
           </a>
@@ -196,7 +196,7 @@ export default () => {
         <>
           {text ? (
             <Tooltip title={text}>
-              <div className="max-w-[320px] truncate text-gray-700 dark:text-gray-200 hover:text-primary cursor-pointer">
+              <div className="max-w-[320px] truncate text-gray-700! dark:text-gray-200! hover:text-primary! cursor-pointer">
                 {text}
               </div>
             </Tooltip>
@@ -270,7 +270,7 @@ export default () => {
         };
         const color = config.password?.trim() ? 'processing' : statusColorMap[config.status] ?? 'default';
         return (
-          <Tag color={color} className="!m-0 !border-0 whitespace-nowrap">
+          <Tag color={color} className="m-0! border-0! whitespace-nowrap">
             {label}
           </Tag>
         );
@@ -313,7 +313,7 @@ export default () => {
                 type="text"
                 size="small"
                 icon={<FormOutlined className="text-blue-500" />}
-                className="text-blue-500 dark:text-gray-300 dark:hover:!text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                className="text-blue-500 dark:text-gray-300 dark:hover:text-blue-500! hover:bg-blue-50 dark:hover:bg-blue-900/20"
               />
             </Link>
           </Tooltip>
@@ -793,11 +793,11 @@ export default () => {
   if (initialLoading) {
     return (
       <div className="space-y-2">
-        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
+        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-xs border border-gray-100 dark:border-strokedark">
           <div className="skeleton h-8" style={{ width: 200 }} />
         </div>
 
-        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
+        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-xs border border-gray-100 dark:border-strokedark">
           <div className="flex justify-between mb-6">
             <div className="flex gap-4 flex-wrap">
               <div className="skeleton h-9" style={{ width: 200 }} />
@@ -815,8 +815,8 @@ export default () => {
             <div key={i} className="flex gap-4 mb-4 items-center">
               <div className="skeleton shrink-0 rounded-lg" style={{ width: 56, height: 56 }} />
               <div className="flex-1 space-y-2 min-w-0">
-                <div className="skeleton h-4 w-full rounded" />
-                <div className="skeleton h-3 rounded" style={{ width: '60%' }} />
+                <div className="skeleton h-4 w-full rounded-sm" />
+                <div className="skeleton h-3 rounded-sm" style={{ width: '60%' }} />
               </div>
             </div>
           ))}
@@ -829,41 +829,41 @@ export default () => {
     <div className="mx-auto">
       <Title value="文章管理" />
 
-      <div className="bg-white dark:bg-boxdark rounded-2xl shadow-sm border border-gray-100 dark:border-strokedark overflow-hidden">
+      <div className="bg-white dark:bg-boxdark rounded-2xl shadow-xs border border-gray-100 dark:border-strokedark overflow-hidden">
         <div className="p-5 border-b border-gray-100 dark:border-strokedark bg-gray-50/30 dark:bg-boxdark-2/50 space-y-4">
           {/* 筛选区：搜索条件 + 查询/重置 */}
-          <Form form={form} layout="inline" onFinish={onFilterSubmit} className="!flex !flex-wrap !items-center !gap-y-2.5">
-            <Form.Item name="title" className="!mb-0">
+          <Form form={form} layout="inline" onFinish={onFilterSubmit} className="flex! flex-wrap! items-center! gap-y-2.5!">
+            <Form.Item name="title" className="mb-0!">
               <Input
                 prefix={<SearchOutlined className="text-gray-400 dark:text-gray-500" />}
                 placeholder="搜索文章标题..."
-                className="!w-[220px]"
+                className="w-[220px]!"
                 allowClear
               />
             </Form.Item>
-            <Form.Item name="cateId" className="!mb-0">
+            <Form.Item name="cateId" className="mb-0!">
               <Select
                 allowClear
                 options={cateList}
                 fieldNames={{ label: 'name', value: 'id' }}
                 placeholder="选择分类"
-                className="!w-[160px]"
+                className="w-[160px]!"
               />
             </Form.Item>
-            <Form.Item name="tagId" className="!mb-0">
+            <Form.Item name="tagId" className="mb-0!">
               <Select
                 allowClear
                 showSearch
                 options={tagList}
                 fieldNames={{ label: 'name', value: 'id' }}
                 placeholder="选择标签"
-                className="!w-[140px]"
+                className="w-[140px]!"
                 filterOption={(input, option) => (option?.name ?? '').toLowerCase().includes(input.toLowerCase())}
               />
             </Form.Item>
-            <Form.Item name="createTime" className="!mb-0">
+            <Form.Item name="createTime" className="mb-0!">
               <RangePicker
-                className="!w-[260px]"
+                className="w-[260px]!"
                 placeholder={['开始日期', '结束日期']}
                 disabledDate={(current) => current && current > dayjs().endOf('day')}
               />
@@ -886,7 +886,7 @@ export default () => {
 
           {/* 批量操作区：点击「高级文案」后显示，按钮组靠右 */}
           {showBatchActions && (
-            <div className="flex flex-wrap items-center pt-2 !mt-2 border-t border-gray-100 dark:border-strokedark gap-2">
+            <div className="flex flex-wrap items-center pt-2 mt-2! border-t border-gray-100 dark:border-strokedark gap-2">
               <Dropdown.Button
                 icon={<DownloadOutlined />}
                 className="w-[120px]"
@@ -927,9 +927,9 @@ export default () => {
             ),
             onChange: (page, size) => setPaging((prev) => ({ ...prev, page, size: size || prev.size })),
             onShowSizeChange: (_, size) => setPaging((prev) => ({ ...prev, page: 1, size })),
-            className: '!px-6 !py-4',
+            className: 'px-6! py-4!',
           }}
-          className="[&_.ant-table-thead>tr>th]:!bg-gray-50 dark:[&_.ant-table-thead>tr>th]:!bg-boxdark-2 [&_.ant-table-thead>tr>th]:!font-medium [&_.ant-table-thead>tr>th]:!text-gray-500 dark:[&_.ant-table-thead>tr>th]:!text-gray-400"
+          className="[&_.ant-table-thead>tr>th]:bg-gray-50! dark:[&_.ant-table-thead>tr>th]:bg-boxdark-2! [&_.ant-table-thead>tr>th]:font-medium! [&_.ant-table-thead>tr>th]:text-gray-500! dark:[&_.ant-table-thead>tr>th]:text-gray-400!"
           scroll={{ x: 1400 }}
         />
       </div>
@@ -966,7 +966,7 @@ export default () => {
               <p className="text-sm text-gray-500 mb-2">已选择的文件：</p>
               <ul className="space-y-2">
                 {fileList.map((file) => (
-                  <li key={file.uid} className="flex items-center justify-between bg-gray-50 p-2 rounded">
+                  <li key={file.uid} className="flex items-center justify-between bg-gray-50 p-2 rounded-sm">
                     <span className="text-sm">{file.name}</span>
 
                     <Button type="text" danger size="small" onClick={() => setFileList(fileList.filter((f) => f.uid !== file.uid))}>

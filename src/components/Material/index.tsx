@@ -208,11 +208,11 @@ export default ({ multiple, open, onClose, onSelect, maxCount }: Props) => {
       </div>
 
       <Spin spinning={loading}>
-        <div className={`flex flex-wrap ${dirName ? '!justify-center' : 'justify-start'} md:justify-normal overflow-y-auto max-h-[calc(100vh-300px)]`} onScroll={handleScroll}>
+        <div className={`flex flex-wrap ${dirName ? 'justify-center!' : 'justify-start'} md:justify-normal overflow-y-auto max-h-[calc(100vh-300px)]`} onScroll={handleScroll}>
           {fileList.length || (!fileList.length && dirName) ? (
             <Masonry breakpointCols={breakpointColumnsObj} className="masonry-grid" columnClassName="masonry-grid_column">
               {fileList.map((item, index) => (
-                <div key={index} className={`group relative overflow-hidden rounded-md cursor-pointer mb-4 border-2 border-stroke dark:border-transparent hover:!border-primary p-1 ${selectedFiles.some((file) => file.url === item.url) ? 'border-primary' : 'border-gray-100'}`} onClick={() => onHandleSelectImage(item)}>
+                <div key={index} className={`group relative overflow-hidden rounded-md cursor-pointer mb-4 border-2 border-stroke dark:border-transparent hover:border-primary! p-1 ${selectedFiles.some((file) => file.url === item.url) ? 'border-primary' : 'border-gray-100'}`} onClick={() => onHandleSelectImage(item)}>
                   <div className="relative">
                     <Image src={item.url} className="w-full rounded-md" loading="lazy" fallback={errorImg} preview={false} />
 

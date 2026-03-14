@@ -181,7 +181,7 @@ export default () => {
       title: '配置内容',
       dataIndex: 'value',
       key: 'value',
-      render: (value: object) => <>{activeTab === 'page' ? <span className="text-sm text-gray-500">内容过多，不易展示</span> : <pre className="min-w-[200px] whitespace-pre-wrap break-all bg-slate-50 dark:bg-slate-800 p-2 rounded text-xs overflow-auto">{JSON.stringify(value, null, 2)}</pre>}</>,
+      render: (value: object) => <>{activeTab === 'page' ? <span className="text-sm text-gray-500">内容过多，不易展示</span> : <pre className="min-w-[200px] whitespace-pre-wrap break-all bg-slate-50 dark:bg-slate-800 p-2 rounded-sm text-xs overflow-auto">{JSON.stringify(value, null, 2)}</pre>}</>,
     },
     {
       title: '操作',
@@ -198,12 +198,12 @@ export default () => {
     return (
       <div>
         {/* Title 骨架屏 */}
-        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-2">
+        <Card className="[&>.ant-card-body]:py-2! [&>.ant-card-body]:px-5! mb-2">
           <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
         </Card>
 
         {/* Tabs 和表格骨架屏 */}
-        <Card className={`${titleSty} min-h-[calc(100vh-200px)] [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5`}>
+        <Card className={`${titleSty} min-h-[calc(100vh-200px)] [&>.ant-card-body]:py-2! [&>.ant-card-body]:px-5!`}>
           {/* Tabs 骨架屏 */}
           <div className="flex justify-center space-x-4 mb-6">
             <Skeleton.Button active size="default" style={{ width: 100, height: 40 }} />

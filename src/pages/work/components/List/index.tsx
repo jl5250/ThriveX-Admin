@@ -181,7 +181,7 @@ export default ({ item, type, fetchData, setLoading }: ListItemProps) => {
     <div key={item.id}>
       <div className="text-center text-xs text-[#e0e0e0]">{dayjs(+item.createTime!).format('YYYY-MM-DD HH:mm:ss')}</div>
 
-      <div className="flex justify-between md:p-7 !pt-3 rounded-md transition-colors">
+      <div className="flex justify-between md:p-7 pt-3! rounded-md transition-colors">
         <div className="flex">
           {item.avatar || item.image ? <img src={item.avatar || item.image} alt="" className="w-12 h-12 p-0.5 border border-stroke rounded-full" /> : <RandomAvatar className="w-12 h-12 p-0.5 border border-stroke rounded-full" />}
 

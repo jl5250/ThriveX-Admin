@@ -351,7 +351,7 @@ ${content}
           </Form.Item>
         )}
 
-        <Form.Item className="!mb-0">
+        <Form.Item className="mb-0!">
           <Button type="primary" htmlType="submit" loading={btnLoading} className="w-full">
             {id && !isDraftParams ? '编辑文章' : '发布文章'}
           </Button>
@@ -359,7 +359,7 @@ ${content}
 
         {/* 草稿和编辑状态下不再显示保存草稿按钮 */}
         {((isDraftParams && id) || !id) && (
-          <Form.Item className="!mt-2 !mb-0">
+          <Form.Item className="mt-2! mb-0!">
             <Button className="w-full" onClick={() => form.validateFields().then((values) => onSubmit(values, true))}>
               {isDraftParams ? '保存' : '保存为草稿'}
             </Button>

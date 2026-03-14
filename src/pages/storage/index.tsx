@@ -35,19 +35,19 @@ export default () => {
   const getPlatformIcon = (platform: string) => {
     switch (platform.toLowerCase()) {
       case 'local':
-        return <BsDatabase className="text-4xl text-yellow-500" />;
+        return <BsDatabase className="text-4xl text-yellow-500!" />;
       case 'webdav':
-        return <GlobalOutlined className="text-4xl text-red-500" />;
+        return <GlobalOutlined className="text-4xl text-red-500!" />;
       case 'minio':
-        return <HddOutlined className="text-4xl text-red-600" />;
+        return <HddOutlined className="text-4xl text-red-600!" />;
       case 'qiniu':
-        return <CloudServerOutlined className="text-4xl text-blue-500" />;
+        return <CloudServerOutlined className="text-4xl text-blue-500!" />;
       case 'tencent':
-        return <CloudOutlined className="text-4xl text-blue-700" />;
+        return <CloudOutlined className="text-4xl text-blue-700!" />;
       case 'aliyun':
-        return <CloudOutlined className="text-4xl text-orange-500" />;
+        return <CloudOutlined className="text-4xl text-orange-500!" />;
       default:
-        return <CloudOutlined className="text-4xl text-blue-500" />;
+        return <CloudOutlined className="text-4xl text-blue-500!" />;
     }
   };
 
@@ -235,18 +235,18 @@ export default () => {
         {ossList.map((record) => (
           <div
             key={record.id}
-            className={`relative p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden ${record.isEnable
-              ? 'border-2 border-blue-500 bg-gradient-to-br from-blue-50 via-white to-blue-50 dark:from-blue-900/30 dark:via-boxdark dark:to-blue-900/30 dark:border-blue-500'
-              : 'border border-gray-200 bg-gradient-to-br from-gray-50 via-white to-slate-50 dark:from-boxdark/80 dark:via-boxdark dark:to-boxdark-2/80 dark:border-strokedark'
+            className={`relative p-5 rounded-xl shadow-xs hover:shadow-md transition-all duration-300 overflow-hidden ${record.isEnable
+              ? 'border-2 border-blue-500 bg-linear-to-br from-blue-50 via-white to-blue-50 dark:from-blue-900/30 dark:via-boxdark dark:to-blue-900/30 dark:border-blue-500'
+              : 'border border-gray-200 bg-linear-to-br from-gray-50 via-white to-slate-50 dark:from-boxdark/80 dark:via-boxdark dark:to-boxdark-2/80 dark:border-strokedark'
               }`}
           >
             {/* 背景装饰元素 */}
             <div className="absolute top-0 right-0 w-32 h-32 opacity-20 dark:opacity-10">
-              <div className="absolute top-4 right-4 w-16 h-16 rounded-full bg-gradient-to-br from-blue-200 to-purple-200 dark:from-blue-500/30 dark:to-purple-500/30 blur-xl"></div>
-              <div className="absolute top-8 right-8 w-8 h-8 rounded-full bg-gradient-to-br from-pink-200 to-orange-200 dark:from-pink-500/30 dark:to-orange-500/30 blur-lg"></div>
+              <div className="absolute top-4 right-4 w-16 h-16 rounded-full bg-linear-to-br from-blue-200 to-purple-200 dark:from-blue-500/30 dark:to-purple-500/30 blur-xl"></div>
+              <div className="absolute top-8 right-8 w-8 h-8 rounded-full bg-linear-to-br from-pink-200 to-orange-200 dark:from-pink-500/30 dark:to-orange-500/30 blur-lg"></div>
             </div>
             <div className="absolute bottom-0 left-0 w-24 h-24 opacity-15 dark:opacity-10">
-              <div className="absolute bottom-4 left-4 w-12 h-12 rounded-full bg-gradient-to-br from-cyan-200 to-blue-200 dark:from-cyan-500/30 dark:to-blue-500/30 blur-xl"></div>
+              <div className="absolute bottom-4 left-4 w-12 h-12 rounded-full bg-linear-to-br from-cyan-200 to-blue-200 dark:from-cyan-500/30 dark:to-blue-500/30 blur-xl"></div>
             </div>
 
             {/* 小装饰点 */}
@@ -283,7 +283,7 @@ export default () => {
               <div className="mb-4 space-y-2">
                 <div>
                   <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">存储路径</div>
-                  <div className="text-sm font-mono bg-white/60 dark:bg-boxdark-2/60 backdrop-blur-sm p-2 rounded break-all border border-gray-100 dark:border-strokedark dark:text-gray-300">{record.basePath || '/uploads'}</div>
+                  <div className="text-sm font-mono bg-white/60 dark:bg-boxdark-2/60 backdrop-blur-xs p-2 rounded-sm break-all border border-gray-100 dark:border-strokedark dark:text-gray-300">{record.basePath || '/uploads'}</div>
                 </div>
               </div>
 
@@ -351,7 +351,7 @@ export default () => {
 
         {/* 添加存储配置卡片 */}
         <div
-          className="group flex flex-col justify-center items-center text-gray-400 dark:text-gray-500 bg-white dark:bg-boxdark p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow border-2 border-dashed border-gray-300 dark:border-strokedark cursor-pointer hover:border-primary dark:hover:border-primary"
+          className="group flex flex-col justify-center items-center text-gray-400 dark:text-gray-500 bg-white dark:bg-boxdark p-5 rounded-xl shadow-xs hover:shadow-md transition-shadow border-2 border-dashed border-gray-300 dark:border-strokedark cursor-pointer hover:border-primary dark:hover:border-primary"
           onClick={addOssData}
         >
           <PlusOutlined className="text-2xl text-gray-400 dark:text-gray-500 mb-2 group-hover:text-primary dark:group-hover:text-primary" />

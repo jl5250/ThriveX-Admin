@@ -18,11 +18,10 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        api: 'modern-compiler',
         loadPaths: [path.resolve(__dirname, 'src/styles')],
-        additionalData: `@use "var" as *;`,
-      },
-    },
+        additionalData: `@use "var.scss" as *;`
+      }
+    }
   },
   server: {
     port: 9100,

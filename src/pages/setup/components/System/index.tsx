@@ -58,7 +58,7 @@ export default () => {
 
   return (
     <div>
-      <h2 className="text-xl pb-4 pl-10">账户配置</h2>
+      <h2 className="text-xl pb-4">账户配置</h2>
 
       <Form form={form} initialValues={initialValues} size="large" layout="vertical" onFinish={handleSubmit} className="w-full lg:w-[500px] md:ml-10">
         <Form.Item label="管理员账号" name="newUsername" rules={rules.newUsername}>

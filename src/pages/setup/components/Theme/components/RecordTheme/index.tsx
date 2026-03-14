@@ -60,7 +60,7 @@ export default () => {
 
   return (
     <div>
-      <h2 className="text-xl pb-4 pl-10">闪念配置</h2>
+      <h2 className="text-xl py-4 pl-10">闪念配置</h2>
 
       <div className="w-full lg:w-[500px] md:ml-10">
         <Form form={form} onFinish={editThemeData} layout="vertical">

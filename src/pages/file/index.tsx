@@ -202,11 +202,11 @@ export default () => {
     return (
       <div>
         {/* Title 骨架屏 */}
-        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-2">
+        <Card className="[&>.ant-card-body]:py-2! [&>.ant-card-body]:px-5! mb-2">
           <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
         </Card>
 
-        <Card className="FilePage border-stroke mt-2 min-h-[calc(100vh-160px)] [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
+        <Card className="FilePage border-stroke mt-2 min-h-[calc(100vh-160px)] [&>.ant-card-body]:py-2! [&>.ant-card-body]:px-5!">
           {/* 操作栏骨架屏 */}
           <div className="flex justify-between my-4 px-4">
             <Skeleton.Button active size="default" style={{ width: 100, height: 32 }} />
@@ -253,11 +253,11 @@ export default () => {
 
         {/* 文件列表 */}
         <Spin spinning={loading}>
-          <div className={`flex flex-wrap ${dirName ? '!justify-center' : 'justify-start!'} md:justify-normal overflow-y-auto max-h-[calc(100vh-300px)]`} onScroll={handleScroll}>
+          <div className={`flex flex-wrap ${dirName ? 'justify-center!' : 'justify-start!'} md:justify-normal overflow-y-auto max-h-[calc(100vh-300px)]`} onScroll={handleScroll}>
             {fileList.length || (!fileList.length && dirName) ? (
               <Masonry breakpointCols={breakpointColumnsObj} className="masonry-grid" columnClassName="masonry-grid_column">
                 {fileList.map((item, index) => (
-                  <div key={index} className={`group relative overflow-hidden rounded-md cursor-pointer mb-4 border-2 border-stroke dark:border-transparent hover:!border-primary p-1 ${file.url === item.url ? 'border-primary' : 'border-gray-100'}`} onClick={() => viewOpenFileInfo(item)}>
+                  <div key={index} className={`group relative overflow-hidden rounded-md cursor-pointer mb-4 border-2 border-stroke dark:border-transparent hover:border-primary! p-1 ${file.url === item.url ? 'border-primary' : 'border-gray-100'}`} onClick={() => viewOpenFileInfo(item)}>
                     <Image src={item.url} className="w-full rounded-md" loading="lazy" preview={false} fallback={errorImg} />
                   </div>
                 ))}

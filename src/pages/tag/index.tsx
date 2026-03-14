@@ -30,8 +30,15 @@ export default () => {
       title: '标签名称',
       key: 'name',
       dataIndex: 'name',
-      width: 150,
+      width: 200,
       align: 'center',
+      render: (text: string) => (
+        <Tooltip title={text}>
+          <div className="max-w-[200px] truncate text-gray-700 dark:text-gray-200 hover:text-primary cursor-pointer">
+            {text}
+          </div>
+        </Tooltip>
+      ),
     },
     {
       title: '文章数量',
@@ -146,20 +153,20 @@ export default () => {
     return (
       <div>
         {/* Title 骨架屏 */}
-        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-2">
+        <Card className="[&>.ant-card-body]:py-2! [&>.ant-card-body]:px-5! mb-2">
           <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
         </Card>
 
         <div className="flex md:justify-between flex-col md:flex-row mx-auto mt-2 h-[calc(100vh-180px)]">
           {/* 左侧表单卡片骨架屏 */}
           <div className="w-full md:w-[40%]">
-            <Card className="border-stroke w-full h-46 [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5">
+            <Card className="border-stroke w-full h-46 [&>.ant-card-body]:py-2! [&>.ant-card-body]:px-5!">
               <Skeleton style={{ width: '100%', height: 30 }} />
             </Card>
           </div>
 
           {/* 右侧表格卡片骨架屏 */}
-          <Card className="border-stroke w-full md:w-[59%] [&>.ant-card-body]:!p-0 mt-2 md:mt-0">
+          <Card className="border-stroke w-full md:w-[59%] [&>.ant-card-body]:p-0! mt-2 md:mt-0">
             {/* 表格行骨架屏 - 模拟多行 */}
             {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
               <div key={item} className="flex items-center gap-4 mb-2 py-2 px-4 border-b border-gray-100">
@@ -203,7 +210,7 @@ export default () => {
           </Spin>
         </div>
 
-        <Card className="border-stroke w-full md:w-[59%] [&>.ant-card-body]:!p-0 mt-2 md:mt-0">
+        <Card className="border-stroke w-full md:w-[59%] [&>.ant-card-body]:p-0! mt-2 md:mt-0">
           <Table
             rowKey="id"
             dataSource={list}

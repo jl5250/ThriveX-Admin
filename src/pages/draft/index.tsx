@@ -73,7 +73,7 @@ export default () => {
     const tagList = (
       <div className="flex flex-wrap gap-1.5 max-w-[280px]">
         {items.map((item, index) => (
-          <Tag key={item.id ?? index} color={tagColors[index % tagColors.length]} className="!m-0 !border-0">
+          <Tag key={item.id ?? index} color={tagColors[index % tagColors.length]} className="m-0! border-0!">
             {item.name}
           </Tag>
         ))}
@@ -82,14 +82,14 @@ export default () => {
     return (
       <div className="flex flex-wrap items-center gap-1.5 justify-start">
         {visible.map((item, index) => (
-          <Tag key={`${keyPrefix}-${item.id ?? index}`} color={tagColors[index % tagColors.length]} className="!m-0 !border-0">
+          <Tag key={`${keyPrefix}-${item.id ?? index}`} color={tagColors[index % tagColors.length]} className="m-0! border-0!">
             {item.name}
           </Tag>
         ))}
         {restCount > 0 && (
           <Popover content={tagList} trigger="hover" placement="topLeft" overlayClassName="article-tags-popover">
             <span
-              className="inline-flex items-center justify-center min-w-[28px] h-6 px-1.5 rounded-md text-xs font-medium cursor-default bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-boxdark-2 dark:text-gray-400 dark:hover:bg-strokedark/80 border-0"
+              className="inline-flex items-center justify-center min-w-[28px] h-6 px-1.5 rounded-md text-xs font-medium cursor-default bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-boxdark-2 dark:text-gray-400 dark:hover:bg-strokedark/80 border-0 cursor-pointer"
               role="button"
               tabIndex={0}
             >
@@ -116,7 +116,7 @@ export default () => {
       key: 'title',
       width: 280,
       render: (text: string, record: Article) => (
-        <a href={`${web.url}/article/${record.id}`} target="_blank" className="hover:text-primary line-clamp-1 text-gray-700 dark:text-gray-200 font-medium" rel="noreferrer">
+        <a href={`${web.url}/article/${record.id}`} target="_blank" className="hover:text-primary! line-clamp-1 text-gray-700! dark:text-gray-200! font-medium" rel="noreferrer">
           {text || <span className="text-gray-300 dark:text-gray-500 italic">暂无标题</span>}
         </a>
       ),
@@ -229,16 +229,16 @@ export default () => {
   if (initialLoading) {
     return (
       <div className="space-y-2">
-        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
+        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-xs border border-gray-100 dark:border-strokedark">
           <div className="skeleton h-8" style={{ width: 200 }} />
         </div>
-        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
+        <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-xs border border-gray-100 dark:border-strokedark">
           {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
             <div key={i} className="flex gap-4 mb-4 items-center">
               <div className="skeleton shrink-0 rounded-lg" style={{ width: 56, height: 56 }} />
               <div className="flex-1 space-y-2 min-w-0">
-                <div className="skeleton h-4 w-full rounded" />
-                <div className="skeleton h-3 rounded" style={{ width: '60%' }} />
+                <div className="skeleton h-4 w-full rounded-sm" />
+                <div className="skeleton h-3 rounded-sm" style={{ width: '60%' }} />
               </div>
             </div>
           ))}
@@ -251,7 +251,7 @@ export default () => {
     <div className="mx-auto">
       <Title value="草稿箱" />
 
-      <div className="bg-white dark:bg-boxdark rounded-2xl shadow-sm border border-gray-100 dark:border-strokedark overflow-hidden">
+      <div className="bg-white dark:bg-boxdark rounded-2xl shadow-xs border border-gray-100 dark:border-strokedark overflow-hidden">
         <Table
           rowKey="id"
           dataSource={articleList}
@@ -269,9 +269,9 @@ export default () => {
               </div>
             ),
             onChange: (page) => setCurrent(page),
-            className: '!px-6 !py-4',
+            className: 'px-6! py-4!',
           }}
-          className="[&_.ant-table-thead>tr>th]:!bg-gray-50 dark:[&_.ant-table-thead>tr>th]:!bg-boxdark-2 [&_.ant-table-thead>tr>th]:!font-medium [&_.ant-table-thead>tr>th]:!text-gray-500 dark:[&_.ant-table-thead>tr>th]:!text-gray-400"
+          className="[&_.ant-table-thead>tr>th]:bg-gray-50! dark:[&_.ant-table-thead>tr>th]:bg-boxdark-2! [&_.ant-table-thead>tr>th]:font-medium! [&_.ant-table-thead>tr>th]:text-gray-500! dark:[&_.ant-table-thead>tr>th]:text-gray-400!"
         />
       </div>
     </div>

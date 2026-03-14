@@ -106,7 +106,7 @@ export default () => {
         const trigger = (
           <div className="record-images-collapse flex items-center gap-2">
             <div
-              className="relative overflow-hidden rounded-lg border border-gray-100 dark:border-strokedark shadow-sm record-image-container group/img"
+              className="relative overflow-hidden rounded-lg border border-gray-100 dark:border-strokedark shadow-xs record-image-container group/img"
               style={{ width: 60, height: 60 }}
             >
               <Image
@@ -148,7 +148,7 @@ export default () => {
                   {list.map((src, idx) => (
                     <div
                       key={idx}
-                      className="overflow-hidden rounded border border-gray-100 dark:border-strokedark record-image-container shrink-0"
+                      className="overflow-hidden rounded-sm border border-gray-100 dark:border-strokedark record-image-container shrink-0"
                       style={{ width: 56, height: 56 }}
                     >
                       <Image
@@ -198,7 +198,7 @@ export default () => {
                 type="text"
                 size="small"
                 icon={<FormOutlined className="text-blue-500" />}
-                className="text-blue-500 dark:text-gray-300 dark:hover:!text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                className="text-blue-500 dark:text-gray-300 dark:hover:text-blue-500! hover:bg-blue-50 dark:hover:bg-blue-900/20"
               />
             </Link>
           </Tooltip>
@@ -230,11 +230,11 @@ export default () => {
   // 骨架屏
   if (initialLoading) return (
     <div className="space-y-2">
-      <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
+      <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-xs border border-gray-100 dark:border-strokedark">
         <div className="skeleton h-8" style={{ width: 200 }} />
       </div>
 
-      <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-sm border border-gray-100 dark:border-strokedark">
+      <div className="px-6 py-3 bg-white dark:bg-boxdark rounded-xl shadow-xs border border-gray-100 dark:border-strokedark">
         <div className="flex justify-between mb-6">
           <div className="flex gap-4">
             <div className="skeleton h-9" style={{ width: 200 }} />
@@ -247,8 +247,8 @@ export default () => {
           <div key={i} className="flex gap-4 mb-4 items-center">
             <div className="skeleton shrink-0 rounded-lg" style={{ width: 56, height: 56 }} />
             <div className="flex-1 space-y-2 min-w-0">
-              <div className="skeleton h-4 w-full rounded" />
-              <div className="skeleton h-3 rounded" style={{ width: '60%' }} />
+              <div className="skeleton h-4 w-full rounded-sm" />
+              <div className="skeleton h-3 rounded-sm" style={{ width: '60%' }} />
             </div>
           </div>
         ))}
@@ -281,10 +281,10 @@ export default () => {
       <div className="mx-auto">
         <Title value="说说管理" />
 
-        <div className="bg-white dark:bg-boxdark rounded-2xl shadow-sm border border-gray-100 dark:border-strokedark overflow-hidden">
+        <div className="bg-white dark:bg-boxdark rounded-2xl shadow-xs border border-gray-100 dark:border-strokedark overflow-hidden">
           <div className="p-5 border-b border-gray-100 dark:border-strokedark bg-gray-50/30 dark:bg-boxdark-2/50">
             <Form form={form} layout="inline" onFinish={onFilterSubmit} className="gap-y-3">
-              <Form.Item name="content" className="!mb-0 w-full sm:w-auto">
+              <Form.Item name="content" className="mb-0! w-full sm:w-auto">
                 <Input
                   prefix={<SearchOutlined className="text-gray-400 dark:text-gray-500" />}
                   placeholder="搜索说说内容..."
@@ -293,7 +293,7 @@ export default () => {
                 />
               </Form.Item>
 
-              <Form.Item name="createTime" className="!mb-0 w-full sm:w-auto">
+              <Form.Item name="createTime" className="mb-0! w-full sm:w-auto">
                 <RangePicker
                   className="w-full sm:w-[280px]"
                   placeholder={['开始日期', '结束日期']}
@@ -333,9 +333,9 @@ export default () => {
                 setCurrentPage(1);
                 setPageSize(size);
               },
-              className: '!px-6 !py-4'
+              className: 'px-6! py-4!'
             }}
-            className="[&_.ant-table-thead>tr>th]:!bg-gray-50 dark:[&_.ant-table-thead>tr>th]:!bg-boxdark-2 [&_.ant-table-thead>tr>th]:!font-medium [&_.ant-table-thead>tr>th]:!text-gray-500 dark:[&_.ant-table-thead>tr>th]:!text-gray-400"
+            className="[&_.ant-table-thead>tr>th]:bg-gray-50! dark:[&_.ant-table-thead>tr>th]:bg-boxdark-2! [&_.ant-table-thead>tr>th]:font-medium! [&_.ant-table-thead>tr>th]:text-gray-500! dark:[&_.ant-table-thead>tr>th]:text-gray-400!"
             scroll={{ x: 1030 }}
           />
         </div>

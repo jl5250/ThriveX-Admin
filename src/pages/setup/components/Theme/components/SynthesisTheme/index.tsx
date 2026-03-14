@@ -90,53 +90,53 @@ export default () => {
 
   return (
     <div>
-      <h2 className="text-xl pb-4 pl-10">综合配置</h2>
+      <h2 className="text-xl py-4">综合配置</h2>
 
-      <div className="w-full lg:w-[500px] md:ml-10">
+      <div className="w-full lg:w-[500px]">
         <Form form={form} onFinish={editThemeData} layout="vertical">
-          <Divider orientation="left">亮色主题 Logo</Divider>
+          <Divider>亮色主题 Logo</Divider>
           <Form.Item name="light_logo" label="亮色主题 Logo">
             <Input prefix={<PictureOutlined />} addonAfter={<UploadBtn type="light_logo" />} size="large" placeholder="请输入亮色Logo地址" />
           </Form.Item>
-          <img src={form.getFieldValue('light_logo')} alt="" className="w-1/3 mt-4 rounded" />
+          <img src={form.getFieldValue('light_logo')} alt="" className="w-1/3 mt-4 rounded-sm" />
 
-          <Divider orientation="left">暗色主题 Logo</Divider>
+          <Divider>暗色主题 Logo</Divider>
           <Form.Item name="dark_logo" label="暗色主题 Logo">
             <Input prefix={<PictureOutlined />} addonAfter={<UploadBtn type="dark_logo" />} size="large" placeholder="请输入暗色Logo地址" />
           </Form.Item>
-          <img src={form.getFieldValue('dark_logo')} alt="" className="w-1/3 mt-4 rounded" />
+          <img src={form.getFieldValue('dark_logo')} alt="" className="w-1/3 mt-4 rounded-sm" />
 
-          <Divider orientation="left">首页背景图</Divider>
+          <Divider>首页背景图</Divider>
           <Form.Item name="swiper_image" label="首页背景图">
             <Input prefix={<PictureOutlined />} addonAfter={<UploadBtn type="swiper_image" />} size="large" placeholder="请输入背景图地址" />
           </Form.Item>
-          <img src={form.getFieldValue('swiper_image')} alt="" className="w-1/3 mt-4 rounded" />
+          <img src={form.getFieldValue('swiper_image')} alt="" className="w-1/3 mt-4 rounded-sm" />
 
-          <Divider orientation="left">打字机文本</Divider>
+          <Divider>打字机文本</Divider>
           <Form.Item name="swiper_text" label="打字机文本">
             <Input.TextArea autoSize={{ minRows: 2, maxRows: 4 }} size="large" placeholder="请输入打字机文本" />
           </Form.Item>
           <Alert message="以换行分隔，每行表示一段文本" type="info" className="mt-2" />
 
-          <Divider orientation="left">社交网站</Divider>
+          <Divider>社交网站</Divider>
           <Form.Item name="social" label="社交网站">
             <Input.TextArea autoSize={{ minRows: 2, maxRows: 4 }} size="large" placeholder="请输入社交网站" />
           </Form.Item>
           <Alert message="请务必确保每一项格式正确，否则会导致网站无法访问" type="info" className="mt-2" />
 
-          <Divider orientation="left">文章随机封面</Divider>
+          <Divider>文章随机封面</Divider>
           <Form.Item name="covers" label="文章随机封面">
             <Input.TextArea autoSize={{ minRows: 2, maxRows: 4 }} size="large" placeholder="请输入文章随机封面" />
           </Form.Item>
           <Alert message="以换行分隔，每行表示一段文本" type="info" className="mt-2" />
 
-          <Divider orientation="left">作者推荐文章</Divider>
+          <Divider>作者推荐文章</Divider>
           <Form.Item name="reco_article" label="作者推荐文章">
             <Input.TextArea autoSize={{ minRows: 2, maxRows: 4 }} size="large" placeholder="请输入作者推荐文章ID" />
           </Form.Item>
           <Alert message="以换行分隔，每行表示一段文本" type="info" className="mt-2" />
 
-          <Divider orientation="left">侧边栏</Divider>
+          <Divider>侧边栏</Divider>
           <Checkbox.Group
             value={theme.right_sidebar}
             onChange={(right_sidebar) => {
@@ -153,14 +153,14 @@ export default () => {
             </div>
           </Checkbox.Group>
 
-          <Divider orientation="left">文章布局</Divider>
+          <Divider>文章布局</Divider>
           <div className="overflow-auto w-full">
             <div className="article flex w-[650px]">
               {['classics', 'card', 'waterfall'].map((item) => (
-                <div key={item} onClick={() => setTheme({ ...theme, is_article_layout: item })} className={`item flex flex-col items-center p-4 m-4 border-2 rounded cursor-pointer ${theme.is_article_layout === item ? 'border-primary' : 'border-stroke'}`}>
+                <div key={item} onClick={() => setTheme({ ...theme, is_article_layout: item })} className={`item flex flex-col items-center p-4 m-4 border-2 rounded-sm cursor-pointer ${theme.is_article_layout === item ? 'border-primary' : 'border-stroke'}`}>
                   <p className={`text-center ${theme.is_article_layout === item ? 'text-primary' : ''}`}>{item === 'classics' ? '经典布局' : item === 'card' ? '卡片布局' : '瀑布流布局'}</p>
 
-                  <img src={`${getFile(item)}`} alt="" className="w-[200px] mt-4 rounded" />
+                  <img src={`${getFile(item)}`} alt="" className="w-[200px] mt-4 rounded-sm" />
                 </div>
               ))}
             </div>
