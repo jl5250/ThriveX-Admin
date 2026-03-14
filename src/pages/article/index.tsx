@@ -17,7 +17,7 @@ import { getTagListAPI } from '@/api/tag';
 import { delArticleDataAPI, getArticlePagingAPI, addArticleDataAPI, delBatchArticleDataAPI } from '@/api/article';
 
 import type { Tag as ArticleTag } from '@/types/app/tag';
-import type { Cate } from '@/types/app/cate';
+import type { Cate as ArticleCate } from '@/types/app/cate';
 import type { Article, Config, ArticleFilterQueryParams, ArticleFilterDataForm } from '@/types/app/article';
 
 import { useWebStore } from '@/stores';
@@ -30,6 +30,7 @@ export default () => {
   const [btnLoading, setBtnLoading] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const isFirstLoadRef = useRef<boolean>(true);
+  const filterDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [form] = Form.useForm();
   const web = useWebStore((state) => state.web);
@@ -98,13 +99,12 @@ export default () => {
     list: T[],
     keyPrefix: string,
   ) => {
-    const items = list || [];
-    if (items.length === 0) return null;
-    const visible = items.slice(0, VISIBLE_TAG_COUNT);
-    const restCount = items.length - VISIBLE_TAG_COUNT;
-    const tagList = (
+    if (list.length === 0) return null;
+    const visible = list.slice(0, VISIBLE_TAG_COUNT);
+    const restCount = list.length - VISIBLE_TAG_COUNT;
+    const items = (
       <div className="flex flex-wrap gap-1.5 max-w-[280px]">
-        {items.map((item, index) => (
+        {list.map((item, index) => (
           <Tag
             key={item.id ?? index}
             color={tagColors[index % tagColors.length]}
@@ -126,15 +126,16 @@ export default () => {
             {item.name}
           </Tag>
         ))}
+
         {restCount > 0 && (
           <Popover
-            content={tagList}
+            content={items}
             trigger="hover"
             placement="topLeft"
-            overlayClassName="article-tags-popover"
+            classNames={{ root: 'article-tags-popover' }}
           >
             <span
-              className="inline-flex items-center justify-center min-w-[28px] h-6 px-1.5 rounded-md text-xs font-medium cursor-default bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-boxdark-2 dark:text-gray-400 dark:hover:bg-strokedark/80 border-0 cursor-pointer"
+              className="inline-flex items-center justify-center min-w-[28px] h-6 px-1.5 rounded-md text-xs font-medium bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-boxdark-2 dark:text-gray-400 dark:hover:bg-strokedark/80 border-0 cursor-pointer"
               role="button"
               tabIndex={0}
             >
@@ -161,16 +162,24 @@ export default () => {
       key: 'title',
       width: 280,
       render: (text: string, record: Article) => (
-        <Tooltip title={text} placement="topLeft">
-          <a
-            href={`${web.url}/article/${record.id}`}
-            target="_blank"
-            rel="noreferrer"
-            className="max-w-[280px] truncate block text-gray-700! dark:text-gray-200! font-medium hover:text-primary!"
-          >
-            {text || <span className="text-gray-300 dark:text-gray-500 italic">暂无标题</span>}
-          </a>
-        </Tooltip>
+        <>
+          {text ? (
+            <Tooltip title={text} placement="topLeft">
+              <a
+                href={`${web.url}/article/${record.id}`}
+                target="_blank"
+                rel="noreferrer"
+                className="max-w-[280px] truncate block text-gray-700 dark:text-gray-200 font-medium hover:text-primary dark:hover:text-primary"
+              >
+                {text}
+              </a>
+            </Tooltip>
+          )
+            : (
+              <span className="text-gray-300 dark:text-gray-500 italic">暂无标题</span>
+            )
+          }
+        </>
       ),
     },
     {
@@ -182,7 +191,7 @@ export default () => {
         <>
           {text ? (
             <Tooltip title={text}>
-              <div className="max-w-[320px] truncate text-gray-700! dark:text-gray-200! hover:text-primary! cursor-pointer">
+              <div className="max-w-[320px] truncate text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-primary cursor-pointer">
                 {text}
               </div>
             </Tooltip>
@@ -197,7 +206,7 @@ export default () => {
       dataIndex: 'cateList',
       key: 'cateList',
       width: 140,
-      render: (cates: Cate[]) => renderCollapsibleTags(cates || [], 'cate'),
+      render: (cates: ArticleCate[]) => renderCollapsibleTags(cates || [], 'cate'),
     },
     {
       title: '标签',
@@ -248,7 +257,7 @@ export default () => {
           no_home: '不在首页显示',
           hide: '隐藏',
         };
-        const label = config.password?.trim() ? '文章加密' : statusMap[config.status] ?? config.status;
+        const label = config.password?.trim() ? '文章加密' : statusMap[config.status];
         const statusColorMap: Record<string, string> = {
           default: 'success',
           no_home: 'warning',
@@ -281,7 +290,7 @@ export default () => {
       width: 165,
       align: 'center',
       render: (_, record: Article) => (
-        <Space split={<Divider type="vertical" />}>
+        <Space separator={<Divider orientation="vertical" />}>
           <ArticleExport.Single article={record} />
 
           <Tooltip title="编辑">
@@ -319,23 +328,37 @@ export default () => {
     },
   ];
 
-  const onFilterSubmit = async (values: ArticleFilterDataForm) => {
-    try {
-      setFilter({
-        key: values.title,
-        cateId: values.cateId,
-        tagId: values.tagId,
-        startDate: values.createTime?.[0] && values.createTime?.[0]?.valueOf() + '',
-        endDate: values.createTime?.[1] && values.createTime?.[1]?.valueOf() + '',
-        page: 1,
-        size: 8,
-      });
-    } catch (error) {
-      console.error(error);
+  const applyFormValuesToFilter = (values: ArticleFilterDataForm) => {
+    setFilter((prev) => ({
+      ...prev,
+      key: values.title,
+      cateId: values.cateId,
+      tagId: values.tagId,
+      startDate: values.createTime?.[0] ? String(values.createTime[0].valueOf()) : undefined,
+      endDate: values.createTime?.[1] ? String(values.createTime[1].valueOf()) : undefined,
+      page: 1,
+      size: prev.size ?? 8,
+    }));
+  };
+
+  const onFilterValuesChange = (_: Partial<ArticleFilterDataForm>, allValues: ArticleFilterDataForm) => {
+    if (filterDebounceRef.current) {
+      clearTimeout(filterDebounceRef.current);
+      filterDebounceRef.current = null;
+    }
+    const hasTitleChange = 'title' in (_ as Partial<ArticleFilterDataForm>);
+    if (hasTitleChange) {
+      filterDebounceRef.current = setTimeout(() => applyFormValuesToFilter(allValues), 400);
+    } else {
+      applyFormValuesToFilter(allValues);
     }
   };
 
   const onFilterReset = () => {
+    if (filterDebounceRef.current) {
+      clearTimeout(filterDebounceRef.current);
+      filterDebounceRef.current = null;
+    }
     form.resetFields();
     setFilter({
       page: 1,
@@ -350,12 +373,14 @@ export default () => {
     });
   };
 
-  const [cateList, setCateList] = useState<Cate[]>([]);
+  const [cateList, setCateList] = useState<ArticleCate[]>([]);
   const [tagList, setTagList] = useState<ArticleTag[]>([]);
 
   const getCateList = async () => {
     const { data } = await getCateListAPI();
-    setCateList(data.filter((item) => item.type === 'cate') as Cate[]);
+    // 临时写法：完善后端后在优化这块
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setCateList((data as any).filter((item: any) => item.type === 'cate'));
   };
 
   const getTagList = async () => {
@@ -363,7 +388,7 @@ export default () => {
     setTagList(data as ArticleTag[]);
   };
 
-  // 导入文章：由 ArticleImportModal 收集文件后调用，仅负责解析与提交
+  // 导入文章：收集文件后调用，仅负责解析与提交
   const handleArticleImport = async (files: File[]) => {
     const articles: Article[] = [];
 
@@ -405,12 +430,12 @@ export default () => {
     }
   };
 
-  const getTagIdsByNames = (names: string[], allTags: { id?: number; name: string }[]) => {
+  const getTagOrCateIdsByNames = (names: string[], allTags: ArticleTag[] | ArticleCate[]) => {
     const lowerCaseMap = new Map<string, number>();
 
-    // 可选：忽略大小写（如果不需要，请移除 toLowerCase）
-    for (const tag of allTags) {
-      lowerCaseMap.set(tag.name.toLowerCase(), tag.id as number);
+    // 忽略大小写
+    for (const item of allTags) {
+      lowerCaseMap.set(item.name.toLowerCase(), item.id as number);
     }
 
     return (
@@ -446,9 +471,9 @@ export default () => {
       return d.getTime().toString();
     };
     const tagNames = meta.tags?.split(/\s+/).filter(Boolean) || [];
-    const tagIds = getTagIdsByNames(tagNames, tagList);
+    const tagIds = getTagOrCateIdsByNames(tagNames, tagList);
     const cateNames = meta.categories?.split(/\s+/).filter(Boolean) || [];
-    const cateIds = getTagIdsByNames(cateNames, cateList);
+    const cateIds = getTagOrCateIdsByNames(cateNames, cateList);
 
     const article: Article = {
       title: meta.title || '未命名文章',
@@ -529,8 +554,9 @@ export default () => {
     fixed: 'left',
   };
 
-  // 导出全部时拉取所有文章（供 ArticleExport.Dropdown 使用）
+  // 导出全部时拉取所有文章
   const loadAllArticles = async (): Promise<Article[]> => {
+    // 临时写法：后续会优化这块 { page: 1, size: 999999999 }
     const { data } = await getArticlePagingAPI({ page: 1, size: 999999999 });
     return data.result;
   };
@@ -587,7 +613,7 @@ export default () => {
       <div className="bg-white dark:bg-boxdark rounded-2xl shadow-xs border border-gray-100 dark:border-strokedark overflow-hidden">
         <div className="p-5 border-b border-gray-100 dark:border-strokedark bg-gray-50/30 dark:bg-boxdark-2/50 space-y-4">
           {/* 筛选区：搜索条件 + 查询/重置 */}
-          <Form form={form} layout="inline" onFinish={onFilterSubmit} className="flex! flex-wrap! items-center! gap-y-2.5!">
+          <Form form={form} layout="inline" onValuesChange={onFilterValuesChange} className="flex! flex-wrap! items-center! gap-y-2.5!">
             <Form.Item name="title" className="mb-0!">
               <Input
                 prefix={<SearchOutlined className="text-gray-400 dark:text-gray-500" />}
@@ -596,6 +622,7 @@ export default () => {
                 allowClear
               />
             </Form.Item>
+
             <Form.Item name="cateId" className="mb-0!">
               <Select
                 allowClear
@@ -605,6 +632,7 @@ export default () => {
                 className="w-[160px]!"
               />
             </Form.Item>
+
             <Form.Item name="tagId" className="mb-0!">
               <Select
                 allowClear
@@ -616,6 +644,7 @@ export default () => {
                 filterOption={(input, option) => (option?.name ?? '').toLowerCase().includes(input.toLowerCase())}
               />
             </Form.Item>
+
             <Form.Item name="createTime" className="mb-0!">
               <RangePicker
                 className="w-[260px]!"
@@ -623,10 +652,8 @@ export default () => {
                 disabledDate={(current) => current && current > dayjs().endOf('day')}
               />
             </Form.Item>
+
             <Space className="sm:flex-nowrap">
-              <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
-                查询
-              </Button>
               <Button icon={<ClearOutlined />} onClick={onFilterReset}>
                 重置
               </Button>
@@ -639,20 +666,24 @@ export default () => {
             </Space>
           </Form>
 
-          {/* 批量操作区：点击「高级文案」后显示，按钮组靠右 */}
           {showBatchActions && (
-            <div className="flex flex-wrap items-center pt-2 mt-2! border-t border-gray-100 dark:border-strokedark gap-2">
-              <ArticleExport.Dropdown
-                selectedArticles={articleList.filter((a) => selectedRowKeys.includes(a.id as number))}
-                onLoadAll={loadAllArticles}
-                setLoading={setLoading}
-              />
-              <Button type="primary" icon={<InboxOutlined />} onClick={() => setIsModalOpen(true)}>
-                导入文章
-              </Button>
-              <Popconfirm title="删除确认" description="确定要删除选中的文章吗？" okText="删除" okButtonProps={{ danger: true }} cancelText="取消" onConfirm={() => delSelected()}>
-                <Button danger icon={<DeleteOutlined />}>删除选中</Button>
-              </Popconfirm>
+            <div className="flex justify-between items-center pt-2 mt-2! border-t border-gray-100 dark:border-strokedark gap-2">
+              <div></div>
+
+              <div className="flex space-x-3">
+                <ArticleExport.Dropdown
+                  selectedArticles={articleList.filter((a) => selectedRowKeys.includes(a.id as number))}
+                  onLoadAll={loadAllArticles}
+                  setLoading={setLoading}
+                />
+
+                <Button type="primary" icon={<InboxOutlined />} onClick={() => setIsModalOpen(true)}>
+                  导入文章
+                </Button>
+                <Popconfirm title="删除确认" description="确定要删除选中的文章吗？" okText="删除" okButtonProps={{ danger: true }} cancelText="取消" onConfirm={() => delSelected()}>
+                  <Button danger icon={<DeleteOutlined />}>删除选中</Button>
+                </Popconfirm>
+              </div>
             </div>
           )}
         </div>

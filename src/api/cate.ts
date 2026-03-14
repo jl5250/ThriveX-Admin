@@ -14,14 +14,4 @@ export const editCateDataAPI = (data: Cate) => Request('PATCH', '/cate', { data 
 export const getCateDataAPI = (id?: number) => Request<Cate>('GET', `/cate/${id}`)
 
 // 获取分类列表
-export const getCateListAPI = (data?: QueryData) => Request<Cate[]>('POST', `/cate/list`, {
-    data: { ...data?.query },
-})
-
-// 分页获取分类列表
-export const getCatePagingAPI = (data?: QueryData) => Request<Paginate<Cate[]>>('POST', `/cate/paging`, {
-    data: { ...data?.query },
-    params: {
-        ...data?.pagination
-    }
-})
+export const getCateListAPI = (params?: QueryData) => Request<Paginate<Cate[]>>('GET', `/cate`, { params })
