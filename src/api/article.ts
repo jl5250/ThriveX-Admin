@@ -23,8 +23,7 @@ export const editArticleDataAPI = (data: Article) =>
 // 获取文章
 export const getArticleDataAPI = (id?: number) => Request<Article>('GET', `/article/${id}`)
 
-// 分页获取文章列表
-// 后续改一下：不传分页参数表示获取所有文章
+// 获取文章列表
 export const getArticlePagingAPI = (params?: ArticleFilterQueryParams) => Request<Paginate<Article[]>>('GET', `/article`, { params })
 
 // 导入文章

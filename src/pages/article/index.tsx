@@ -1,17 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
-import { Table, Button, Tag, notification, Popconfirm, Form, Input, Select, DatePicker, message, Dropdown, Tooltip, Space, Divider, Popover } from 'antd';
+import { Table, Button, Tag, notification, Popconfirm, Form, Input, Select, DatePicker, message, Tooltip, Space, Divider, Popover } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { TableRowSelection } from 'antd/es/table/interface';
-import { DeleteOutlined, FormOutlined, InboxOutlined, DownloadOutlined, SearchOutlined, ClearOutlined, EyeOutlined, CommentOutlined } from '@ant-design/icons';
+import { DeleteOutlined, FormOutlined, InboxOutlined, SearchOutlined, ClearOutlined, EyeOutlined, CommentOutlined } from '@ant-design/icons';
 import { HiOutlineChevronDown, HiOutlineChevronUp } from 'react-icons/hi';
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
 import dayjs from 'dayjs';
 
 import Title from '@/components/Title';
 import ArticleImportModal from './components/ArticleImportModal';
+import ArticleExport from './components/ArticleExport';
 
 import { getCateListAPI } from '@/api/cate';
 import { getTagListAPI } from '@/api/tag';
@@ -283,16 +282,7 @@ export default () => {
       align: 'center',
       render: (_, record: Article) => (
         <Space split={<Divider type="vertical" />}>
-          <Tooltip title="导出">
-            <Popconfirm title="提醒" description="确定要导出该文章吗？" okText="确定" cancelText="取消" onConfirm={() => exportArticle(record.id!)}>
-              <Button
-                type="text"
-                size="small"
-                icon={<DownloadOutlined />}
-                className="hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800/50"
-              />
-            </Popconfirm>
-          </Tooltip>
+          <ArticleExport.Single article={record} />
 
           <Tooltip title="编辑">
             <Link to={`/create?id=${record.id}`}>
@@ -415,33 +405,6 @@ export default () => {
     }
   };
 
-  // 导出为markdown文件
-  const generateMarkdown = (article: Article) => {
-    const { title, description, content, cover, createTime, cateList, tagList } = article;
-
-    // 格式化时间为 `YYYY-MM-DD HH:mm:ss`
-    const formatDate = (timestamp: string) => {
-      const date = new Date(Number(timestamp));
-      const pad = (n: number) => String(n).padStart(2, '0');
-      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
-    };
-
-    // 处理标签、分类
-    const tags = (tagList || []).map((tag) => tag.name);
-    const categories = (cateList || []).map((cate) => cate.name);
-    const keywords = [...tags, ...categories].join(' ');
-
-    // 构建 Markdown 字符串
-    const markdown = `---\ntitle: ${title}\ntags: ${tags.map((tag) => `${tag}`).join(' ')}\ncategories: ${categories.map((c) => `${c}`).join(' ')}\ncover: ${cover}\ndate: ${formatDate(createTime || new Date().getTime() + '')}\nkeywords: ${keywords}\ndescription: ${description}\n---\n\n ${content.trim()}`;
-
-    return markdown;
-  };
-  /**
-   * 根据 tag 名称列表获取对应的 ID 列表
-   * @param names - Markdown 里解析出的标签 ["模块", "爬虫"]
-   * @param allTags - 全部可用 tag 列表
-   * @returns 标签 ID 数组，如 [82, 87]
-   */
   const getTagIdsByNames = (names: string[], allTags: { id?: number; name: string }[]) => {
     const lowerCaseMap = new Map<string, number>();
 
@@ -530,50 +493,6 @@ export default () => {
     return Array.isArray(raw) ? raw.map(parseSingle) : [parseSingle(raw)];
   };
 
-  // 下载文件
-  const downloadFile = (content: string, fileName: string, mimeType: string = 'text/plain;charset=utf-8') => {
-    const blob = new Blob([content], { type: mimeType });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
-  // 导出文章为 zip 文件
-  const downloadMarkdownZip = async (articles: Article[]) => {
-    const zip = new JSZip();
-    const folder = zip.folder('data');
-
-    articles.forEach((article) => {
-      const markdown = generateMarkdown(article);
-      const safeTitle = article.title.replace(/[\\/:*?"<>|]/g, '_');
-      folder?.file(`${safeTitle}.md`, markdown);
-    });
-    zip.file('articles.json', JSON.stringify(articles, null, 2));
-    const blob = await zip.generateAsync({ type: 'blob' });
-    saveAs(blob, '导出文章_' + new Date().getTime() + '.zip');
-  };
-
-  // 导出文章
-  const exportArticle = (id: number) => {
-    const article = articleList.filter((item) => item.id === id)[0];
-    const markdown = generateMarkdown(article);
-    downloadFile(markdown, `${article.title.replace(/[\\/:*?"<>|]/g, '_')}.md`);
-  };
-
-  // 导出选中
-  const exportSelected = () => {
-    const selectedArticles = articleList.filter((item: Article) => selectedRowKeys.includes(item.id as number));
-
-    if (!selectedArticles.length) return message.warning('请选择要导出的文章');
-
-    downloadMarkdownZip(selectedArticles);
-  };
-
   // 删除选中
   const delSelected = async () => {
     if (!selectedRowKeys.length) {
@@ -610,17 +529,10 @@ export default () => {
     fixed: 'left',
   };
 
-  // 全部导出
-  const exportAll = async () => {
-    try {
-      setLoading(true);
-      const { data } = await getArticlePagingAPI({ page: 1, size: 999999999 });
-      downloadMarkdownZip(data.result);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
+  // 导出全部时拉取所有文章（供 ArticleExport.Dropdown 使用）
+  const loadAllArticles = async (): Promise<Article[]> => {
+    const { data } = await getArticlePagingAPI({ page: 1, size: 999999999 });
+    return data.result;
   };
 
   useEffect(() => {
@@ -730,18 +642,11 @@ export default () => {
           {/* 批量操作区：点击「高级文案」后显示，按钮组靠右 */}
           {showBatchActions && (
             <div className="flex flex-wrap items-center pt-2 mt-2! border-t border-gray-100 dark:border-strokedark gap-2">
-              <Dropdown.Button
-                icon={<DownloadOutlined />}
-                className="w-[120px]"
-                menu={{
-                  items: [
-                    { label: '导出选中', key: 'exportSelected', onClick: () => exportSelected() },
-                    { label: '导出全部', key: 'exportAll', onClick: () => exportAll() },
-                  ],
-                }}
-              >
-                导出文章
-              </Dropdown.Button>
+              <ArticleExport.Dropdown
+                selectedArticles={articleList.filter((a) => selectedRowKeys.includes(a.id as number))}
+                onLoadAll={loadAllArticles}
+                setLoading={setLoading}
+              />
               <Button type="primary" icon={<InboxOutlined />} onClick={() => setIsModalOpen(true)}>
                 导入文章
               </Button>
