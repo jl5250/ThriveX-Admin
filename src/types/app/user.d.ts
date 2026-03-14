@@ -34,7 +34,7 @@ export interface FilterForm {
   createTime: Date[];
 }
 
-export interface FilterUser extends FilterData {
+export interface FilterUser extends FilterQueryParams {
   name?: string;
   roleId?: number;
 }
