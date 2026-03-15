@@ -14,7 +14,7 @@ export default ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (version.tag_name && version.tag_name !== import.meta.env.VITE_VERSION) {
       notification.success({
-        message: '系统升级',
+        title: '系统升级',
         description: `请更新到 ${version.tag_name} 版本，以获得最佳体验`,
       });
     }

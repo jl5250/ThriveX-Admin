@@ -256,7 +256,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         {/* Logo 和标题骨架屏 */}
         <div className="flex justify-center items-center gap-2 px-6 py-5 pb-0 lg:pt-6 mb-4">
           <div className="flex items-center">
-            <Skeleton.Input active size="default" style={{ width: 100, height: 40 }} />
+            <Skeleton.Input active size="middle" style={{ width: 100, height: 40 }} />
           </div>
         </div>
 

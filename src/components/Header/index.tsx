@@ -32,7 +32,7 @@ const Header = (props: { sidebarOpen: string | boolean | undefined; setSidebarOp
           <div className="flex items-center gap-4 flex-1 min-w-0">
             {/* 移动端菜单按钮和 Logo 骨架屏 */}
             <div className="flex items-center gap-4 lg:hidden shrink-0">
-              <Skeleton.Button active size="default" style={{ width: 32, height: 32 }} />
+              <Skeleton.Button active size="medium" style={{ width: 32, height: 32 }} />
               <Skeleton.Avatar active size={32} shape="square" />
             </div>
 
@@ -40,7 +40,7 @@ const Header = (props: { sidebarOpen: string | boolean | undefined; setSidebarOp
             <div className="flex-1 min-w-0 w-2/6 overflow-x-auto">
               <div className="flex items-center gap-2">
                 {[1, 2, 3].map((item) => (
-                  <Skeleton.Button key={item} active size="default" style={{ width: 100, height: 32 }} />
+                  <Skeleton.Button key={item} active size="medium" style={{ width: 100, height: 32 }} />
                 ))}
               </div>
             </div>
@@ -49,7 +49,7 @@ const Header = (props: { sidebarOpen: string | boolean | undefined; setSidebarOp
           {/* 右侧操作栏骨架屏 */}
           <div className="flex items-center gap-3 2xsm:gap-7 shrink-0 ml-4">
             <ul className="flex items-center gap-2 2xsm:gap-4 sm:mr-4">
-              <Skeleton.Button active size="default" style={{ width: 32, height: 30 }} />
+              <Skeleton.Button active size="medium" style={{ width: 32, height: 30 }} />
             </ul>
 
             <div className="sm:block hidden">

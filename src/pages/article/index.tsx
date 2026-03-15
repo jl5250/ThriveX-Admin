@@ -4,7 +4,13 @@ import { Link } from 'react-router-dom';
 import { Table, Button, Tag, notification, Popconfirm, Form, Input, Select, DatePicker, message, Tooltip, Space, Divider, Popover } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { TableRowSelection } from 'antd/es/table/interface';
-import { DeleteOutlined, FormOutlined, InboxOutlined, SearchOutlined, ClearOutlined, EyeOutlined, CommentOutlined } from '@ant-design/icons';
+import DeleteOutlined from '@ant-design/icons';
+import FormOutlined from '@ant-design/icons';
+import InboxOutlined from '@ant-design/icons';
+import SearchOutlined from '@ant-design/icons';
+import ClearOutlined from '@ant-design/icons';
+import EyeOutlined from '@ant-design/icons';
+import CommentOutlined from '@ant-design/icons';
 import { HiOutlineChevronDown, HiOutlineChevronUp } from 'react-icons/hi';
 import dayjs from 'dayjs';
 
@@ -103,7 +109,7 @@ export default () => {
     const visible = list.slice(0, VISIBLE_TAG_COUNT);
     const restCount = list.length - VISIBLE_TAG_COUNT;
     const items = (
-      <div className="flex flex-wrap gap-1.5 max-w-[280px]">
+      <div className="flex flex-wrap gap-1.5 max-w-70">
         {list.map((item, index) => (
           <Tag
             key={item.id ?? index}
@@ -135,7 +141,7 @@ export default () => {
             classNames={{ root: 'article-tags-popover' }}
           >
             <span
-              className="inline-flex items-center justify-center min-w-[28px] h-6 px-1.5 rounded-md text-xs font-medium bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-boxdark-2 dark:text-gray-400 dark:hover:bg-strokedark/80 border-0 cursor-pointer"
+              className="inline-flex items-center justify-center min-w-7 h-6 px-1.5 rounded-md text-xs font-medium bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-boxdark-2 dark:text-gray-400 dark:hover:bg-strokedark/80 border-0 cursor-pointer"
               role="button"
               tabIndex={0}
             >
@@ -169,7 +175,7 @@ export default () => {
                 href={`${web.url}/article/${record.id}`}
                 target="_blank"
                 rel="noreferrer"
-                className="max-w-[280px] truncate block text-gray-700 dark:text-gray-200 font-medium hover:text-primary dark:hover:text-primary"
+                className="max-w-70 truncate block text-gray-700 dark:text-gray-200 font-medium hover:text-primary dark:hover:text-primary"
               >
                 {text}
               </a>
@@ -618,7 +624,7 @@ export default () => {
               <Input
                 prefix={<SearchOutlined className="text-gray-400 dark:text-gray-500" />}
                 placeholder="搜索文章标题..."
-                className="w-[220px]!"
+                className="w-55!"
                 allowClear
               />
             </Form.Item>
@@ -629,7 +635,7 @@ export default () => {
                 options={cateList}
                 fieldNames={{ label: 'name', value: 'id' }}
                 placeholder="选择分类"
-                className="w-[160px]!"
+                className="w-40!"
               />
             </Form.Item>
 
@@ -640,14 +646,14 @@ export default () => {
                 options={tagList}
                 fieldNames={{ label: 'name', value: 'id' }}
                 placeholder="选择标签"
-                className="w-[140px]!"
+                className="w-35!"
                 filterOption={(input, option) => (option?.name ?? '').toLowerCase().includes(input.toLowerCase())}
               />
             </Form.Item>
 
             <Form.Item name="createTime" className="mb-0!">
               <RangePicker
-                className="w-[260px]!"
+                className="w-65!"
                 placeholder={['开始日期', '结束日期']}
                 disabledDate={(current) => current && current > dayjs().endOf('day')}
               />
@@ -700,7 +706,7 @@ export default () => {
             pageSize: filter.size,
             total,
             showTotal: (totalCount) => (
-              <div className="mt-[9px] text-xs text-gray-500 dark:text-gray-400">
+              <div className="mt-2.25 text-xs text-gray-500 dark:text-gray-400">
                 当前第 {filter.page} / {Math.ceil(totalCount / (filter.size || 8))} 页 | 共 {totalCount} 条数据
               </div>
             ),
