@@ -1,7 +1,7 @@
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/preflight.css" layer(custom-base);
 @import "tailwindcss/utilities.css" layer(custom-utilities);
-@import url('./custom.scss') layer(custom-base);
+@import url("./custom.scss") layer(custom-base);
 
 @layer theme, custom-base, custom-utilities;
 

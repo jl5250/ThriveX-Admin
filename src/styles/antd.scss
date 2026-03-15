@@ -11,6 +11,14 @@
         border-style, outline-style !important;
 }
 
+a {
+    color: inherit;
+    
+    &:hover {
+        color: var(--color-primary) !important;
+    }
+}
+
 /* 表单获取焦点时的阴影效果 */
 .ant-input:focus,
 .ant-input-focused,
