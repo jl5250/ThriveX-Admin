@@ -172,7 +172,7 @@ export default () => {
   };
 
   // 文件上传
-  const UploadBtn = () => <CloudUploadOutlined className="text-xl cursor-pointer" onClick={() => setIsMaterialModalOpen(true)} />;
+  // const UploadBtn = () => <CloudUploadOutlined className="text-xl cursor-pointer" onClick={() => setIsMaterialModalOpen(true)} />;
 
   const tabItems = [
     {
