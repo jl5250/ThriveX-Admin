@@ -191,7 +191,7 @@ export default () => {
       width: 120,
       align: 'center',
       render: (_, record) => (
-        <Space split={<Divider type="vertical" />}>
+        <Space separator={<Divider orientation="vertical" />}>
           <Tooltip title="编辑">
             <Link to={`/create_record?id=${record.id}`}>
               <Button
@@ -315,7 +315,7 @@ export default () => {
             columns={columns}
             loading={loading}
             pagination={{
-              position: ['bottomRight'],
+              placement:['bottomEnd'],
               current: currentPage,
               pageSize: pageSize,
               showTotal: (total) => (

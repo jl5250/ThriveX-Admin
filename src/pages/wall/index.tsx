@@ -94,7 +94,7 @@ export default () => {
       key: 'cate',
       width: 100,
       render: ({ name }: { name: string }, { color }: Wall) => (
-        <Tag bordered={false} color={color} className="text-[#565656]! dark:text-white! m-0!">
+        <Tag variant="filled" color={color} className="text-[#565656]! dark:text-white! m-0!">
           {name}
         </Tag>
       ),
@@ -328,7 +328,7 @@ export default () => {
           loading={loading}
           scroll={{ x: 1200 }}
           pagination={{
-            position: ['bottomRight'],
+            placement:['bottomEnd'],
             defaultPageSize: 8,
             showTotal: (totalCount) => (
               <div className="mt-[9px] text-xs text-gray-500 dark:text-gray-400">

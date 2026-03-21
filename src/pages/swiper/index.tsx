@@ -73,7 +73,7 @@ export default () => {
       fixed: 'right',
       width: 130,
       render: (_: string, record: Swiper) => (
-        <Space split={<Divider type="vertical" />}>
+        <Space separator={<Divider orientation="vertical" />}>
           <Tooltip title="编辑">
             <Button type="text" onClick={() => editSwiperData(record)} icon={<FormOutlined className="text-blue-500" />} />
           </Tooltip>
@@ -186,7 +186,7 @@ export default () => {
           loading={loading}
           scroll={{ x: 900 }}
           pagination={{
-            position: ['bottomRight'],
+            placement:['bottomEnd'],
             pageSize: 8,
             showTotal: (totalCount) => (
               <div className="mt-[9px] text-xs text-gray-500 dark:text-gray-400">
@@ -220,7 +220,12 @@ export default () => {
             </Form.Item>
 
             <Form.Item label="图片" name="image" rules={[{ required: true, message: '轮播图地址不能为空' }]}>
-              <Input placeholder="https://liuyuyang.net/swiper.jpg" prefix={<PictureOutlined />} addonAfter={<UploadBtn />} className="customizeAntdInputAddonAfter" />
+              <Space.Compact style={{ width: '100%' }}>
+                <Input placeholder="https://liuyuyang.net/swiper.jpg" prefix={<PictureOutlined />} />
+                <Button icon={<CloudUploadOutlined />} onClick={() => setIsMaterialModalOpen(true)}>
+                  上传
+                </Button>
+              </Space.Compact>
             </Form.Item>
 
             <Form.Item>

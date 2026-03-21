@@ -57,13 +57,13 @@ export default () => {
           <div className="rounded-lg mt-2 grid grid-cols-12 gap-2">
             {/* 访客统计图表 */}
             <Card className="col-span-12 xl:col-span-8 border-stroke [&>.ant-card-body]:py-2! [&>.ant-card-body]:px-5!">
-              <Skeleton.Input active size="default" style={{ width: 150, height: 24, marginBottom: 16 }} />
+              <Skeleton.Input active size="medium" style={{ width: 150, height: 24, marginBottom: 16 }} />
               <Skeleton active paragraph={{ rows: 10 }} />
             </Card>
 
             {/* 新老访客图表 */}
             <Card className="col-span-12 xl:col-span-4 border-stroke [&>.ant-card-body]:py-2! [&>.ant-card-body]:px-5!">
-              <Skeleton.Input active size="default" style={{ width: 120, height: 24, marginBottom: 16 }} />
+              <Skeleton.Input active size="medium" style={{ width: 120, height: 24, marginBottom: 16 }} />
               <Skeleton active paragraph={{ rows: 10 }} />
             </Card>
           </div>

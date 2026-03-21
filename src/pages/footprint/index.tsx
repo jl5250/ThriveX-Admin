@@ -252,7 +252,7 @@ export default () => {
           <div>
             {text ? (
               <Tooltip title={text}>
-                <div className="max-w-[220px] truncate text-gray-700 dark:text-gray-200 hover:text-primary cursor-pointer">{text}</div>
+                <div className="max-w-55 truncate text-gray-700 dark:text-gray-200 hover:text-primary cursor-pointer">{text}</div>
               </Tooltip>
             ) : (
               <span className="text-gray-300 dark:text-gray-500 italic">暂无地址</span>
@@ -304,7 +304,7 @@ export default () => {
         align: 'center',
         width: 130,
         render: (_: string, record: Footprint) => (
-          <Space split={<Divider type="vertical" />}>
+          <Space separator={<Divider orientation="vertical" />}>
             <Tooltip title="编辑">
               <Button type="text" onClick={() => openEdit(record.id!)} icon={<FormOutlined className="text-primary" />} />
             </Tooltip>
@@ -370,13 +370,13 @@ export default () => {
               <Input
                 prefix={<SearchOutlined className="text-gray-400 dark:text-gray-500" />}
                 placeholder="搜索地址..."
-                className="w-[220px]!"
+                className="w-55!"
                 allowClear
               />
             </Form.Item>
             <Form.Item name="createTime" className="mb-0!">
               <RangePicker
-                className="w-[260px]!"
+                className="w-65!"
                 placeholder={['开始日期', '结束日期']}
                 disabledDate={(current) => current && current > dayjs().endOf('day')}
               />
@@ -400,10 +400,10 @@ export default () => {
           loading={loading}
           scroll={{ x: 1200 }}
           pagination={{
-            position: ['bottomRight'],
+            placement:['bottomEnd'],
             pageSize: 8,
             showTotal: (totalCount) => (
-              <div className="mt-[9px] text-xs text-gray-500 dark:text-gray-400">
+              <div className="mt-2.25 text-xs text-gray-500 dark:text-gray-400">
                 共 {totalCount} 条数据
               </div>
             ),
@@ -413,7 +413,7 @@ export default () => {
         />
       </div>
 
-      <Modal title={modalMode === 'edit' ? '编辑足迹' : '新增足迹'} open={isModelOpen} onCancel={closeModal} destroyOnClose footer={null}>
+      <Modal title={modalMode === 'edit' ? '编辑足迹' : '新增足迹'} open={isModelOpen} onCancel={closeModal} destroyOnHidden footer={null}>
         <Spin spinning={detailLoading || searchLoading}>
           <Form form={form} layout="vertical" size="large" preserve={false} className="mt-6">
             <Form.Item label="标题" name="title" rules={[{ required: true, message: '标题不能为空' }]}>
@@ -429,7 +429,12 @@ export default () => {
             </Form.Item>
 
             <Form.Item label="坐标纬度" name="position" rules={[{ required: true, message: '坐标纬度不能为空' }]}>
-              <Input placeholder="请输入坐标纬度" prefix={<GiPositionMarker />} addonAfter={<IoSearch onClick={getGeocode} className="cursor-pointer" />} />
+              <Space.Compact style={{ width: '100%' }}>
+                <Input placeholder="请输入坐标纬度" prefix={<GiPositionMarker />} />
+                <Button icon={<IoSearch />} onClick={getGeocode}>
+                  搜索
+                </Button>
+              </Space.Compact>
             </Form.Item>
 
             <div className="relative">

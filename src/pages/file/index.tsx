@@ -209,7 +209,7 @@ export default () => {
         <Card className="FilePage border-stroke mt-2 min-h-[calc(100vh-160px)] [&>.ant-card-body]:py-2! [&>.ant-card-body]:px-5!">
           {/* 操作栏骨架屏 */}
           <div className="flex justify-between my-4 px-4">
-            <Skeleton.Button active size="default" style={{ width: 100, height: 32 }} />
+            <Skeleton.Button active size="medium" style={{ width: 100, height: 32 }} />
           </div>
 
           {/* 目录/文件列表骨架屏 */}
@@ -279,7 +279,7 @@ export default () => {
 
       {/* 文件信息抽屉 */}
       <Drawer
-        width={600}
+        size={600}
         title="图片信息"
         placement="right"
         open={openFileInfoDrawer}

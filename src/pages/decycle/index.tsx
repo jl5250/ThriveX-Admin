@@ -223,7 +223,7 @@ export default () => {
       align: 'center',
       width: 130,
       render: (_: string, record: Article) => (
-        <Space split={<Divider type="vertical" />}>
+        <Space separator={<Divider orientation="vertical" />}>
           <Popconfirm title="警告" description="点击恢复文章" okText="确定" cancelText="取消" onConfirm={() => reductionArticleData(record.id!)}>
             <Tooltip title="恢复">
               <Button type="text" icon={<UndoOutlined className="text-green-500" />} />
@@ -273,7 +273,7 @@ export default () => {
           loading={loading}
           scroll={{ x: 1400 }}
           pagination={{
-            position: ['bottomRight'],
+            placement:['bottomEnd'],
             current,
             pageSize: 8,
             total: articleList.length,

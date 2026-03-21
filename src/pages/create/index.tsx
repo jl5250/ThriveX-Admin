@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Button, Card, Dropdown, MenuProps, message, Spin } from 'antd';
+import { Button, Card, Dropdown, MenuProps, message, Space, Spin } from 'antd';
 import { BiSave } from 'react-icons/bi';
 import { AiOutlineEdit, AiOutlineSend } from 'react-icons/ai';
 
@@ -218,17 +218,23 @@ export default () => {
     <div>
       <Title value="创作">
         <div className="flex items-center space-x-4 w-[365px]">
-          <Dropdown.Button
-            menu={{ items }}
-            onClick={() => {
-              if (list.length === 0) {
-                message.error('请先在助手管理中添加助手');
-              }
-            }}
-          >
-            <AiOutlineEdit className="text-base" />
-            {assistant ? list.find((a) => a.id === Number(assistant))?.name || '选择助手' : '选择助手'}
-          </Dropdown.Button>
+          <Space.Compact style={{ width: '100%' }}>
+            <Button
+              onClick={() => {
+                if (list.length === 0) {
+                  message.error('请先在助手管理中添加助手');
+                }
+              }}
+            >
+              <AiOutlineEdit className="text-base" />
+              {assistant ? list.find((a) => a.id === Number(assistant))?.name || '选择助手' : '选择助手'}
+            </Button>
+            <Dropdown menu={{ items }}>
+              <Button>
+                <AiOutlineEdit className="text-base" />
+              </Button>
+            </Dropdown>
+          </Space.Compact>
 
           <Button className="w-full flex justify-between" onClick={saveBtn}>
             <BiSave className="text-base" /> 保存

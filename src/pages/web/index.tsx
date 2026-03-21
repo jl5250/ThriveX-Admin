@@ -198,7 +198,7 @@ export default () => {
                 {/* 分组标题骨架屏 */}
                 <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/60 dark:bg-boxdark/60 backdrop-blur-md border border-white/20 dark:border-strokedark/30">
                   <Skeleton.Avatar active size={20} shape="square" />
-                  <Skeleton.Input active size="default" style={{ width: 150, height: 24 }} />
+                  <Skeleton.Input active size="medium" style={{ width: 150, height: 24 }} />
                 </div>
 
                 {/* 网站项骨架屏 */}
@@ -206,7 +206,7 @@ export default () => {
                   {[1, 2, 3, 4, 5, 6].map((item) => (
                     <div key={item} className="flex flex-col items-center p-6 rounded-2xl bg-white/70 dark:bg-boxdark/70 backdrop-blur-lg border border-white/30 dark:border-strokedark/40 shadow-xs">
                       <Skeleton.Avatar active size={80} shape="circle" className="mb-4" />
-                      <Skeleton.Input active size="default" style={{ width: '100%', height: 24, marginBottom: 8 }} />
+                      <Skeleton.Input active size="medium" style={{ width: '100%', height: 24, marginBottom: 8 }} />
                       <Skeleton.Input active size="small" style={{ width: '100%', height: 20, marginBottom: 16 }} />
                       <Skeleton.Input active size="small" style={{ width: 80, height: 24, borderRadius: 12 }} />
                     </div>
@@ -230,7 +230,7 @@ export default () => {
 
       <Card className="WebPage border-stroke min-h-[calc(100vh-160px)] [&>.ant-card-body]:py-2! [&>.ant-card-body]:px-5!">
         <div className="flex justify-center w-full mt-1 mb-2">
-          <Input placeholder="请输入网站名称或描述信息进行查询" prefix={<SearchOutlined />} value={search} onChange={(e) => setSearch(e.target.value)} className="w-[300px]" />
+          <Input placeholder="请输入网站名称或描述信息进行查询" prefix={<SearchOutlined />} value={search} onChange={(e) => setSearch(e.target.value)} className="w-75" />
         </div>
 
         <Spin spinning={loading}>
@@ -282,7 +282,7 @@ export default () => {
                         </div>
 
                         <div className="absolute z-50 inset-x-0 bottom-0 flex flex-col gap-3 py-5 px-3 bg-linear-to-t from-white/98 via-white/95 to-white/90 dark:from-boxdark/98 dark:via-boxdark/95 dark:to-boxdark/90 backdrop-blur-xl border-t border-gray-200/60 dark:border-strokedark/60 shadow-[0_-8px_24px_rgba(0,0,0,0.08)] dark:shadow-[0_-8px_24px_rgba(0,0,0,0.3)] transform translate-y-full group-hover:translate-y-0 transition-all duration-300 ease-out">
-                          <div className="absolute top-0 left-6 right-6 h-[2px] bg-linear-to-r from-transparent via-primary/40 to-transparent dark:via-primary/50"></div>
+                          <div className="absolute top-0 left-6 right-6 h-0.5 bg-linear-to-r from-transparent via-primary/40 to-transparent dark:via-primary/50"></div>
 
                           <div className="flex gap-2">
                             <button

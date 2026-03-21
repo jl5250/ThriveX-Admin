@@ -206,8 +206,8 @@ export default () => {
         <Card className={`${titleSty} min-h-[calc(100vh-200px)] [&>.ant-card-body]:py-2! [&>.ant-card-body]:px-5!`}>
           {/* Tabs 骨架屏 */}
           <div className="flex justify-center space-x-4 mb-6">
-            <Skeleton.Button active size="default" style={{ width: 100, height: 40 }} />
-            <Skeleton.Button active size="default" style={{ width: 100, height: 40 }} />
+            <Skeleton.Button active size="medium" style={{ width: 100, height: 40 }} />
+            <Skeleton.Button active size="medium" style={{ width: 100, height: 40 }} />
           </div>
 
           {/* 表格骨架屏 */}
@@ -229,7 +229,7 @@ export default () => {
 
           {/* 分页骨架屏 */}
           <div className="flex justify-center my-5">
-            <Skeleton.Input active size="default" style={{ width: 300, height: 32 }} />
+            <Skeleton.Input active size="medium" style={{ width: 300, height: 32 }} />
           </div>
         </Card>
       </div>

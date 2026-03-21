@@ -121,7 +121,7 @@ export default () => {
         <Card className="[&>.ant-card-body]:py-2! [&>.ant-card-body]:px-5! mb-2">
           <div className="flex justify-between items-center">
             <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
-            <Skeleton.Button active size="default" style={{ width: 100, height: 32 }} />
+            <Skeleton.Button active size="medium" style={{ width: 100, height: 32 }} />
           </div>
         </Card>
 
@@ -142,7 +142,7 @@ export default () => {
 
               </div>
               <div className="pt-2 border-t border-gray-100 dark:border-strokedark">
-                <Skeleton.Button active size="default" style={{ width: '100%', height: 32 }} />
+                <Skeleton.Button active size="medium" style={{ width: '100%', height: 32 }} />
               </div>
             </Card>
           ))}
@@ -235,7 +235,7 @@ export default () => {
                     </div>
 
                     <Space size={4}>
-                      <Tag bordered={false} className="text-xs bg-gray-100 text-gray-500 dark:bg-boxdark-2 dark:text-gray-300 mr-0">
+                      <Tag variant="filled" className="text-xs bg-gray-100 text-gray-500 dark:bg-boxdark-2 dark:text-gray-300 mr-0">
                         {info ? info.label : item.model}
                       </Tag>
 

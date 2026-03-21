@@ -34,7 +34,7 @@ export default () => {
       align: 'center',
       render: (text: string) => (
         <Tooltip title={text}>
-          <div className="max-w-[200px] truncate text-gray-700 dark:text-gray-200 hover:text-primary cursor-pointer">
+          <div className="max-w-50 truncate text-gray-700 dark:text-gray-200 hover:text-primary cursor-pointer">
             {text}
           </div>
         </Tooltip>
@@ -180,7 +180,7 @@ export default () => {
             ))}
             {/* 分页骨架屏 */}
             <div className="flex justify-center my-5">
-              <Skeleton.Input active size="default" style={{ width: 300, height: 32 }} />
+              <Skeleton.Input active size="medium" style={{ width: 300, height: 32 }} />
             </div>
           </Card>
         </div>
@@ -218,7 +218,7 @@ export default () => {
             columns={columns}
             scroll={{ x: 'max-content' }}
             pagination={{
-              position: ['bottomCenter'],
+              placement: ['bottomCenter'],
               pageSize: 8,
             }}
             loading={loading}

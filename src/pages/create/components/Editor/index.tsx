@@ -67,7 +67,7 @@ const EditorMD = ({ value, onChange }: Props) => {
 
   return (
     <>
-      <Spin spinning={loading} tip="图片上传中...">
+      <Spin spinning={loading} description="图片上传中...">
         <Editor value={value} plugins={plugins} onChange={onChange} locale={zh} uploadImages={uploadImages} />
       </Spin>
 

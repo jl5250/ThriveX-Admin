@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
-import { Button, Dropdown, Popconfirm, Tooltip, message } from 'antd';
+import { useCallback } from 'react';
+import { Button, Dropdown, Popconfirm, Space, Tooltip, message } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
@@ -114,18 +114,21 @@ export const ArticleExportDropdown = ({
   }, [onLoadAll, setLoading]);
 
   return (
-    <Dropdown.Button
-      icon={<DownloadOutlined />}
-      className="w-[120px]"
-      menu={{
-        items: [
-          { label: '导出选中', key: 'selected', onClick: handleExportSelected },
-          { label: '导出全部', key: 'all', onClick: () => handleExportAll() },
-        ],
-      }}
-    >
-      导出文章
-    </Dropdown.Button>
+    <Space.Compact>
+      <Button icon={<DownloadOutlined />}>
+        导出文章
+      </Button>
+      <Dropdown
+        menu={{
+          items: [
+            { label: '导出选中', key: 'selected', onClick: handleExportSelected },
+            { label: '导出全部', key: 'all', onClick: () => handleExportAll() },
+          ],
+        }}
+      >
+        <Button icon={<DownloadOutlined />} />
+      </Dropdown>
+    </Space.Compact>
   );
 };
 

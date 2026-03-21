@@ -4,13 +4,7 @@ import { Link } from 'react-router-dom';
 import { Table, Button, Tag, notification, Popconfirm, Form, Input, Select, DatePicker, message, Tooltip, Space, Divider, Popover } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { TableRowSelection } from 'antd/es/table/interface';
-import DeleteOutlined from '@ant-design/icons';
-import FormOutlined from '@ant-design/icons';
-import InboxOutlined from '@ant-design/icons';
-import SearchOutlined from '@ant-design/icons';
-import ClearOutlined from '@ant-design/icons';
-import EyeOutlined from '@ant-design/icons';
-import CommentOutlined from '@ant-design/icons';
+import { DeleteOutlined, FormOutlined, InboxOutlined, SearchOutlined, ClearOutlined, EyeOutlined, CommentOutlined } from '@ant-design/icons';
 import { HiOutlineChevronDown, HiOutlineChevronUp } from 'react-icons/hi';
 import dayjs from 'dayjs';
 
@@ -698,7 +692,7 @@ export default () => {
           columns={columns}
           loading={loading}
           pagination={{
-            position: ['bottomRight'],
+            placement:['bottomEnd'],
             current: filter.page,
             pageSize: filter.size,
             total,

@@ -32,7 +32,7 @@ export default ({ title, children, open, onClose, loading, className }: Props) =
       title={<Title />}
       open={open}
       onClose={() => onClose?.(false)}
-      height="100vh"
+      size="100vh"
       placement="bottom"
       closeIcon={null}
       className={`[&>.ant-drawer-header]:p-0! ${className}`}

@@ -210,7 +210,7 @@ export default () => {
       align: 'center',
       width: 130,
       render: (_: string, record: Article) => (
-        <Space split={<Divider type="vertical" />}>
+        <Space separator={<Divider orientation="vertical" />}>
           <Tooltip title="编辑">
             <Link to={`/create?id=${record.id}&draft=true`}>
               <Button type="text" icon={<FormOutlined className="text-primary" />} />
@@ -259,7 +259,7 @@ export default () => {
           loading={loading}
           scroll={{ x: 1400 }}
           pagination={{
-            position: ['bottomRight'],
+            placement:['bottomEnd'],
             current,
             pageSize: 8,
             total: articleList.length,

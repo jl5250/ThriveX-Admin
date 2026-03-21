@@ -73,7 +73,7 @@ const ProjectTimelineCard = ({
     <div className="bg-slate-100 dark:bg-boxdark-2 rounded-2xl border border-slate-200/80 dark:border-strokedark shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full overflow-hidden group">
       <div className="bg-white dark:bg-boxdark p-4 flex items-center gap-3 border-b border-slate-200/60 dark:border-strokedark">
         <div className={`flex items-center justify-center w-10 h-10 rounded-xl shrink-0 ${iconBg} ${iconColor}`}>
-          <Icon size={22} className={iconColor} />
+          <Icon className={iconColor} />
         </div>
         <h3 className="font-bold text-slate-800 dark:text-slate-100 text-base tracking-tight">{title}</h3>
       </div>
@@ -206,7 +206,14 @@ const IterativePage = () => {
               options={yearList}
               onChange={setYear}
               className="min-w-[100px] font-bold! text-slate-700 dark:text-slate-200 [&_.ant-select-selector]:bg-transparent!"
-              dropdownStyle={{ borderRadius: '12px', padding: '8px' }}
+              styles={{
+                popup: {
+                  root: {
+                    borderRadius: '12px',
+                    padding: '8px'
+                  }
+                }
+              }}
             />
           </div>
         </div>

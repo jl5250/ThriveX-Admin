@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
-import { Form, Input, Button, Select, DatePicker, Cascader, message, Switch, Radio } from 'antd';
+import { Form, Input, Button, Select, DatePicker, Cascader, message, Switch, Radio, Space } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { RuleObject } from 'antd/es/form';
 import dayjs from 'dayjs';
@@ -316,7 +316,12 @@ ${content}
         </Form.Item>
 
         <Form.Item label="文章封面" name="cover" rules={[{ validator: validateURL }]}>
-          <Input placeholder="请输入文章封面" prefix={<PictureOutlined />} addonAfter={<UploadBtn />} className="customizeAntdInputAddonAfter" />
+          <Space.Compact style={{ width: '100%' }}>
+            <Input placeholder="请输入文章封面" prefix={<PictureOutlined />} />
+            <Button icon={<CloudUploadOutlined />} onClick={() => setIsMaterialModalOpen(true)}>
+              上传
+            </Button>
+          </Space.Compact>
         </Form.Item>
 
         <Form.Item label="选择分类" name="cateIds" rules={[{ required: true, message: '请选择文章分类' }]}>

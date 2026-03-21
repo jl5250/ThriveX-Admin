@@ -222,7 +222,7 @@ export default () => {
     return (
       <div>
         {/* Title 骨架屏 */}
-        <Card className="[&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5 mb-4">
+        <Card className="[&>.ant-card-body]:py-2! [&>.ant-card-body]:px-5! mb-4">
           <div className="flex justify-between items-center">
             <Skeleton.Input active size="large" style={{ width: 150, height: 32 }} />
             <Skeleton.Button active size="large" style={{ width: 120, height: 40 }} />
@@ -230,7 +230,7 @@ export default () => {
         </Card>
 
         {/* 表格卡片骨架屏 */}
-        <Card className={`${titleSty} min-h-[calc(100vh-160px)] [&>.ant-card-body]:!py-2 [&>.ant-card-body]:!px-5`}>
+        <Card className={`${titleSty} min-h-[calc(100vh-160px)] [&>.ant-card-body]:py-2! [&>.ant-card-body]:px-5!`}>
           {/* 表格骨架屏 */}
           <div className="mb-4">
             {/* 表格行骨架屏 - 模拟多行 */}
@@ -250,7 +250,7 @@ export default () => {
 
           {/* 分页骨架屏 */}
           <div className="flex justify-center my-5">
-            <Skeleton.Input active size="default" style={{ width: 300, height: 32 }} />
+            <Skeleton.Input active size="medium" style={{ width: 300, height: 32 }} />
           </div>
         </Card>
       </div>
@@ -273,13 +273,13 @@ export default () => {
           columns={columns}
           scroll={{ x: '1350px' }}
           pagination={{
-            position: ['bottomCenter'],
+            placement: ['bottomCenter'],
             pageSize: 8,
           }}
         />
       </Card>
 
-      <Modal loading={editLoading} title={oss.id ? '编辑存储配置' : '新增存储配置'} open={isModalOpen} onCancel={handleCancel} footer={null} destroyOnClose>
+      <Modal loading={editLoading} title={oss.id ? '编辑存储配置' : '新增存储配置'} open={isModalOpen} onCancel={handleCancel} footer={null} destroyOnHidden>
         <Form form={form} layout="vertical" onFinish={onSubmit} size="large" className="mt-6">
           {!oss.id && (
             <Form.Item label="选择平台" name="platform" className="w-full">
