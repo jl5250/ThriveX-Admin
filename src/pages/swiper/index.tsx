@@ -189,7 +189,7 @@ export default () => {
             placement:['bottomEnd'],
             pageSize: 8,
             showTotal: (totalCount) => (
-              <div className="mt-[9px] text-xs text-gray-500 dark:text-gray-400">
+              <div className="mt-2.25 text-xs text-gray-500 dark:text-gray-400">
                 共 {totalCount} 条数据
               </div>
             ),

@@ -289,7 +289,7 @@ export default () => {
               <Input
                 prefix={<SearchOutlined className="text-gray-400 dark:text-gray-500" />}
                 placeholder="搜索留言内容..."
-                className="w-[220px]!"
+                className="w-55!"
                 allowClear
               />
             </Form.Item>
@@ -299,12 +299,12 @@ export default () => {
                 options={cateList}
                 fieldNames={{ label: 'name', value: 'id' }}
                 placeholder="选择分类"
-                className="w-[160px]!"
+                className="w-40!"
               />
             </Form.Item>
             <Form.Item name="createTime" className="mb-0!">
               <RangePicker
-                className="w-[260px]!"
+                className="w-65!"
                 placeholder={['开始日期', '结束日期']}
                 disabledDate={(current) => current && current > dayjs().endOf('day')}
               />
@@ -331,7 +331,7 @@ export default () => {
             placement:['bottomEnd'],
             defaultPageSize: 8,
             showTotal: (totalCount) => (
-              <div className="mt-[9px] text-xs text-gray-500 dark:text-gray-400">
+              <div className="mt-2.25 text-xs text-gray-500 dark:text-gray-400">
                 共 {totalCount} 条数据
               </div>
             ),

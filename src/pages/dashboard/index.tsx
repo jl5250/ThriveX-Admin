@@ -30,7 +30,7 @@ export default () => {
       {initialLoading ? (
         <>
           {/* InfoCard 骨架屏 */}
-          <div className="bg-primary rounded-md p-6 sm:p-10 flex flex-col justify-center h-[170px] relative overflow-hidden mb-4">
+          <div className="bg-primary rounded-md p-6 sm:p-10 flex flex-col justify-center h-42.5 relative overflow-hidden mb-4">
             <div className="relative z-10 w-full flex flex-col">
               <Skeleton.Input active size="large" style={{ width: '500px', height: 40, marginBottom: 10, background: 'rgba(255,255,255,0.3)' }} />
               <Skeleton.Input active size="large" style={{ width: '300px', height: 30, marginBottom: 10, background: 'rgba(255,255,255,0.3)' }} />

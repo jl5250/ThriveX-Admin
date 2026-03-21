@@ -319,7 +319,7 @@ export default () => {
               current: currentPage,
               pageSize: pageSize,
               showTotal: (total) => (
-                <div className="mt-[9px] text-xs text-gray-500 dark:text-gray-400">
+                <div className="mt-2.25 text-xs text-gray-500 dark:text-gray-400">
                   当前第 {currentPage} / {Math.ceil(total / (pageSize || 8))} 页 | 共 {total} 条数据
                 </div>
               ),

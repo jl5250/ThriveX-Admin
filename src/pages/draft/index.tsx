@@ -71,7 +71,7 @@ export default () => {
     const visible = items.slice(0, VISIBLE_TAG_COUNT);
     const restCount = items.length - VISIBLE_TAG_COUNT;
     const tagList = (
-      <div className="flex flex-wrap gap-1.5 max-w-[280px]">
+      <div className="flex flex-wrap gap-1.5 max-w-70">
         {items.map((item, index) => (
           <Tag key={item.id ?? index} color={tagColors[index % tagColors.length]} className="m-0! border-0!">
             {item.name}
@@ -89,7 +89,7 @@ export default () => {
         {restCount > 0 && (
           <Popover content={tagList} trigger="hover" placement="topLeft" overlayClassName="article-tags-popover">
             <span
-              className="inline-flex items-center justify-center min-w-[28px] h-6 px-1.5 rounded-md text-xs font-medium cursor-default bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-boxdark-2 dark:text-gray-400 dark:hover:bg-strokedark/80 border-0 cursor-pointer"
+              className="inline-flex items-center justify-center min-w-7 h-6 px-1.5 rounded-md text-xs font-medium bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-boxdark-2 dark:text-gray-400 dark:hover:bg-strokedark/80 border-0 cursor-pointer"
               role="button"
               tabIndex={0}
             >
@@ -264,7 +264,7 @@ export default () => {
             pageSize: 8,
             total: articleList.length,
             showTotal: (totalCount) => (
-              <div className="mt-[9px] text-xs text-gray-500 dark:text-gray-400">
+              <div className="mt-2.25 text-xs text-gray-500 dark:text-gray-400">
                 共 {totalCount} 条数据
               </div>
             ),

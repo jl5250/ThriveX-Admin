@@ -230,7 +230,7 @@ export default () => {
                   </Avatar>
 
                   <div>
-                    <div className="font-bold text-lg text-gray-800 dark:text-white leading-tight mb-1 truncate max-w-[160px] ml-[5px]">
+                    <div className="font-bold text-lg text-gray-800 dark:text-white leading-tight mb-1 truncate max-w-40 ml-1.25">
                       {item.name}
                     </div>
 
@@ -285,7 +285,7 @@ export default () => {
         {/* 空状态下的添加按钮（如果没有数据或者作为最后一个Card） */}
         <Button
           type="dashed"
-          className="h-auto min-h-[200px] border-2 flex flex-col items-center justify-center gap-2 bg-white! dark:bg-boxdark! text-gray-400 dark:text-gray-500 hover:text-primary dark:hover:text-primary hover:border-primary dark:hover:border-primary rounded-lg bg-transparent dark:border-strokedark"
+          className="h-auto min-h-50 border-2 flex flex-col items-center justify-center gap-2 dark:bg-boxdark! text-gray-400 dark:text-gray-500 hover:text-primary dark:hover:text-primary hover:border-primary dark:hover:border-primary rounded-lg bg-transparent dark:border-strokedark"
           onClick={() => setIsModalOpen(true)}
         >
           <PlusOutlined style={{ fontSize: '24px' }} />

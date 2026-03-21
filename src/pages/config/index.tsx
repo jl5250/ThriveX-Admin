@@ -181,7 +181,7 @@ export default () => {
       title: '配置内容',
       dataIndex: 'value',
       key: 'value',
-      render: (value: object) => <>{activeTab === 'page' ? <span className="text-sm text-gray-500">内容过多，不易展示</span> : <pre className="min-w-[200px] whitespace-pre-wrap break-all bg-slate-50 dark:bg-slate-800 p-2 rounded-sm text-xs overflow-auto">{JSON.stringify(value, null, 2)}</pre>}</>,
+      render: (value: object) => <>{activeTab === 'page' ? <span className="text-sm text-gray-500">内容过多，不易展示</span> : <pre className="min-w-50 whitespace-pre-wrap break-all bg-slate-50 dark:bg-slate-800 p-2 rounded-sm text-xs overflow-auto">{JSON.stringify(value, null, 2)}</pre>}</>,
     },
     {
       title: '操作',

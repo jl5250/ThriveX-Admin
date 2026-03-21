@@ -217,7 +217,7 @@ export default () => {
   return (
     <div>
       <Title value="创作">
-        <div className="flex items-center space-x-4 w-[365px]">
+        <div className="flex items-center space-x-4 w-91.25">
           <Space.Compact style={{ width: '100%' }}>
             <Button
               onClick={() => {

@@ -78,21 +78,21 @@ export default () => {
     return new URL(`../../image/${name}.png`, import.meta.url).href;
   };
 
-  const UploadBtn = ({ type }: { type: string }) => (
-    <CloudUploadOutlined
-      className="text-xl cursor-pointer"
-      onClick={() => {
-        setCurrentUploadType(type);
-        setIsMaterialModalOpen(true);
-      }}
-    />
-  );
+  // const UploadBtn = ({ type }: { type: string }) => (
+  //   <CloudUploadOutlined
+  //     className="text-xl cursor-pointer"
+  //     onClick={() => {
+  //       setCurrentUploadType(type);
+  //       setIsMaterialModalOpen(true);
+  //     }}
+  //   />
+  // );
 
   return (
     <div>
       <h2 className="text-xl py-4">综合配置</h2>
 
-      <div className="w-full lg:w-[500px]">
+      <div className="w-full lg:w-125">
         <Form form={form} onFinish={editThemeData} layout="vertical">
           <Divider>亮色主题 Logo</Divider>
           <Form.Item name="light_logo" label="亮色主题 Logo">
@@ -170,12 +170,12 @@ export default () => {
 
           <Divider>文章布局</Divider>
           <div className="overflow-auto w-full">
-            <div className="article flex w-[650px]">
+            <div className="article flex w-162.5">
               {['classics', 'card', 'waterfall'].map((item) => (
                 <div key={item} onClick={() => setTheme({ ...theme, is_article_layout: item })} className={`item flex flex-col items-center p-4 m-4 border-2 rounded-sm cursor-pointer ${theme.is_article_layout === item ? 'border-primary' : 'border-stroke'}`}>
                   <p className={`text-center ${theme.is_article_layout === item ? 'text-primary' : ''}`}>{item === 'classics' ? '经典布局' : item === 'card' ? '卡片布局' : '瀑布流布局'}</p>
 
-                  <img src={`${getFile(item)}`} alt="" className="w-[200px] mt-4 rounded-sm" />
+                  <img src={`${getFile(item)}`} alt="" className="w-50 mt-4 rounded-sm" />
                 </div>
               ))}
             </div>
